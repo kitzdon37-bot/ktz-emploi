@@ -1,10 +1,16 @@
-﻿import { NextAuthOptions } from "next-auth";
+import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
 export const authOptions: NextAuthOptions = {
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+
     CredentialsProvider({
       name: "credentials",
       credentials: {
@@ -21,14 +27,48 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+
   callbacks: {
-    async jwt({ token, user }) {
+    // Crée le compte en base lors du premier login Google
+    async signIn({ user, account }) {
+      if (account?.provider === "google") {
+        const existing = await prisma.user.findUnique({ where: { email: user.email! } });
+        if (!existing) {
+          const newUser = await prisma.user.create({
+            data: {
+              email: user.email!,
+              name: user.name,
+              image: user.image,
+              role: "JOBSEEKER",
+              emailVerified: new Date(),
+            },
+          });
+          await prisma.jobSeekerProfile.create({
+            data: { userId: newUser.id },
+          });
+        }
+        return true;
+      }
+      return true;
+    },
+
+    async jwt({ token, user, account }) {
+      // Après un login Google, récupère le vrai id/role en base
+      if (account?.provider === "google" && token.email) {
+        const dbUser = await prisma.user.findUnique({ where: { email: token.email } });
+        if (dbUser) {
+          token.id = dbUser.id;
+          token.role = dbUser.role;
+        }
+      }
+      // Après un login credentials
       if (user) {
         token.role = (user as { role?: string }).role;
         token.id = user.id;
       }
       return token;
     },
+
     async session({ session, token }) {
       if (session.user) {
         (session.user as { role?: string; id?: string }).role = token.role as string;
@@ -37,6 +77,7 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
+
   pages: {
     signIn: "/connexion",
     error: "/connexion",
@@ -44,4 +85,3 @@ export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
   secret: process.env.NEXTAUTH_SECRET,
 };
-
