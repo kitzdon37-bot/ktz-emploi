@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Briefcase, Eye, EyeOff, Loader2 } from "lucide-react";
-import GoogleSignInButton, { GoogleNotConfigured } from "@/components/GoogleSignInButton";
+import GoogleSignInButton from "@/components/GoogleSignInButton";
 
 function LoginForm() {
   const router = useRouter();
@@ -72,7 +72,6 @@ function LoginForm() {
 
         {/* Google */}
         <GoogleSignInButton label="Se connecter avec Google" />
-        {process.env.NODE_ENV === "development" && <GoogleNotConfigured />}
 
         <div className="flex items-center gap-3 my-2">
           <hr className="flex-1 border-gray-200" />
