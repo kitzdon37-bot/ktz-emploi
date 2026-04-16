@@ -1,62 +1,20 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { BookOpen, TrendingUp, FileText, MessageSquare, Star, ArrowRight } from "lucide-react";
+import { articles } from "@/lib/articles";
 
-const articles = [
-  {
-    id: 1,
-    title: "Comment rédiger un CV qui se démarque en 2024",
-    excerpt: "Votre CV est votre carte de visite. Découvrez les meilleures pratiques pour créer un CV percutant adapté au marché centrafricain.",
-    category: "CV & Candidature",
-    readTime: "5 min",
-    icon: FileText,
-    color: "bg-blue-50 text-blue-600",
-  },
-  {
-    id: 2,
-    title: "Réussir son entretien d'embauche : 10 conseils essentiels",
-    excerpt: "L'entretien est votre chance de briller. Préparez-vous efficacement avec ces conseils pratiques testés par des professionnels RH.",
-    category: "Entretien",
-    readTime: "7 min",
-    icon: MessageSquare,
-    color: "bg-orange-50 text-orange-500",
-  },
-  {
-    id: 3,
-    title: "Les secteurs qui recrutent le plus en RCA",
-    excerpt: "Humanitaire, télécoms, finance... Découvrez quels secteurs offrent le plus d'opportunités en République Centrafricaine.",
-    category: "Marché de l'emploi",
-    readTime: "4 min",
-    icon: TrendingUp,
-    color: "bg-purple-50 text-purple-600",
-  },
-  {
-    id: 4,
-    title: "Rédiger une lettre de motivation convaincante",
-    excerpt: "La lettre de motivation est souvent la clé d'une candidature réussie. Apprenez à structurer un message qui accroche les recruteurs.",
-    category: "CV & Candidature",
-    readTime: "6 min",
-    icon: FileText,
-    color: "bg-orange-50 text-orange-600",
-  },
-  {
-    id: 5,
-    title: "Négocier son salaire : guide complet",
-    excerpt: "Savoir négocier sa rémunération est une compétence essentielle. Voici comment aborder cette discussion avec confiance.",
-    category: "Carrière",
-    readTime: "8 min",
-    icon: Star,
-    color: "bg-yellow-50 text-yellow-600",
-  },
-  {
-    id: 6,
-    title: "Se reconvertir professionnellement : par où commencer ?",
-    excerpt: "Changer de carrière peut être intimidant, mais avec la bonne approche, c'est tout à fait réalisable. Voici les étapes clés.",
-    category: "Carrière",
-    readTime: "10 min",
-    icon: TrendingUp,
-    color: "bg-pink-50 text-pink-600",
-  },
-];
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+  "CV & Candidature": FileText,
+  "Entretien": MessageSquare,
+  "Marché de l'emploi": TrendingUp,
+  "Carrière": Star,
+};
+
+const COLOR_MAP: Record<string, string> = {
+  "CV & Candidature": "bg-blue-50 text-blue-600",
+  "Entretien": "bg-orange-50 text-orange-500",
+  "Marché de l'emploi": "bg-purple-50 text-purple-600",
+  "Carrière": "bg-yellow-50 text-yellow-600",
+};
 
 const CATEGORIES = ["Tout", "CV & Candidature", "Entretien", "Carrière", "Marché de l'emploi"];
 
@@ -100,22 +58,27 @@ export default function ConseilsPage() {
           <p className="text-yellow-50 mb-5 max-w-xl">
             De la préparation de votre CV à la négociation de votre salaire, tout ce que vous devez savoir pour réussir votre recherche d&apos;emploi dans la capitale centrafricaine.
           </p>
-          <button className="flex items-center gap-2 bg-white text-orange-600 font-semibold px-5 py-2.5 rounded-xl hover:bg-orange-50 transition-colors">
+          <Link
+            href={`/conseils/${articles[0].slug}`}
+            className="inline-flex items-center gap-2 bg-white text-orange-600 font-semibold px-5 py-2.5 rounded-xl hover:bg-orange-50 transition-colors"
+          >
             Lire l&apos;article <ArrowRight className="h-4 w-4" />
-          </button>
+          </Link>
         </div>
       </div>
 
       {/* Articles grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {articles.map((article) => {
-          const Icon = article.icon;
+          const Icon = ICON_MAP[article.category] ?? FileText;
+          const color = COLOR_MAP[article.category] ?? "bg-gray-50 text-gray-600";
           return (
-            <article
+            <Link
               key={article.id}
-              className="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-md hover:border-orange-100 transition-all cursor-pointer"
+              href={`/conseils/${article.slug}`}
+              className="block bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-md hover:border-orange-100 transition-all"
             >
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-4 ${article.color}`}>
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-4 ${color}`}>
                 <Icon className="h-5 w-5" />
               </div>
               <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2.5 py-0.5 rounded-full">
@@ -125,11 +88,11 @@ export default function ConseilsPage() {
               <p className="text-sm text-gray-600 line-clamp-3 mb-4">{article.excerpt}</p>
               <div className="flex items-center justify-between">
                 <span className="text-xs text-gray-400">⏱ {article.readTime} de lecture</span>
-                <button className="text-orange-500 hover:text-orange-600 text-sm font-medium flex items-center gap-1">
+                <span className="text-orange-500 hover:text-orange-600 text-sm font-medium flex items-center gap-1">
                   Lire <ArrowRight className="h-3.5 w-3.5" />
-                </button>
+                </span>
               </div>
-            </article>
+            </Link>
           );
         })}
       </div>
@@ -153,4 +116,3 @@ export default function ConseilsPage() {
     </div>
   );
 }
-
