@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
@@ -118,7 +118,7 @@ export default function Navbar() {
                 </Link>
                 <Link
                   href="/inscription?role=employer"
-                  className="border border-red-600 text-orange-500 px-4 py-2 rounded-lg text-sm font-medium hover:bg-orange-50 transition-colors"
+                  className="border border-orange-500 text-orange-500 px-4 py-2 rounded-lg text-sm font-medium hover:bg-orange-50 transition-colors"
                 >
                   Recruter
                 </Link>
@@ -150,7 +150,7 @@ export default function Navbar() {
           ) : (
             <>
               <Link href="/connexion" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>Connexion</Link>
-              <Link href="/inscription" className="block bg-red-600 text-white text-center py-2 rounded-lg font-medium" onClick={() => setMenuOpen(false)}>S&apos;inscrire</Link>
+              <Link href="/inscription" className="block bg-orange-500 text-white text-center py-2 rounded-lg font-medium" onClick={() => setMenuOpen(false)}>S&apos;inscrire</Link>
             </>
           )}
         </div>
@@ -158,3 +158,4 @@ export default function Navbar() {
     </nav>
   );
 }
+

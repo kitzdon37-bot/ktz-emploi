@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { MapPin, Clock, Banknote, Building2, Star } from "lucide-react";
 import { formatSalary, timeAgo } from "@/lib/utils";
 
@@ -27,7 +27,7 @@ interface JobCardProps {
 const TYPE_COLORS: Record<string, string> = {
   CDI: "bg-orange-100 text-orange-700",
   CDD: "bg-blue-100 text-blue-700",
-  Stage: "bg-red-100 text-orange-700",
+  Stage: "bg-orange-100 text-orange-700",
   Alternance: "bg-purple-100 text-purple-700",
   Freelance: "bg-yellow-100 text-yellow-700",
   "Temps partiel": "bg-pink-100 text-pink-700",
@@ -105,3 +105,4 @@ export default function JobCard({ job }: JobCardProps) {
     </Link>
   );
 }
+

@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+﻿import { prisma } from "@/lib/prisma";
 import JobCard from "@/components/JobCard";
 import { JOB_CATEGORIES, JOB_TYPES, EXPERIENCE_LEVELS, RCA_LOCATIONS } from "@/lib/utils";
 import { Search, MapPin, Filter, Briefcase } from "lucide-react";
@@ -73,7 +73,7 @@ export default async function EmploisPage({ searchParams }: Props) {
         <h1 className="text-3xl font-bold text-gray-900">Offres d&apos;emploi en RCA</h1>
         <p className="text-gray-500 mt-1">
           {total} offre{total !== 1 ? "s" : ""} disponible{total !== 1 ? "s" : ""}
-          {params.q && <span className="text-red-600"> pour &quot;{params.q}&quot;</span>}
+          {params.q && <span className="text-orange-500"> pour &quot;{params.q}&quot;</span>}
         </p>
       </div>
 
@@ -96,7 +96,7 @@ export default async function EmploisPage({ searchParams }: Props) {
                   name="q"
                   defaultValue={params.q}
                   placeholder="Mot-clé..."
-                  className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-400"
+                  className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
                 />
               </div>
             </div>
@@ -109,7 +109,7 @@ export default async function EmploisPage({ searchParams }: Props) {
                 <select
                   name="location"
                   defaultValue={params.location}
-                  className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-400 appearance-none bg-white"
+                  className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 appearance-none bg-white"
                 >
                   <option value="">Toute la RCA</option>
                   {RCA_LOCATIONS.map((loc) => (
@@ -125,7 +125,7 @@ export default async function EmploisPage({ searchParams }: Props) {
               <select
                 name="category"
                 defaultValue={params.category}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-400 bg-white"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white"
               >
                 <option value="">Tous les secteurs</option>
                 {JOB_CATEGORIES.map((cat) => (
@@ -140,7 +140,7 @@ export default async function EmploisPage({ searchParams }: Props) {
               <select
                 name="type"
                 defaultValue={params.type}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-400 bg-white"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white"
               >
                 <option value="">Tous les contrats</option>
                 {JOB_TYPES.map((t) => (
@@ -155,7 +155,7 @@ export default async function EmploisPage({ searchParams }: Props) {
               <select
                 name="experience"
                 defaultValue={params.experience}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-400 bg-white"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white"
               >
                 <option value="">Tous niveaux</option>
                 {EXPERIENCE_LEVELS.map((e) => (
@@ -172,7 +172,7 @@ export default async function EmploisPage({ searchParams }: Props) {
                   name="remote"
                   value="true"
                   defaultChecked={params.remote === "true"}
-                  className="rounded text-red-600 focus:ring-red-400"
+                  className="rounded text-orange-500 focus:ring-orange-400"
                 />
                 <span className="text-sm text-gray-700">Télétravail uniquement</span>
               </label>
@@ -181,7 +181,7 @@ export default async function EmploisPage({ searchParams }: Props) {
             <div className="flex gap-2">
               <button
                 type="submit"
-                className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg text-sm font-medium transition-colors"
+                className="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 Filtrer
               </button>
@@ -222,7 +222,7 @@ export default async function EmploisPage({ searchParams }: Props) {
                       href={buildUrl({ page: String(p) })}
                       className={`px-4 py-2 rounded-lg text-sm transition-colors ${
                         p === page
-                          ? "bg-red-600 text-white"
+                          ? "bg-orange-500 text-white"
                           : "border border-gray-200 hover:bg-gray-50"
                       }`}
                     >
@@ -245,7 +245,7 @@ export default async function EmploisPage({ searchParams }: Props) {
               <Briefcase className="h-14 w-14 mx-auto mb-4 text-gray-200" />
               <p className="text-xl font-semibold text-gray-700">Aucune offre trouvée</p>
               <p className="text-sm mt-2">Modifiez vos critères de recherche ou{" "}
-                <Link href="/emplois" className="text-red-600 hover:underline">réinitialisez les filtres</Link>
+                <Link href="/emplois" className="text-orange-500 hover:underline">réinitialisez les filtres</Link>
               </p>
             </div>
           )}
@@ -254,3 +254,4 @@ export default async function EmploisPage({ searchParams }: Props) {
     </div>
   );
 }
+

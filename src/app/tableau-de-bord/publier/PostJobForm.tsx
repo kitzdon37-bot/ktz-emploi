@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -60,7 +60,7 @@ export default function PostJobForm({ companyId }: { companyId: string }) {
   if (success) {
     return (
       <div className="bg-white rounded-2xl border border-gray-200 p-10 text-center">
-        <CheckCircle className="h-14 w-14 text-red-600 mx-auto mb-4" />
+        <CheckCircle className="h-14 w-14 text-orange-500 mx-auto mb-4" />
         <h2 className="text-xl font-bold text-gray-900 mb-2">Offre publiée avec succès !</h2>
         <p className="text-gray-500">Redirection en cours...</p>
       </div>
@@ -70,7 +70,7 @@ export default function PostJobForm({ companyId }: { companyId: string }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">{error}</div>
+        <div className="bg-orange-50 border border-orange-200 text-orange-600 px-4 py-3 rounded-xl text-sm">{error}</div>
       )}
 
       {/* Basic info */}
@@ -85,7 +85,7 @@ export default function PostJobForm({ companyId }: { companyId: string }) {
               onChange={(e) => set("title", e.target.value)}
               required
               placeholder="ex: Développeur Web Senior"
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-400"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
             />
           </div>
 
@@ -95,7 +95,7 @@ export default function PostJobForm({ companyId }: { companyId: string }) {
               <select
                 value={form.type}
                 onChange={(e) => set("type", e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-400 bg-white"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white"
               >
                 {JOB_TYPES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
               </select>
@@ -106,7 +106,7 @@ export default function PostJobForm({ companyId }: { companyId: string }) {
                 value={form.category}
                 onChange={(e) => set("category", e.target.value)}
                 required
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-400 bg-white"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white"
               >
                 <option value="">Choisir un secteur</option>
                 {JOB_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
@@ -120,7 +120,7 @@ export default function PostJobForm({ companyId }: { companyId: string }) {
               <select
                 value={form.location}
                 onChange={(e) => set("location", e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-400 bg-white"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white"
               >
                 {RCA_LOCATIONS.map((l) => <option key={l} value={l}>{l}</option>)}
               </select>
@@ -130,7 +130,7 @@ export default function PostJobForm({ companyId }: { companyId: string }) {
               <select
                 value={form.experienceLevel}
                 onChange={(e) => set("experienceLevel", e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-400 bg-white"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white"
               >
                 <option value="">Non précisé</option>
                 {EXPERIENCE_LEVELS.map((e) => <option key={e.value} value={e.value}>{e.label}</option>)}
@@ -144,7 +144,7 @@ export default function PostJobForm({ companyId }: { companyId: string }) {
               id="remote"
               checked={form.remote}
               onChange={(e) => set("remote", e.target.checked)}
-              className="rounded text-red-600 focus:ring-red-400"
+              className="rounded text-orange-500 focus:ring-orange-400"
             />
             <label htmlFor="remote" className="text-sm text-gray-700">Télétravail possible</label>
           </div>
@@ -163,7 +163,7 @@ export default function PostJobForm({ companyId }: { companyId: string }) {
               onChange={(e) => set("salaryMin", e.target.value)}
               placeholder="ex: 150000"
               min="0"
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-400"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
             />
           </div>
           <div>
@@ -174,7 +174,7 @@ export default function PostJobForm({ companyId }: { companyId: string }) {
               onChange={(e) => set("salaryMax", e.target.value)}
               placeholder="ex: 300000"
               min="0"
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-400"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
             />
           </div>
         </div>
@@ -193,7 +193,7 @@ export default function PostJobForm({ companyId }: { companyId: string }) {
               required
               rows={6}
               placeholder="Décrivez les missions, responsabilités et contexte du poste..."
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-400 resize-none"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none"
             />
           </div>
           <div>
@@ -203,7 +203,7 @@ export default function PostJobForm({ companyId }: { companyId: string }) {
               onChange={(e) => set("requirements", e.target.value)}
               rows={4}
               placeholder="Formation requise, compétences techniques, soft skills..."
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-400 resize-none"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none"
             />
           </div>
           <div>
@@ -213,7 +213,7 @@ export default function PostJobForm({ companyId }: { companyId: string }) {
               onChange={(e) => set("benefits", e.target.value)}
               rows={3}
               placeholder="Transport, assurance santé, tickets restaurant, formation..."
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-400 resize-none"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none"
             />
           </div>
         </div>
@@ -227,7 +227,7 @@ export default function PostJobForm({ companyId }: { companyId: string }) {
           value={form.deadline}
           onChange={(e) => set("deadline", e.target.value)}
           min={new Date().toISOString().split("T")[0]}
-          className="px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-400"
+          className="px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
         />
       </div>
 
@@ -235,7 +235,7 @@ export default function PostJobForm({ companyId }: { companyId: string }) {
         <button
           type="submit"
           disabled={loading}
-          className="flex-1 sm:flex-none sm:px-8 bg-red-600 hover:bg-red-700 disabled:bg-red-300 text-white py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
+          className="flex-1 sm:flex-none sm:px-8 bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300 text-white py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
         >
           {loading && <Loader2 className="h-4 w-4 animate-spin" />}
           Publier l&apos;offre
@@ -247,3 +247,4 @@ export default function PostJobForm({ companyId }: { companyId: string }) {
     </form>
   );
 }
+

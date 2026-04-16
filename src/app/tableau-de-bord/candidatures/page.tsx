@@ -1,4 +1,4 @@
-import { getServerSession } from "next-auth";
+﻿import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
@@ -43,7 +43,7 @@ export default async function CandidaturesPage() {
                       <p className="font-semibold text-gray-900">{app.user.name || app.user.email}</p>
                       <p className="text-sm text-gray-500">{app.user.email}</p>
                       <div className="mt-1">
-                        <Link href={`/emplois/${app.job.slug}`} className="text-sm text-red-600 hover:underline">
+                        <Link href={`/emplois/${app.job.slug}`} className="text-sm text-orange-500 hover:underline">
                           {app.job.title}
                         </Link>
                         <span className="text-xs text-gray-400 ml-2">· {app.job.type}</span>
@@ -99,11 +99,11 @@ export default async function CandidaturesPage() {
             return (
               <div key={app.id} className="bg-white rounded-2xl border border-gray-200 p-5">
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center font-bold text-red-700 text-sm flex-shrink-0 border border-orange-50">
+                  <div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center font-bold text-orange-600 text-sm flex-shrink-0 border border-orange-50">
                     {app.job.company.name.slice(0, 2).toUpperCase()}
                   </div>
                   <div className="flex-1">
-                    <Link href={`/emplois/${app.job.slug}`} className="font-semibold text-gray-900 hover:text-red-600">
+                    <Link href={`/emplois/${app.job.slug}`} className="font-semibold text-gray-900 hover:text-orange-500">
                       {app.job.title}
                     </Link>
                     <p className="text-sm text-gray-500 mt-0.5">{app.job.company.name}</p>
@@ -128,7 +128,7 @@ export default async function CandidaturesPage() {
         <div className="text-center py-16 text-gray-500">
           <Briefcase className="h-12 w-12 mx-auto mb-3 text-gray-200" />
           <p>Aucune candidature envoyée</p>
-          <Link href="/emplois" className="text-red-600 text-sm hover:underline mt-2 inline-block">
+          <Link href="/emplois" className="text-orange-500 text-sm hover:underline mt-2 inline-block">
             Parcourir les offres
           </Link>
         </div>
@@ -149,3 +149,4 @@ function UpdateStatusButton({ appId, currentStatus }: { appId: string; currentSt
     </Link>
   );
 }
+

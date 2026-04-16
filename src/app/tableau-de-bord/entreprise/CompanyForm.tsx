@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -66,10 +66,10 @@ export default function CompanyForm({ company }: { company: CompanyData | null }
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">{error}</div>
+        <div className="bg-orange-50 border border-orange-200 text-orange-600 px-4 py-3 rounded-xl text-sm">{error}</div>
       )}
       {saved && (
-        <div className="flex items-center gap-2 bg-red-50 border border-red-100 text-red-700 px-4 py-3 rounded-xl text-sm">
+        <div className="flex items-center gap-2 bg-orange-50 border border-orange-100 text-orange-600 px-4 py-3 rounded-xl text-sm">
           <CheckCircle className="h-4 w-4" /> Profil sauvegardé avec succès !
         </div>
       )}
@@ -84,7 +84,7 @@ export default function CompanyForm({ company }: { company: CompanyData | null }
               value={form.name}
               onChange={(e) => set("name", e.target.value)}
               required
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-400"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
             />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -93,7 +93,7 @@ export default function CompanyForm({ company }: { company: CompanyData | null }
               <select
                 value={form.sector}
                 onChange={(e) => set("sector", e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-400 bg-white"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white"
               >
                 <option value="">Non précisé</option>
                 {JOB_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
@@ -104,7 +104,7 @@ export default function CompanyForm({ company }: { company: CompanyData | null }
               <select
                 value={form.size}
                 onChange={(e) => set("size", e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-400 bg-white"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white"
               >
                 <option value="">Non précisé</option>
                 {COMPANY_SIZES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
@@ -116,7 +116,7 @@ export default function CompanyForm({ company }: { company: CompanyData | null }
             <select
               value={form.location}
               onChange={(e) => set("location", e.target.value)}
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-400 bg-white"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white"
             >
               {RCA_LOCATIONS.map((l) => <option key={l} value={l}>{l}</option>)}
             </select>
@@ -128,7 +128,7 @@ export default function CompanyForm({ company }: { company: CompanyData | null }
               onChange={(e) => set("description", e.target.value)}
               rows={4}
               placeholder="Présentez votre entreprise, sa mission, ses valeurs..."
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-400 resize-none"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none"
             />
           </div>
         </div>
@@ -144,7 +144,7 @@ export default function CompanyForm({ company }: { company: CompanyData | null }
               value={form.website}
               onChange={(e) => set("website", e.target.value)}
               placeholder="https://www.monentreprise.cf"
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-400"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
             />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -155,7 +155,7 @@ export default function CompanyForm({ company }: { company: CompanyData | null }
                 value={form.email}
                 onChange={(e) => set("email", e.target.value)}
                 placeholder="rh@monentreprise.cf"
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-400"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
               />
             </div>
             <div>
@@ -165,7 +165,7 @@ export default function CompanyForm({ company }: { company: CompanyData | null }
                 value={form.phone}
                 onChange={(e) => set("phone", e.target.value)}
                 placeholder="+236 75 00 00 00"
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-400"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
               />
             </div>
           </div>
@@ -175,7 +175,7 @@ export default function CompanyForm({ company }: { company: CompanyData | null }
       <button
         type="submit"
         disabled={loading}
-        className="w-full sm:w-auto px-8 bg-red-600 hover:bg-red-700 disabled:bg-red-300 text-white py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
+        className="w-full sm:w-auto px-8 bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300 text-white py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
       >
         {loading && <Loader2 className="h-4 w-4 animate-spin" />}
         Sauvegarder le profil
@@ -183,3 +183,4 @@ export default function CompanyForm({ company }: { company: CompanyData | null }
     </form>
   );
 }
+

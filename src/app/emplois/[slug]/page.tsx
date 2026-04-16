@@ -67,7 +67,7 @@ export default async function JobDetailPage({ params }: Props) {
           {/* Job header */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
             <div className="flex items-start gap-4 mb-4">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center border border-orange-50 font-bold text-red-700 text-lg flex-shrink-0">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center border border-orange-50 font-bold text-orange-600 text-lg flex-shrink-0">
                 {job.company.logo ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={job.company.logo} alt={job.company.name} className="w-full h-full object-contain rounded-2xl" />
@@ -75,7 +75,7 @@ export default async function JobDetailPage({ params }: Props) {
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <Link href={`/entreprises/${job.company.slug}`} className="text-gray-600 hover:text-red-600 font-medium transition-colors">
+                  <Link href={`/entreprises/${job.company.slug}`} className="text-gray-600 hover:text-orange-500 font-medium transition-colors">
                     {job.company.name}
                   </Link>
                   {job.company.verified && (
@@ -96,22 +96,22 @@ export default async function JobDetailPage({ params }: Props) {
             {/* Meta */}
             <div className="flex flex-wrap gap-3 text-sm mb-5">
               <span className="flex items-center gap-1.5 text-gray-600 bg-gray-50 px-3 py-1.5 rounded-full">
-                <Briefcase className="h-4 w-4 text-red-600" />
+                <Briefcase className="h-4 w-4 text-orange-500" />
                 {job.type}
               </span>
               <span className="flex items-center gap-1.5 text-gray-600 bg-gray-50 px-3 py-1.5 rounded-full">
-                <MapPin className="h-4 w-4 text-red-600" />
+                <MapPin className="h-4 w-4 text-orange-500" />
                 {job.remote ? "Télétravail" : job.location}
               </span>
               {(job.salaryMin || job.salaryMax) && (
                 <span className="flex items-center gap-1.5 text-gray-600 bg-gray-50 px-3 py-1.5 rounded-full">
-                  <Banknote className="h-4 w-4 text-red-600" />
+                  <Banknote className="h-4 w-4 text-orange-500" />
                   {formatSalary(job.salaryMin, job.salaryMax, job.salaryCurrency)}
                 </span>
               )}
               {job.experienceLevel && (
                 <span className="flex items-center gap-1.5 text-gray-600 bg-gray-50 px-3 py-1.5 rounded-full">
-                  <Users className="h-4 w-4 text-red-600" />
+                  <Users className="h-4 w-4 text-orange-500" />
                   {job.experienceLevel}
                 </span>
               )}
@@ -166,11 +166,11 @@ export default async function JobDetailPage({ params }: Props) {
           <div className="bg-white rounded-2xl border border-gray-200 p-5">
             <h3 className="font-semibold text-gray-900 mb-3">À propos de l&apos;entreprise</h3>
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center font-bold text-red-700 border border-orange-50">
+              <div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center font-bold text-orange-600 border border-orange-50">
                 {companyInitials}
               </div>
               <div>
-                <Link href={`/entreprises/${job.company.slug}`} className="font-medium text-gray-900 hover:text-red-600">
+                <Link href={`/entreprises/${job.company.slug}`} className="font-medium text-gray-900 hover:text-orange-500">
                   {job.company.name}
                 </Link>
                 {job.company.sector && (
@@ -198,7 +198,7 @@ export default async function JobDetailPage({ params }: Props) {
               )}
               {job.company.website && (
                 <a href={job.company.website} target="_blank" rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-red-600 hover:underline">
+                  className="flex items-center gap-2 text-orange-500 hover:underline">
                   <ExternalLink className="h-4 w-4" />
                   Site web
                 </a>
@@ -207,7 +207,7 @@ export default async function JobDetailPage({ params }: Props) {
 
             <Link
               href={`/entreprises/${job.company.slug}`}
-              className="block mt-4 text-center text-sm text-red-600 hover:text-red-700 font-medium border border-red-100 rounded-lg py-2 hover:bg-red-50 transition-colors"
+              className="block mt-4 text-center text-sm text-orange-500 hover:text-orange-600 font-medium border border-orange-100 rounded-lg py-2 hover:bg-orange-50 transition-colors"
             >
               Voir toutes leurs offres
             </Link>
@@ -224,7 +224,7 @@ export default async function JobDetailPage({ params }: Props) {
               {job.deadline && (
                 <div className="flex justify-between">
                   <span className="text-gray-500">Clôture</span>
-                  <span className="text-gray-700 font-medium text-red-600">{formatDate(job.deadline)}</span>
+                  <span className="text-gray-700 font-medium text-orange-500">{formatDate(job.deadline)}</span>
                 </div>
               )}
               <div className="flex justify-between">

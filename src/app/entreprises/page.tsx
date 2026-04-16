@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+﻿import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Building2, MapPin, Briefcase, Search } from "lucide-react";
 
@@ -52,20 +52,20 @@ export default async function EntreprisesPage({ searchParams }: Props) {
             name="q"
             defaultValue={params.q}
             placeholder="Rechercher une entreprise..."
-            className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-400"
+            className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
           />
         </div>
         <select
           name="sector"
           defaultValue={params.sector}
-          className="px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-400 bg-white"
+          className="px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white"
         >
           <option value="">Tous les secteurs</option>
           {SECTORS.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
         <button
           type="submit"
-          className="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-medium transition-colors"
+          className="px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-sm font-medium transition-colors"
         >
           Filtrer
         </button>
@@ -79,10 +79,10 @@ export default async function EntreprisesPage({ searchParams }: Props) {
               <Link
                 key={company.id}
                 href={`/entreprises/${company.slug}`}
-                className="bg-white rounded-2xl border border-gray-200 p-5 hover:shadow-md hover:border-red-100 transition-all"
+                className="bg-white rounded-2xl border border-gray-200 p-5 hover:shadow-md hover:border-orange-100 transition-all"
               >
                 <div className="flex items-start gap-4 mb-3">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center font-bold text-red-700 text-lg border border-orange-50 flex-shrink-0">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center font-bold text-orange-600 text-lg border border-orange-50 flex-shrink-0">
                     {company.logo ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={company.logo} alt={company.name} className="w-full h-full object-contain rounded-2xl" />
@@ -110,7 +110,7 @@ export default async function EntreprisesPage({ searchParams }: Props) {
                       {company.location}
                     </span>
                   )}
-                  <span className="flex items-center gap-1 text-red-600 font-medium ml-auto">
+                  <span className="flex items-center gap-1 text-orange-500 font-medium ml-auto">
                     <Briefcase className="h-3 w-3" />
                     {company._count.jobs} offre{company._count.jobs !== 1 ? "s" : ""}
                   </span>
@@ -123,7 +123,7 @@ export default async function EntreprisesPage({ searchParams }: Props) {
         <div className="text-center py-20">
           <Building2 className="h-14 w-14 mx-auto mb-4 text-gray-200" />
           <p className="text-xl font-semibold text-gray-700">Aucune entreprise trouvée</p>
-          <Link href="/entreprises" className="text-red-600 text-sm hover:underline mt-2 inline-block">
+          <Link href="/entreprises" className="text-orange-500 text-sm hover:underline mt-2 inline-block">
             Voir toutes les entreprises
           </Link>
         </div>
@@ -131,3 +131,4 @@ export default async function EntreprisesPage({ searchParams }: Props) {
     </div>
   );
 }
+

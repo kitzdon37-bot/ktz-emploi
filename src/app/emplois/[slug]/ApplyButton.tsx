@@ -28,7 +28,7 @@ export default function ApplyButton({ jobId, hasApplied, applicationStatus, isLo
       <div className="flex flex-col sm:flex-row gap-3">
         <Link
           href="/connexion?callbackUrl=/emplois"
-          className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-semibold transition-colors"
+          className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl font-semibold transition-colors"
         >
           <Send className="h-4 w-4" />
           Postuler maintenant
@@ -55,14 +55,14 @@ export default function ApplyButton({ jobId, hasApplied, applicationStatus, isLo
     const st = APPLICATION_STATUSES[status] || APPLICATION_STATUSES.PENDING;
     return (
       <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2 bg-red-50 border border-red-100 text-red-700 px-4 py-2.5 rounded-xl">
+        <div className="flex items-center gap-2 bg-orange-50 border border-orange-100 text-orange-600 px-4 py-2.5 rounded-xl">
           <CheckCircle className="h-5 w-5" />
           <span className="font-medium">Candidature envoyée</span>
         </div>
         <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${st.color}`}>
           {st.label}
         </span>
-        <Link href="/tableau-de-bord/candidatures" className="text-sm text-red-600 hover:underline ml-auto">
+        <Link href="/tableau-de-bord/candidatures" className="text-sm text-orange-500 hover:underline ml-auto">
           Voir mes candidatures →
         </Link>
       </div>
@@ -98,16 +98,16 @@ export default function ApplyButton({ jobId, hasApplied, applicationStatus, isLo
         <div className="flex gap-3">
           <button
             onClick={() => setShowForm(true)}
-            className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-semibold transition-colors"
+            className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl font-semibold transition-colors"
           >
             <Send className="h-4 w-4" />
             Postuler maintenant
           </button>
         </div>
       ) : (
-        <div className="border border-red-100 rounded-xl p-4 bg-red-50">
+        <div className="border border-orange-100 rounded-xl p-4 bg-orange-50">
           <h3 className="font-medium text-gray-900 mb-3">Votre candidature</h3>
-          {error && <p className="text-red-600 text-sm mb-3">{error}</p>}
+          {error && <p className="text-orange-500 text-sm mb-3">{error}</p>}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
               Lettre de motivation <span className="text-gray-400 font-normal">(facultatif)</span>
@@ -117,14 +117,14 @@ export default function ApplyButton({ jobId, hasApplied, applicationStatus, isLo
               onChange={(e) => setCoverLetter(e.target.value)}
               rows={4}
               placeholder="Décrivez pourquoi vous êtes le candidat idéal..."
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-400 bg-white resize-none"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white resize-none"
             />
           </div>
           <div className="flex gap-3">
             <button
               onClick={handleApply}
               disabled={loading}
-              className="flex items-center gap-2 bg-red-600 hover:bg-red-700 disabled:bg-red-300 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-colors"
+              className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-colors"
             >
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
               Envoyer ma candidature

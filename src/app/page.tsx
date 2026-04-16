@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { Search, MapPin, Briefcase, Building2, ArrowRight, Star, Users, CheckCircle, FileText, TrendingUp } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import JobCard from "@/components/JobCard";
@@ -40,7 +40,7 @@ const COMPANIES = [
   { name: "SOCATEL", sector: "Télécoms", color: "bg-blue-100 text-blue-700" },
   { name: "Ecobank", sector: "Banque", color: "bg-green-100 text-green-700" },
   { name: "PNUD", sector: "Humanitaire", color: "bg-indigo-100 text-indigo-700" },
-  { name: "TotalEnergies", sector: "Énergie", color: "bg-red-100 text-red-700" },
+  { name: "TotalEnergies", sector: "Énergie", color: "bg-orange-100 text-orange-600" },
   { name: "Airtel RCA", sector: "Mobile", color: "bg-orange-100 text-orange-700" },
   { name: "MINUSCA", sector: "Nations Unies", color: "bg-sky-100 text-sky-700" },
 ];
@@ -490,3 +490,4 @@ export default async function HomePage() {
     </>
   );
 }
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, Suspense } from "react";
 import Link from "next/link";
@@ -49,10 +49,10 @@ function RegisterForm() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="bg-red-600 p-2 rounded-xl">
+            <div className="bg-orange-500 p-2 rounded-xl">
               <Briefcase className="h-6 w-6 text-white" />
             </div>
-            <span className="font-bold text-2xl text-gray-900">KTZ<span className="text-red-600"> Emploi</span></span>
+            <span className="font-bold text-2xl text-gray-900">KTZ<span className="text-orange-500"> Emploi</span></span>
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Créer un compte</h1>
           <p className="text-gray-500 mt-1">Gratuit et rapide !</p>
@@ -66,7 +66,7 @@ function RegisterForm() {
               onClick={() => setRole("jobseeker")}
               className={`flex items-center gap-2 p-3 rounded-xl border-2 transition-all text-sm font-medium ${
                 role === "jobseeker"
-                  ? "border-red-400 bg-red-50 text-red-700"
+                  ? "border-orange-400 bg-orange-50 text-orange-600"
                   : "border-gray-200 text-gray-600 hover:border-gray-300"
               }`}
             >
@@ -78,7 +78,7 @@ function RegisterForm() {
               onClick={() => setRole("employer")}
               className={`flex items-center gap-2 p-3 rounded-xl border-2 transition-all text-sm font-medium ${
                 role === "employer"
-                  ? "border-red-400 bg-red-50 text-red-700"
+                  ? "border-orange-400 bg-orange-50 text-orange-600"
                   : "border-gray-200 text-gray-600 hover:border-gray-300"
               }`}
             >
@@ -88,7 +88,7 @@ function RegisterForm() {
           </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm mb-4">
+            <div className="bg-orange-50 border border-orange-200 text-orange-600 px-4 py-3 rounded-lg text-sm mb-4">
               {error}
             </div>
           )}
@@ -104,7 +104,7 @@ function RegisterForm() {
                 onChange={(e) => setName(e.target.value)}
                 required
                 placeholder="Prénom Nom"
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
               />
             </div>
 
@@ -117,7 +117,7 @@ function RegisterForm() {
                   onChange={(e) => setCompanyName(e.target.value)}
                   required
                   placeholder="Nom de votre entreprise"
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
                 />
               </div>
             )}
@@ -130,7 +130,7 @@ function RegisterForm() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="votre@email.com"
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
               />
             </div>
 
@@ -144,7 +144,7 @@ function RegisterForm() {
                   required
                   minLength={6}
                   placeholder="Minimum 6 caractères"
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent pr-10"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent pr-10"
                 />
                 <button
                   type="button"
@@ -159,7 +159,7 @@ function RegisterForm() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-red-600 hover:bg-red-700 disabled:bg-red-300 text-white py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 mt-2"
+              className="w-full bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300 text-white py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 mt-2"
             >
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
               Créer mon compte
@@ -168,13 +168,13 @@ function RegisterForm() {
 
           <p className="text-center text-xs text-gray-400 mt-4">
             En vous inscrivant, vous acceptez nos{" "}
-            <Link href="/cgu" className="text-red-600 hover:underline">CGU</Link> et notre{" "}
-            <Link href="/confidentialite" className="text-red-600 hover:underline">politique de confidentialité</Link>
+            <Link href="/cgu" className="text-orange-500 hover:underline">CGU</Link> et notre{" "}
+            <Link href="/confidentialite" className="text-orange-500 hover:underline">politique de confidentialité</Link>
           </p>
 
           <p className="text-center text-sm text-gray-500 mt-4">
             Déjà un compte ?{" "}
-            <Link href="/connexion" className="text-red-600 hover:text-red-700 font-medium">
+            <Link href="/connexion" className="text-orange-500 hover:text-orange-600 font-medium">
               Se connecter
             </Link>
           </p>
@@ -191,3 +191,4 @@ export default function InscriptionPage() {
     </Suspense>
   );
 }
+

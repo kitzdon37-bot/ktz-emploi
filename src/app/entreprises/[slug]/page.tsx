@@ -31,7 +31,7 @@ export default async function EntrepriseDetailPage({ params }: Props) {
       {/* Company header */}
       <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
         <div className="flex items-start gap-5">
-          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center font-bold text-red-700 text-2xl border border-orange-50 flex-shrink-0">
+          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center font-bold text-orange-600 text-2xl border border-orange-50 flex-shrink-0">
             {company.logo ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={company.logo} alt={company.name} className="w-full h-full object-contain rounded-2xl" />
@@ -63,14 +63,14 @@ export default async function EntrepriseDetailPage({ params }: Props) {
               )}
               {company.website && (
                 <a href={company.website} target="_blank" rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 text-red-600 hover:underline">
+                  className="flex items-center gap-1.5 text-orange-500 hover:underline">
                   <Globe className="h-4 w-4" />
                   Site web
                 </a>
               )}
               {company.email && (
                 <a href={`mailto:${company.email}`}
-                  className="flex items-center gap-1.5 text-red-600 hover:underline">
+                  className="flex items-center gap-1.5 text-orange-500 hover:underline">
                   <Mail className="h-4 w-4" />
                   {company.email}
                 </a>
@@ -107,7 +107,7 @@ export default async function EntrepriseDetailPage({ params }: Props) {
         ) : (
           <div className="text-center py-12 text-gray-500 bg-white rounded-2xl border border-gray-200">
             <p>Aucune offre active pour le moment</p>
-            <Link href="/emplois" className="text-red-600 text-sm hover:underline mt-2 inline-block">
+            <Link href="/emplois" className="text-orange-500 text-sm hover:underline mt-2 inline-block">
               Voir d&apos;autres offres
             </Link>
           </div>

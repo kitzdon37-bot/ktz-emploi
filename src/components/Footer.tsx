@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { Briefcase, MapPin, Mail, Phone } from "lucide-react";
 
 export default function Footer() {
@@ -78,3 +78,4 @@ export default function Footer() {
     </footer>
   );
 }
+

@@ -1,4 +1,4 @@
-import { getServerSession } from "next-auth";
+﻿import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
@@ -56,7 +56,7 @@ export default async function DashboardPage() {
           </div>
           <Link
             href="/tableau-de-bord/publier"
-            className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2.5 rounded-xl font-medium transition-colors"
+            className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2.5 rounded-xl font-medium transition-colors"
           >
             <Plus className="h-4 w-4" />
             Nouvelle offre
@@ -66,10 +66,10 @@ export default async function DashboardPage() {
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {[
-            { label: "Offres publiées", value: jobs.length, icon: Briefcase, color: "text-red-600 bg-red-50" },
+            { label: "Offres publiées", value: jobs.length, icon: Briefcase, color: "text-orange-500 bg-orange-50" },
             { label: "Candidatures", value: totalApplications, icon: Send, color: "text-blue-600 bg-blue-50" },
             { label: "Vues totales", value: totalViews, icon: Eye, color: "text-purple-600 bg-purple-50" },
-            { label: "Taux réponse", value: totalApplications > 0 ? `${Math.round((recentApps.filter(a => a.status !== "PENDING").length / totalApplications) * 100)}%` : "0%", icon: TrendingUp, color: "text-red-700 bg-red-50" },
+            { label: "Taux réponse", value: totalApplications > 0 ? `${Math.round((recentApps.filter(a => a.status !== "PENDING").length / totalApplications) * 100)}%` : "0%", icon: TrendingUp, color: "text-orange-600 bg-orange-50" },
           ].map(({ label, value, icon: Icon, color }) => (
             <div key={label} className="bg-white rounded-2xl border border-gray-200 p-5">
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${color}`}>
@@ -86,21 +86,21 @@ export default async function DashboardPage() {
           <div className="bg-white rounded-2xl border border-gray-200 p-5">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-semibold text-gray-900">Mes offres</h2>
-              <Link href="/tableau-de-bord/offres" className="text-sm text-red-600 hover:underline">Voir tout</Link>
+              <Link href="/tableau-de-bord/offres" className="text-sm text-orange-500 hover:underline">Voir tout</Link>
             </div>
             {jobs.length > 0 ? (
               <div className="space-y-3">
                 {jobs.map((job) => (
                   <div key={job.id} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
                     <div className="flex-1 min-w-0">
-                      <Link href={`/emplois/${job.slug}`} className="text-sm font-medium text-gray-800 hover:text-red-600 truncate block">
+                      <Link href={`/emplois/${job.slug}`} className="text-sm font-medium text-gray-800 hover:text-orange-500 truncate block">
                         {job.title}
                       </Link>
                       <p className="text-xs text-gray-400">{job.type} · {timeAgo(job.createdAt)}</p>
                     </div>
                     <div className="flex items-center gap-2 ml-3">
                       <span className="text-xs text-gray-500">{job._count.applications} candidature(s)</span>
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${job.published ? "bg-red-100 text-red-700" : "bg-gray-100 text-gray-600"}`}>
+                      <span className={`text-xs px-2 py-0.5 rounded-full ${job.published ? "bg-orange-100 text-orange-600" : "bg-gray-100 text-gray-600"}`}>
                         {job.published ? "Publié" : "Brouillon"}
                       </span>
                     </div>
@@ -111,7 +111,7 @@ export default async function DashboardPage() {
               <div className="text-center py-8 text-gray-500">
                 <Briefcase className="h-10 w-10 mx-auto mb-3 text-gray-200" />
                 <p className="text-sm">Aucune offre publiée</p>
-                <Link href="/tableau-de-bord/publier" className="text-red-600 text-sm hover:underline mt-1 inline-block">
+                <Link href="/tableau-de-bord/publier" className="text-orange-500 text-sm hover:underline mt-1 inline-block">
                   Publier ma première offre
                 </Link>
               </div>
@@ -122,7 +122,7 @@ export default async function DashboardPage() {
           <div className="bg-white rounded-2xl border border-gray-200 p-5">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-semibold text-gray-900">Dernières candidatures</h2>
-              <Link href="/tableau-de-bord/candidatures" className="text-sm text-red-600 hover:underline">Voir tout</Link>
+              <Link href="/tableau-de-bord/candidatures" className="text-sm text-orange-500 hover:underline">Voir tout</Link>
             </div>
             {recentApps.length > 0 ? (
               <div className="space-y-3">
@@ -203,7 +203,7 @@ export default async function DashboardPage() {
         </div>
         <Link
           href="/emplois"
-          className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2.5 rounded-xl font-medium transition-colors"
+          className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2.5 rounded-xl font-medium transition-colors"
         >
           <Briefcase className="h-4 w-4" />
           Chercher un emploi
@@ -227,8 +227,8 @@ export default async function DashboardPage() {
           <div className="text-sm text-gray-500">Entretiens obtenus</div>
         </div>
         <div className="bg-white rounded-2xl border border-gray-200 p-5">
-          <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center mb-3">
-            <TrendingUp className="h-5 w-5 text-red-600" />
+          <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center mb-3">
+            <TrendingUp className="h-5 w-5 text-orange-500" />
           </div>
           <div className="text-2xl font-bold text-gray-900">{statusCounts["ACCEPTED"] || 0}</div>
           <div className="text-sm text-gray-500">Offres acceptées</div>
@@ -247,7 +247,7 @@ export default async function DashboardPage() {
         <div className="bg-white rounded-2xl border border-gray-200 p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-gray-900">Mes candidatures</h2>
-            <Link href="/tableau-de-bord/candidatures" className="text-sm text-red-600 hover:underline">Voir tout</Link>
+            <Link href="/tableau-de-bord/candidatures" className="text-sm text-orange-500 hover:underline">Voir tout</Link>
           </div>
           {applications.length > 0 ? (
             <div className="space-y-3">
@@ -255,11 +255,11 @@ export default async function DashboardPage() {
                 const st = APPLICATION_STATUSES[app.status];
                 return (
                   <div key={app.id} className="flex items-center gap-3 py-2 border-b border-gray-50 last:border-0">
-                    <div className="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center text-xs font-bold text-red-700 flex-shrink-0">
+                    <div className="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center text-xs font-bold text-orange-600 flex-shrink-0">
                       {app.job.company.name.slice(0, 2).toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <Link href={`/emplois/${app.job.slug}`} className="text-sm font-medium text-gray-800 hover:text-red-600 truncate block">
+                      <Link href={`/emplois/${app.job.slug}`} className="text-sm font-medium text-gray-800 hover:text-orange-500 truncate block">
                         {app.job.title}
                       </Link>
                       <p className="text-xs text-gray-400">{app.job.company.name} · {timeAgo(app.createdAt)}</p>
@@ -275,7 +275,7 @@ export default async function DashboardPage() {
             <div className="text-center py-8 text-gray-500">
               <Send className="h-10 w-10 mx-auto mb-3 text-gray-200" />
               <p className="text-sm">Aucune candidature envoyée</p>
-              <Link href="/emplois" className="text-red-600 text-sm hover:underline mt-1 inline-block">
+              <Link href="/emplois" className="text-orange-500 text-sm hover:underline mt-1 inline-block">
                 Parcourir les offres
               </Link>
             </div>
@@ -286,7 +286,7 @@ export default async function DashboardPage() {
         <div className="bg-white rounded-2xl border border-gray-200 p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-gray-900">Offres sauvegardées</h2>
-            <Link href="/tableau-de-bord/sauvegardes" className="text-sm text-red-600 hover:underline">Voir tout</Link>
+            <Link href="/tableau-de-bord/sauvegardes" className="text-sm text-orange-500 hover:underline">Voir tout</Link>
           </div>
           {savedJobs.length > 0 ? (
             <div className="space-y-3">
@@ -296,7 +296,7 @@ export default async function DashboardPage() {
                     {s.job.company.name.slice(0, 2).toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <Link href={`/emplois/${s.job.slug}`} className="text-sm font-medium text-gray-800 hover:text-red-600 truncate block">
+                    <Link href={`/emplois/${s.job.slug}`} className="text-sm font-medium text-gray-800 hover:text-orange-500 truncate block">
                       {s.job.title}
                     </Link>
                     <p className="text-xs text-gray-400">{s.job.company.name} · {s.job.type}</p>
@@ -326,3 +326,4 @@ export default async function DashboardPage() {
     </div>
   );
 }
+
