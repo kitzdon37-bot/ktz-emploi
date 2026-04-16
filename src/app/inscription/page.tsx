@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { Briefcase, Eye, EyeOff, Loader2 } from "lucide-react";
-import GoogleSignInButton from "@/components/GoogleSignInButton";
+import GoogleSignInButton, { GoogleNotConfigured } from "@/components/GoogleSignInButton";
 
 const CONTRACT_TYPES = ["CDI", "CDD", "Stage", "Alternance", "Freelance", "Bénévolat"];
 
@@ -119,6 +119,7 @@ function RegisterForm() {
 
         {/* Google */}
         <GoogleSignInButton label="S'inscrire avec Google" />
+        {process.env.NODE_ENV === "development" && <GoogleNotConfigured />}
 
         <div className="flex items-center gap-3 my-1">
           <hr className="flex-1 border-gray-200" />
