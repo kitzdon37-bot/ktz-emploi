@@ -1,0 +1,174 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 480" fill="none">
+  <defs>
+    <filter id="s1" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#00000018"/>
+    </filter>
+    <filter id="s2" x="-8%" y="-8%" width="116%" height="130%">
+      <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#00000012"/>
+    </filter>
+  </defs>
+
+  <!-- Background blobs -->
+  <circle cx="380" cy="250" r="210" fill="#FFF7ED"/>
+  <circle cx="410" cy="225" r="155" fill="#FED7AA" opacity="0.45"/>
+  <circle cx="160" cy="380" r="70" fill="#FFEDD5" opacity="0.5"/>
+  <circle cx="560" cy="390" r="55" fill="#FEF3C7" opacity="0.5"/>
+
+  <!-- Decorative dots top-left -->
+  <circle cx="55" cy="80" r="5" fill="#F97316" opacity="0.3"/>
+  <circle cx="72" cy="65" r="4" fill="#F97316" opacity="0.25"/>
+  <circle cx="89" cy="80" r="5" fill="#F97316" opacity="0.3"/>
+  <circle cx="72" cy="95" r="4" fill="#F97316" opacity="0.25"/>
+
+  <!-- Decorative dots bottom-right -->
+  <circle cx="568" cy="160" r="5" fill="#F59E0B" opacity="0.35"/>
+  <circle cx="585" cy="145" r="4" fill="#F59E0B" opacity="0.28"/>
+  <circle cx="602" cy="160" r="5" fill="#F59E0B" opacity="0.35"/>
+  <circle cx="585" cy="175" r="4" fill="#F59E0B" opacity="0.28"/>
+
+  <!-- ===== PERSON: Professional African woman ===== -->
+  <!-- Chair back -->
+  <rect x="355" y="310" width="60" height="10" rx="5" fill="#D97706"/>
+  <rect x="364" y="320" width="10" height="55" rx="5" fill="#B45309"/>
+  <rect x="382" y="320" width="10" height="55" rx="5" fill="#B45309"/>
+
+  <!-- Hair (natural style) -->
+  <ellipse cx="400" cy="150" rx="44" ry="52" fill="#120700"/>
+  <circle cx="368" cy="162" r="16" fill="#120700"/>
+  <circle cx="432" cy="162" r="16" fill="#120700"/>
+  <circle cx="400" cy="108" r="13" fill="#120700"/>
+
+  <!-- Head -->
+  <circle cx="400" cy="162" r="36" fill="#8B5E3C"/>
+
+  <!-- Face details -->
+  <ellipse cx="388" cy="157" rx="5" ry="5.5" fill="#1A0A00"/>
+  <ellipse cx="412" cy="157" rx="5" ry="5.5" fill="#1A0A00"/>
+  <circle cx="389" cy="155" r="2" fill="white" opacity="0.6"/>
+  <circle cx="413" cy="155" r="2" fill="white" opacity="0.6"/>
+  <path d="M390 174 Q400 182 410 174" stroke="#5C3317" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <ellipse cx="400" cy="168" rx="4" ry="3" fill="#7A5230" opacity="0.5"/>
+
+  <!-- Earrings -->
+  <circle cx="365" cy="167" r="3.5" fill="#F59E0B"/>
+  <circle cx="435" cy="167" r="3.5" fill="#F59E0B"/>
+
+  <!-- Neck -->
+  <rect x="389" y="194" width="22" height="22" rx="4" fill="#7A5230"/>
+
+  <!-- Body: orange professional blazer -->
+  <path d="M358 222 Q372 204 400 200 Q428 204 442 222 L458 350 L342 350 Z" fill="#F97316"/>
+  <!-- Blazer lapels -->
+  <path d="M393 208 L400 226 L407 208" stroke="#EA580C" stroke-width="2" fill="none"/>
+  <!-- White shirt collar -->
+  <path d="M395 206 L400 218 L405 206" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+  <!-- Left arm reaching to laptop -->
+  <path d="M360 238 Q335 278 315 328" stroke="#8B5E3C" stroke-width="24" stroke-linecap="round" fill="none"/>
+  <ellipse cx="313" cy="334" rx="17" ry="11" fill="#8B5E3C"/>
+
+  <!-- Right arm resting on desk -->
+  <path d="M440 238 Q468 280 490 330" stroke="#8B5E3C" stroke-width="21" stroke-linecap="round" fill="none"/>
+  <ellipse cx="492" cy="335" rx="16" ry="10" fill="#8B5E3C"/>
+
+  <!-- ===== DESK ===== -->
+  <rect x="245" y="348" width="310" height="13" rx="6" fill="#C2410C"/>
+  <rect x="265" y="361" width="9" height="55" rx="4" fill="#9A3412"/>
+  <rect x="535" y="361" width="9" height="55" rx="4" fill="#9A3412"/>
+
+  <!-- ===== LAPTOP ===== -->
+  <!-- Screen -->
+  <rect x="285" y="248" width="210" height="135" rx="11" fill="#111827"/>
+  <rect x="292" y="255" width="196" height="120" rx="8" fill="#1E3A5F"/>
+  <!-- Screen UI: KTZ Emploi interface -->
+  <rect x="300" y="263" width="110" height="11" rx="5" fill="white" opacity="0.9"/>
+  <rect x="300" y="279" width="75" height="8" rx="4" fill="white" opacity="0.5"/>
+  <rect x="300" y="293" width="140" height="8" rx="4" fill="#FDE68A" opacity="0.7"/>
+  <rect x="300" y="307" width="90" height="8" rx="4" fill="white" opacity="0.4"/>
+  <!-- Orange CTA button on screen -->
+  <rect x="300" y="320" width="60" height="20" rx="10" fill="#F97316"/>
+  <rect x="368" y="323" width="40" height="14" rx="7" fill="white" opacity="0.2"/>
+  <!-- KTZ logo mark on screen -->
+  <circle cx="468" cy="272" r="22" fill="#F97316" opacity="0.2"/>
+  <rect x="459" y="265" width="18" height="12" rx="3" fill="#F97316" opacity="0.5"/>
+  <!-- Keyboard base -->
+  <rect x="273" y="383" width="233" height="11" rx="5" fill="#1F2937"/>
+  <rect x="330" y="394" width="120" height="6" rx="3" fill="#374151"/>
+
+  <!-- ===== FLOATING JOB CARD 1 (top-left) ===== -->
+  <g filter="url(#s1)">
+    <rect x="28" y="115" width="180" height="95" rx="15" fill="white"/>
+    <!-- Orange top border accent -->
+    <rect x="28" y="115" width="180" height="4" rx="15" fill="#F97316"/>
+    <rect x="28" y="117" width="180" height="2" fill="#F97316"/>
+    <!-- Company logo -->
+    <circle cx="58" cy="153" r="21" fill="#FFEDD5"/>
+    <rect x="47" y="145" width="22" height="16" rx="4" fill="#F97316"/>
+    <rect x="52" y="141" width="12" height="8" rx="3" fill="none" stroke="#F97316" stroke-width="2.5"/>
+    <!-- Job title -->
+    <rect x="88" y="142" width="105" height="10" rx="5" fill="#F97316"/>
+    <!-- Company name -->
+    <rect x="88" y="157" width="75" height="7" rx="3" fill="#E5E7EB"/>
+    <!-- Tags -->
+    <rect x="38" y="183" width="58" height="16" rx="8" fill="#FFEDD5"/>
+    <rect x="102" y="183" width="58" height="16" rx="8" fill="#DCFCE7"/>
+    <rect x="41" y="187" width="52" height="7" rx="3" fill="#EA580C" opacity="0.7"/>
+    <rect x="105" y="187" width="52" height="7" rx="3" fill="#16A34A" opacity="0.7"/>
+  </g>
+
+  <!-- ===== FLOATING JOB CARD 2 (right side) ===== -->
+  <g filter="url(#s1)">
+    <rect x="496" y="195" width="118" height="120" rx="15" fill="white"/>
+    <rect x="496" y="195" width="118" height="4" rx="15" fill="#3B82F6"/>
+    <rect x="496" y="197" width="118" height="2" fill="#3B82F6"/>
+    <!-- Company circle -->
+    <circle cx="528" cy="228" r="18" fill="#DBEAFE"/>
+    <!-- Medical cross -->
+    <rect x="520" y="222" width="16" height="12" rx="3" fill="#3B82F6"/>
+    <rect x="524" y="219" width="8" height="18" rx="3" fill="#3B82F6"/>
+    <rect x="524" y="222" width="8" height="12" fill="#3B82F6"/>
+    <!-- Text lines -->
+    <rect x="512" y="253" width="90" height="8" rx="4" fill="#3B82F6"/>
+    <rect x="512" y="266" width="68" height="7" rx="3" fill="#E5E7EB"/>
+    <!-- Tags -->
+    <rect x="506" y="282" width="50" height="16" rx="8" fill="#DBEAFE"/>
+    <rect x="562" y="282" width="44" height="16" rx="8" fill="#FEF3C7"/>
+    <rect x="509" y="286" width="44" height="7" rx="3" fill="#2563EB" opacity="0.7"/>
+    <rect x="565" y="286" width="38" height="7" rx="3" fill="#D97706" opacity="0.7"/>
+    <!-- Salary line -->
+    <rect x="506" y="304" width="96" height="7" rx="3" fill="#F3F4F6"/>
+  </g>
+
+  <!-- ===== ICON BADGES ===== -->
+
+  <!-- Checkmark (top-right) -->
+  <circle cx="570" cy="92" r="30" fill="#F0FDF4"/>
+  <circle cx="570" cy="92" r="24" fill="#22C55E"/>
+  <path d="M558 92 L566 100 L584 80" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- Star (top-center-left) -->
+  <circle cx="120" cy="72" r="28" fill="#FFFBEB"/>
+  <circle cx="120" cy="72" r="22" fill="#F59E0B"/>
+  <path d="M120 55 L124.5 67.5 L137 67.5 L127.5 75.5 L131 88 L120 81 L109 88 L112.5 75.5 L103 67.5 L115.5 67.5 Z" fill="white"/>
+
+  <!-- Location pin (bottom-left) -->
+  <circle cx="82" cy="405" r="28" fill="#FFEDD5"/>
+  <circle cx="82" cy="405" r="22" fill="#F97316"/>
+  <circle cx="82" cy="399" r="8" fill="white"/>
+  <path d="M73 406 Q77 415 82 422 Q87 415 91 406 Q88 413 82 413 Q76 413 73 406 Z" fill="white"/>
+
+  <!-- Notification bell (bottom-right) -->
+  <circle cx="545" cy="420" r="28" fill="#FFEDD5"/>
+  <circle cx="545" cy="420" r="22" fill="#EA580C"/>
+  <path d="M536 420 Q536 412 545 412 Q554 412 554 420 L556 428 L534 428 Z" fill="white"/>
+  <rect x="542" y="428" width="6" height="4" rx="3" fill="white"/>
+  <circle cx="552" cy="414" r="5" fill="#FEF9C3"/>
+
+  <!-- RCA mini flag (top area) -->
+  <rect x="490" y="38" width="95" height="7" rx="2" fill="#003082"/>
+  <rect x="490" y="45" width="95" height="7" rx="2" fill="white"/>
+  <rect x="490" y="52" width="95" height="7" rx="2" fill="#289728"/>
+  <rect x="490" y="59" width="95" height="7" rx="2" fill="#FFCB00"/>
+  <rect x="528" y="38" width="7" height="28" rx="1" fill="#BC0026" opacity="0.85"/>
+  <polygon points="494,42 500,38 497,46" fill="#FFCB00"/>
+</svg>

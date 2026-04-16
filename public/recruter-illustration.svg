@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" fill="none">
+  <defs>
+    <filter id="rs" x="-10%" y="-10%" width="120%" height="135%">
+      <feDropShadow dx="0" dy="5" stdDeviation="8" flood-color="#00000020"/>
+    </filter>
+  </defs>
+
+  <!-- Soft background circles -->
+  <circle cx="280" cy="200" r="180" fill="#FFFFFF" opacity="0.06"/>
+  <circle cx="280" cy="200" r="130" fill="#FFFFFF" opacity="0.05"/>
+
+  <!-- Decorative dots -->
+  <circle cx="60" cy="60" r="5" fill="#F97316" opacity="0.35"/>
+  <circle cx="77" cy="45" r="4" fill="#F97316" opacity="0.28"/>
+  <circle cx="94" cy="60" r="5" fill="#F97316" opacity="0.35"/>
+  <circle cx="77" cy="75" r="4" fill="#F97316" opacity="0.28"/>
+
+  <circle cx="490" cy="300" r="5" fill="#F59E0B" opacity="0.35"/>
+  <circle cx="507" cy="285" r="4" fill="#F59E0B" opacity="0.28"/>
+  <circle cx="524" cy="300" r="5" fill="#F59E0B" opacity="0.35"/>
+  <circle cx="507" cy="315" r="4" fill="#F59E0B" opacity="0.28"/>
+
+  <!-- ===== TABLE ===== -->
+  <rect x="90" y="278" width="390" height="12" rx="6" fill="#92400E" opacity="0.6"/>
+
+  <!-- ===== PERSON 1: HR Manager (left, darker skin) ===== -->
+  <!-- Hair -->
+  <circle cx="175" cy="145" r="38" fill="#0D0603"/>
+  <!-- Head -->
+  <circle cx="175" cy="150" r="33" fill="#4A2C0E"/>
+  <!-- Face details -->
+  <ellipse cx="163" cy="146" rx="4.5" ry="5" fill="#1A0A00"/>
+  <ellipse cx="187" cy="146" rx="4.5" ry="5" fill="#1A0A00"/>
+  <circle cx="164" cy="144" r="1.8" fill="white" opacity="0.5"/>
+  <circle cx="188" cy="144" r="1.8" fill="white" opacity="0.5"/>
+  <path d="M165 162 Q175 170 185 162" stroke="#3D1F0A" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- Glasses -->
+  <rect x="156" y="141" width="17" height="12" rx="6" fill="none" stroke="#F59E0B" stroke-width="2"/>
+  <rect x="177" y="141" width="17" height="12" rx="6" fill="none" stroke="#F59E0B" stroke-width="2"/>
+  <line x1="173" y1="147" x2="177" y2="147" stroke="#F59E0B" stroke-width="2"/>
+  <line x1="156" y1="147" x2="151" y2="149" stroke="#F59E0B" stroke-width="1.5"/>
+  <line x1="194" y1="147" x2="199" y2="149" stroke="#F59E0B" stroke-width="1.5"/>
+  <!-- Neck -->
+  <rect x="164" y="179" width="22" height="20" rx="4" fill="#3D1F0A"/>
+  <!-- Body: dark suit -->
+  <path d="M140 200 Q154 184 175 181 Q196 184 210 200 L222 285 L128 285 Z" fill="#1F2937"/>
+  <!-- Tie -->
+  <path d="M170 188 L175 230 L180 188" stroke="#F97316" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <!-- Left arm (on table) -->
+  <path d="M140 215 L118 268" stroke="#4A2C0E" stroke-width="22" stroke-linecap="round" fill="none"/>
+  <ellipse cx="116" cy="273" rx="15" ry="10" fill="#4A2C0E"/>
+  <!-- Right arm (gesturing) -->
+  <path d="M210 215 L235 260" stroke="#4A2C0E" stroke-width="20" stroke-linecap="round" fill="none"/>
+  <ellipse cx="237" cy="265" rx="14" ry="9" fill="#4A2C0E"/>
+
+  <!-- ===== PERSON 2: Candidate (right, medium skin) ===== -->
+  <!-- Hair -->
+  <ellipse cx="385" cy="143" rx="38" ry="44" fill="#1A0A00"/>
+  <!-- Head -->
+  <circle cx="385" cy="150" r="33" fill="#8B5E3C"/>
+  <!-- Face details -->
+  <ellipse cx="373" cy="146" rx="4.5" ry="5" fill="#1A0A00"/>
+  <ellipse cx="397" cy="146" rx="4.5" ry="5" fill="#1A0A00"/>
+  <circle cx="374" cy="144" r="1.8" fill="white" opacity="0.5"/>
+  <circle cx="398" cy="144" r="1.8" fill="white" opacity="0.5"/>
+  <path d="M375 164 Q385 172 395 164" stroke="#5C3317" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- Earrings -->
+  <circle cx="353" cy="156" r="3.5" fill="#F59E0B"/>
+  <!-- Neck -->
+  <rect x="374" y="179" width="22" height="20" rx="4" fill="#7A5230"/>
+  <!-- Body: orange blazer/top -->
+  <path d="M350 200 Q364 184 385 181 Q406 184 420 200 L432 285 L338 285 Z" fill="#F97316"/>
+  <!-- White shirt collar -->
+  <path d="M379 188 L385 205 L391 188" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Left arm reaching to documents -->
+  <path d="M350 215 L328 268" stroke="#8B5E3C" stroke-width="22" stroke-linecap="round" fill="none"/>
+  <ellipse cx="326" cy="273" rx="15" ry="10" fill="#8B5E3C"/>
+  <!-- Right arm on table -->
+  <path d="M420 215 L445 268" stroke="#8B5E3C" stroke-width="20" stroke-linecap="round" fill="none"/>
+  <ellipse cx="447" cy="273" rx="14" ry="9" fill="#8B5E3C"/>
+
+  <!-- ===== CV / RESUME on table ===== -->
+  <g filter="url(#rs)">
+    <rect x="240" y="245" width="82" height="108" rx="7" fill="white"/>
+    <!-- CV header orange -->
+    <rect x="240" y="245" width="82" height="22" rx="7" fill="#F97316"/>
+    <rect x="240" y="255" width="82" height="12" fill="#F97316"/>
+    <!-- Avatar circle on CV -->
+    <circle cx="260" cy="252" r="8" fill="white" opacity="0.4"/>
+    <!-- Text lines -->
+    <rect x="248" y="275" width="66" height="7" rx="3" fill="#F97316"/>
+    <rect x="248" y="287" width="52" height="5" rx="2" fill="#E5E7EB"/>
+    <rect x="248" y="297" width="58" height="5" rx="2" fill="#E5E7EB"/>
+    <rect x="248" y="307" width="45" height="5" rx="2" fill="#E5E7EB"/>
+    <rect x="248" y="320" width="66" height="6" rx="3" fill="#374151" opacity="0.6"/>
+    <rect x="248" y="331" width="50" height="5" rx="2" fill="#E5E7EB"/>
+    <rect x="248" y="341" width="44" height="5" rx="2" fill="#E5E7EB"/>
+    <!-- Green checkmark stamp -->
+    <circle cx="302" cy="337" r="13" fill="#22C55E"/>
+    <path d="M294 337 L299 342 L312 329" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </g>
+
+  <!-- ===== LAPTOP on table ===== -->
+  <g filter="url(#rs)">
+    <rect x="148" y="240" width="84" height="56" rx="6" fill="#1F2937"/>
+    <rect x="152" y="244" width="76" height="48" rx="4" fill="#1E3A5F"/>
+    <!-- Screen content -->
+    <rect x="159" y="252" width="55" height="7" rx="3" fill="white" opacity="0.85"/>
+    <rect x="159" y="263" width="38" height="5" rx="2" fill="white" opacity="0.5"/>
+    <rect x="159" y="272" width="50" height="13" rx="6" fill="#F97316"/>
+    <!-- Keyboard base -->
+    <rect x="140" y="296" width="100" height="7" rx="3" fill="#374151"/>
+  </g>
+
+  <!-- ===== SPEECH BUBBLE (HR speaking) ===== -->
+  <g filter="url(#rs)">
+    <rect x="38" y="85" width="148" height="62" rx="13" fill="white"/>
+    <polygon points="78,147 65,165 98,147" fill="white"/>
+    <rect x="50" y="100" width="124" height="9" rx="4" fill="#1F2937" opacity="0.75"/>
+    <rect x="50" y="114" width="95" height="7" rx="3" fill="#E5E7EB"/>
+    <rect x="50" y="126" width="80" height="7" rx="3" fill="#E5E7EB"/>
+  </g>
+
+  <!-- ===== FLOATING SUCCESS BADGE ===== -->
+  <g filter="url(#rs)">
+    <rect x="400" y="70" width="148" height="62" rx="13" fill="white"/>
+    <rect x="400" y="70" width="148" height="62" rx="13" fill="none" stroke="#FED7AA" stroke-width="1.5"/>
+    <!-- Checkmark circle -->
+    <circle cx="428" cy="101" r="18" fill="#F0FDF4"/>
+    <circle cx="428" cy="101" r="14" fill="#22C55E"/>
+    <path d="M420 101 L425 107 L438 93" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <!-- Text -->
+    <rect x="452" y="92" width="85" height="9" rx="4" fill="#22C55E"/>
+    <rect x="452" y="106" width="68" height="7" rx="3" fill="#E5E7EB"/>
+    <rect x="452" y="118" width="55" height="7" rx="3" fill="#E5E7EB"/>
+  </g>
+
+  <!-- Stars above candidate -->
+  <path d="M450 42 L454 54 L466 54 L457 62 L461 74 L450 67 L439 74 L443 62 L434 54 L446 54 Z" fill="#F59E0B"/>
+  <path d="M472 32 L475 42 L485 42 L477 48 L480 58 L472 53 L464 58 L467 48 L459 42 L469 42 Z" fill="#FDE68A" opacity="0.8"/>
+
+  <!-- Floating orange badge (bottom) -->
+  <g filter="url(#rs)">
+    <rect x="195" y="318" width="172" height="40" rx="20" fill="white"/>
+    <circle cx="224" cy="338" r="13" fill="#FFEDD5"/>
+    <circle cx="224" cy="338" r="9" fill="#F97316"/>
+    <!-- Tiny briefcase icon -->
+    <rect x="218" y="334" width="12" height="8" rx="2" fill="white"/>
+    <rect x="221" y="331" width="6" height="5" rx="1" fill="none" stroke="white" stroke-width="1.5"/>
+    <!-- Text lines -->
+    <rect x="244" y="331" width="110" height="8" rx="4" fill="#1F2937" opacity="0.7"/>
+    <rect x="244" y="344" width="80" height="7" rx="3" fill="#F97316" opacity="0.6"/>
+  </g>
+</svg>

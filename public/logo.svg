@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 64" fill="none">
+  <!-- Icon: fond bleu avec bandes drapeau -->
+  <rect x="0" y="6" width="48" height="52" rx="14" fill="#003082"/>
+  <!-- Bande rouge verticale -->
+  <rect x="21" y="6" width="6" height="52" rx="2" fill="#BC0026"/>
+  <!-- Étoile jaune -->
+  <polygon points="24,12 26,18 32,18 27,22 29,28 24,24 19,28 21,22 16,18 22,18" fill="#FFCB00"/>
+  <!-- Mallette blanche -->
+  <rect x="10" y="33" width="28" height="18" rx="5" fill="white" opacity="0.9"/>
+  <path d="M18 33v-3a2 2 0 012-2h4a2 2 0 012 2v3" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <line x1="10" y1="40" x2="38" y2="40" stroke="#003082" stroke-width="1.5"/>
+
+  <!-- Texte KTZ -->
+  <text x="60" y="32" fill="#003082" font-size="24" font-weight="900" font-family="system-ui, -apple-system, sans-serif" letter-spacing="-0.5">KTZ</text>
+  <!-- Texte Emploi -->
+  <text x="61" y="52" fill="#BC0026" font-size="17" font-weight="700" font-family="system-ui, -apple-system, sans-serif">Emploi</text>
+  <!-- Étoile décorative -->
+  <text x="155" y="30" fill="#FFCB00" font-size="12">★</text>
+</svg>
