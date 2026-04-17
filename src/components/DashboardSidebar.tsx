@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import {
   LayoutDashboard,
-  FileText,
   Send,
   Bell,
   User,
@@ -15,6 +14,7 @@ import {
   Building2,
   Users,
   Eye,
+  Mail,
 } from "lucide-react";
 
 interface Props {
@@ -36,13 +36,24 @@ const EMPLOYER_LINKS = [
   { href: "/tableau-de-bord", label: "Tableau de bord", icon: LayoutDashboard, exact: true },
   { href: "/tableau-de-bord/publier", label: "Publier une offre", icon: Briefcase },
   { href: "/tableau-de-bord/candidatures", label: "Candidatures reçues", icon: Users },
+  { href: "/tableau-de-bord/admin", label: "Envoyer des offres", icon: Mail },
   { href: "/tableau-de-bord/entreprise", label: "Mon entreprise", icon: Building2 },
+  { href: "/tableau-de-bord/parametres", label: "Paramètres", icon: Settings },
+];
+
+const ADMIN_LINKS = [
+  { href: "/tableau-de-bord", label: "Vue d'ensemble", icon: LayoutDashboard, exact: true },
+  { href: "/tableau-de-bord/admin", label: "Candidats & Emails", icon: Mail },
+  { href: "/tableau-de-bord/candidatures", label: "Candidatures", icon: Users },
   { href: "/tableau-de-bord/parametres", label: "Paramètres", icon: Settings },
 ];
 
 export default function DashboardSidebar({ userName, userRole, initials }: Props) {
   const pathname = usePathname();
-  const links = userRole === "EMPLOYER" ? EMPLOYER_LINKS : JOBSEEKER_LINKS;
+  const links =
+    userRole === "ADMIN" ? ADMIN_LINKS :
+    userRole === "EMPLOYER" ? EMPLOYER_LINKS :
+    JOBSEEKER_LINKS;
 
   function isActive(href: string, exact?: boolean) {
     if (exact) return pathname === href;
