@@ -2,14 +2,26 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { slugify } from "@/lib/utils";
+import { logActivity } from "@/lib/activity";
+import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
+  // Rate limiting : 5 inscriptions par IP sur 1 heure
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  if (!rateLimit(`register:${ip}`, 5, 60 * 60 * 1000)) {
+    return rateLimitResponse();
+  }
+
   try {
-    const { name, email, password, role, companyName, jobTitle, location, contractTypes } =
+    const { name, email, password, role, companyName, companySector, companyLocation, companyWebsite, companyDescription, jobTitle, location, contractTypes } =
       await req.json();
 
     if (!name || !email || !password) {
       return NextResponse.json({ error: "Champs obligatoires manquants" }, { status: 400 });
+    }
+
+    if (password.length < 6) {
+      return NextResponse.json({ error: "Le mot de passe doit contenir au moins 6 caractères" }, { status: 400 });
     }
 
     const existing = await prisma.user.findUnique({ where: { email } });
@@ -30,7 +42,15 @@ export async function POST(req: NextRequest) {
       const existingSlug = await prisma.company.findUnique({ where: { slug } });
       if (existingSlug) slug = `${slug}-${Date.now()}`;
       await prisma.company.create({
-        data: { userId: user.id, name: companyName, slug },
+        data: {
+          userId: user.id,
+          name: companyName,
+          slug,
+          sector: companySector || null,
+          location: companyLocation || null,
+          website: companyWebsite || null,
+          description: companyDescription || null,
+        },
       });
     }
 
@@ -45,6 +65,15 @@ export async function POST(req: NextRequest) {
         },
       });
     }
+
+    await logActivity({
+      userId: user.id,
+      userEmail: user.email,
+      userName: user.name ?? undefined,
+      type: "USER_REGISTERED",
+      label: `Nouvelle inscription (${userRole === "EMPLOYER" ? "Recruteur" : "Candidat"})`,
+      metadata: { role: userRole, companyName: companyName || undefined },
+    });
 
     return NextResponse.json({ success: true, userId: user.id });
   } catch (err) {

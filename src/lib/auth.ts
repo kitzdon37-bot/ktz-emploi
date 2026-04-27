@@ -23,9 +23,10 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
         const user = await prisma.user.findUnique({ where: { email: credentials.email } });
-        if (!user || !user.password) return null;
+        if (!user || !user.password) throw new Error("UserNotFound");
         const valid = await bcrypt.compare(credentials.password, user.password);
-        if (!valid) return null;
+        if (!valid) throw new Error("WrongPassword");
+        if (user.suspended) throw new Error("AccountSuspended");
         return { id: user.id, email: user.email, name: user.name, role: user.role };
       },
     }),
@@ -36,6 +37,7 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, account }) {
       if (account?.provider === "google") {
         const existing = await prisma.user.findUnique({ where: { email: user.email! } });
+        if (existing?.suspended) return false; // bloque les comptes suspendus
         if (!existing) {
           const newUser = await prisma.user.create({
             data: {
@@ -56,26 +58,30 @@ export const authOptions: NextAuthOptions = {
     },
 
     async jwt({ token, user, account }) {
-      // Après un login Google, récupère le vrai id/role en base
-      if (account?.provider === "google" && token.email) {
-        const dbUser = await prisma.user.findUnique({ where: { email: token.email } });
-        if (dbUser) {
-          token.id = dbUser.id;
-          token.role = dbUser.role;
-        }
-      }
       // Après un login credentials
       if (user) {
         token.role = (user as { role?: string }).role;
         token.id = user.id;
+      }
+      // Toujours relire le rôle et le statut depuis la base pour éviter les sessions obsolètes
+      if (token.id) {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { role: true, suspended: true },
+        });
+        if (dbUser) {
+          token.role = dbUser.role;
+          token.suspended = dbUser.suspended;
+        }
       }
       return token;
     },
 
     async session({ session, token }) {
       if (session.user) {
-        (session.user as { role?: string; id?: string }).role = token.role as string;
-        (session.user as { role?: string; id?: string }).id = token.id as string;
+        (session.user as { role?: string; id?: string; suspended?: boolean }).role = token.role as string;
+        (session.user as { role?: string; id?: string; suspended?: boolean }).id = token.id as string;
+        (session.user as { role?: string; id?: string; suspended?: boolean }).suspended = token.suspended as boolean;
       }
       return session;
     },

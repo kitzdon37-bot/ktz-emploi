@@ -30,8 +30,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -47,6 +48,12 @@ dev.db
 dev.db-journal
 *.db
 *.sqlite
+
+# Fichiers uploadés (logos, CVs, images)
+/public/uploads/
+
+# Données locales
+/data/
 
 # Logs
 *.log

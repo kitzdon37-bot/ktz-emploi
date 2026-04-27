@@ -3,29 +3,39 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  password      String?
-  role              String    @default("JOBSEEKER")
-  resetToken        String?
-  resetTokenExpiry  DateTime?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+  id               String    @id @default(cuid())
+  name             String?
+  email            String    @unique
+  emailVerified    DateTime?
+  image            String?
+  password         String?
+  role             String    @default("JOBSEEKER")
+  suspended        Boolean   @default(false)
+  resetToken       String?
+  resetTokenExpiry DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
-  accounts      Account[]
-  sessions      Session[]
-  profile       JobSeekerProfile?
-  company       Company?
-  applications  Application[]
-  savedJobs     SavedJob[]
+  accounts        Account[]
+  sessions        Session[]
+  profile         JobSeekerProfile?
+  company         Company?
+  applications    Application[]
+  savedJobs       SavedJob[]
+  reviews         CompanyReview[]
+  blogPosts       BlogPost[]
+  recruiterNotes  RecruiterNote[]
+  jobAlerts       JobAlert[]
+  activityLogs    ActivityLog[]
+
+  @@index([role])
+  @@index([suspended])
+  @@index([createdAt])
 }
 
 model Account {
@@ -45,6 +55,7 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model Session {
@@ -52,7 +63,10 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model VerificationToken {
@@ -64,41 +78,73 @@ model VerificationToken {
 }
 
 model JobSeekerProfile {
-  id          String   @id @default(cuid())
-  userId      String   @unique
-  title       String?
-  bio         String?
-  phone       String?
-  location    String?
-  cv          String?
-  skills      String?
-  experience  String?
-  education   String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  title      String?
+  bio        String?
+  phone      String?
+  location   String?
+  cv         String?
+  cvPublic   Boolean  @default(false)
+  skills     String?
+  experience String?
+  education  String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Company {
-  id          String   @id @default(cuid())
-  userId      String   @unique
-  name        String
-  slug        String   @unique
-  logo        String?
-  website     String?
-  description String?
-  sector      String?
-  size        String?
-  location    String?
-  phone       String?
-  email       String?
-  verified    Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  name           String
+  slug           String   @unique
+  logo           String?
+  website        String?
+  description    String?
+  sector         String?
+  size           String?
+  location       String?
+  phone          String?
+  email          String?
+  banner         String?
+  videoUrl       String?
+  photos         String?
+  foundedYear    Int?
+  verified       Boolean  @default(false)
+  superRecruiter Boolean  @default(false)
+  suspended      Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  jobs Job[]
+  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobs         Job[]
+  reviews      CompanyReview[]
+  jobTemplates JobTemplate[]
+  subscription Subscription?
+
+  @@index([verified])
+  @@index([suspended])
+  @@index([sector])
+}
+
+model Subscription {
+  id            String    @id @default(cuid())
+  companyId     String    @unique
+  plan          String    @default("FREE")
+  status        String    @default("ACTIVE")
+  startDate     DateTime  @default(now())
+  endDate       DateTime?
+  paymentRef    String?
+  paymentMethod String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@index([plan, status])
 }
 
 model Job {
@@ -118,6 +164,7 @@ model Job {
   salaryCurrency  String    @default("XAF")
   experienceLevel String?
   deadline        DateTime?
+  coverImage      String?
   published       Boolean   @default(true)
   featured        Boolean   @default(false)
   views           Int       @default(0)
@@ -127,6 +174,21 @@ model Job {
   company      Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
   applications Application[]
   savedBy      SavedJob[]
+
+  // Index simples
+  @@index([companyId])
+  @@index([published])
+  @@index([featured])
+  @@index([category])
+  @@index([location])
+  @@index([type])
+  @@index([createdAt])
+  // Index composés pour les requêtes courantes
+  @@index([published, createdAt])         // liste des offres triée
+  @@index([published, featured, createdAt]) // page d'accueil
+  @@index([published, category])          // filtre par secteur
+  @@index([published, location])          // filtre par ville
+  @@index([published, type])              // filtre par type de contrat
 }
 
 model Application {
@@ -139,10 +201,29 @@ model Application {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  job  Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job           Job                        @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  user          User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notes         RecruiterNote[]
+  statusHistory ApplicationStatusHistory[]
 
   @@unique([jobId, userId])
+  @@index([userId])
+  @@index([jobId])
+  @@index([status])
+  @@index([userId, createdAt])   // historique candidatures d'un user
+  @@index([jobId, status])       // candidatures d'une offre par statut
+}
+
+model ApplicationStatusHistory {
+  id            String   @id @default(cuid())
+  applicationId String
+  status        String
+  note          String?
+  changedAt     DateTime @default(now())
+
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@index([applicationId])
 }
 
 model SavedJob {
@@ -155,4 +236,165 @@ model SavedJob {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([jobId, userId])
+  @@index([userId])
+}
+
+model Report {
+  id         String   @id @default(cuid())
+  type       String
+  targetId   String
+  reason     String
+  details    String?
+  reporterId String?
+  status     String   @default("PENDING")
+  createdAt  DateTime @default(now())
+
+  @@index([status])
+  @@index([type, status])
+}
+
+model SiteSetting {
+  key   String @id
+  value String
+}
+
+model RecruiterNote {
+  id            String   @id @default(cuid())
+  applicationId String
+  recruiterId   String
+  content       String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  recruiter   User        @relation(fields: [recruiterId], references: [id], onDelete: Cascade)
+
+  @@index([applicationId])
+  @@index([recruiterId])
+}
+
+model CompanyReview {
+  id        String   @id @default(cuid())
+  companyId String
+  userId    String
+  rating    Int
+  pros      String?
+  cons      String?
+  anonymous Boolean  @default(true)
+  status    String   @default("APPROVED")
+  createdAt DateTime @default(now())
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([companyId, userId])
+  @@index([companyId, status])
+}
+
+model BlogPost {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  excerpt   String?
+  content   String
+  category  String   @default("Conseils")
+  published Boolean  @default(true)
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([published, createdAt])
+}
+
+model RecruitmentEvent {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  date        DateTime
+  location    String?
+  link        String?
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  @@index([published, date])
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  userEmail String?
+  userName  String?
+  type      String
+  label     String
+  metadata  String?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  // Indexes critiques — cette table grossit très vite
+  @@index([createdAt])
+  @@index([type])
+  @@index([userId])
+  @@index([type, createdAt])    // filtre admin par type + tri
+  @@index([userId, createdAt])  // historique d'un user
+}
+
+model JobAlert {
+  id        String   @id @default(cuid())
+  userId    String
+  keywords  String
+  location  String?
+  frequency String   @default("daily")
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([active, frequency])
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  token     String   @unique
+  frequency String   @default("weekly")
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@index([active, frequency])
+}
+
+model NewsletterCampaign {
+  id             String   @id @default(cuid())
+  subject        String
+  content        String
+  type           String   @default("manual")
+  recipientCount Int      @default(0)
+  sentAt         DateTime @default(now())
+}
+
+model JobTemplate {
+  id           String   @id @default(cuid())
+  companyId    String
+  name         String
+  title        String
+  description  String
+  requirements String?
+  benefits     String?
+  type         String
+  category     String
+  location     String
+  remote       Boolean  @default(false)
+  salaryMin    Int?
+  salaryMax    Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([companyId])
 }
