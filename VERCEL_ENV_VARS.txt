@@ -1,0 +1,39 @@
+============================================================
+  VARIABLES D'ENVIRONNEMENT VERCEL — KTZ EMPLOI
+============================================================
+
+Copie chaque ligne dans Vercel > Environment Variables
+
+------------------------------------------------------------
+DATABASE_URL
+postgresql://postgres.rtotnmbpwxfbiufcsvsx:[TON-MOT-DE-PASSE]@aws-0-eu-west-1.pooler.supabase.com:6543/postgres?pgbouncer=true
+
+------------------------------------------------------------
+DIRECT_URL
+postgresql://postgres.rtotnmbpwxfbiufcsvsx:[TON-MOT-DE-PASSE]@aws-0-eu-west-1.pooler.supabase.com:5432/postgres
+
+------------------------------------------------------------
+NEXTAUTH_SECRET
+ktz-emploi-prod-2026-centrafrique-secret-a8f3kx92mz
+
+------------------------------------------------------------
+NEXTAUTH_URL
+https://ktz-emploi.vercel.app
+(remplace par l'URL exacte que Vercel t'affiche)
+
+------------------------------------------------------------
+ADMIN_EMAIL
+kitzdon37@gmail.com
+
+------------------------------------------------------------
+RESEND_API_KEY
+[TA CLE RESEND]
+
+------------------------------------------------------------
+
+NOTES :
+- Remplace [TON-MOT-DE-PASSE] par le mot de passe Supabase
+- NEXTAUTH_URL = l'URL que Vercel te donne après le premier deploy
+- RESEND_API_KEY = sur resend.com > API Keys
+
+============================================================
