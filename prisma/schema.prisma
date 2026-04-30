@@ -3,9 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -79,21 +78,39 @@ model VerificationToken {
 }
 
 model JobSeekerProfile {
-  id         String   @id @default(cuid())
-  userId     String   @unique
-  title      String?
-  bio        String?
-  phone      String?
-  location   String?
-  cv         String?
-  cvPublic   Boolean  @default(false)
-  skills     String?
-  experience String?
-  education  String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  title            String?
+  bio              String?
+  phone            String?
+  location         String?
+  cv               String?
+  cvPublic         Boolean  @default(false)
+  skills           String?
+  experience       String?
+  education        String?
+  smsOptIn         Boolean  @default(false)
+  whatsappOptIn    Boolean  @default(false)
+  notifCategories  String?  // JSON array de secteurs, null = tous les secteurs
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cvViews CvView[]
+}
+
+model CvView {
+  id          String   @id @default(cuid())
+  profileId   String
+  viewerId    String
+  companyName String?
+  viewedAt    DateTime @default(now())
+
+  profile JobSeekerProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@index([profileId, viewedAt])
+  @@index([viewerId])
 }
 
 model Company {
@@ -116,6 +133,7 @@ model Company {
   verified       Boolean  @default(false)
   superRecruiter Boolean  @default(false)
   suspended      Boolean  @default(false)
+  allowContact   Boolean  @default(false)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
@@ -165,9 +183,10 @@ model Job {
   salaryCurrency  String    @default("XAF")
   experienceLevel String?
   deadline        DateTime?
-  coverImage      String?
-  published       Boolean   @default(true)
-  featured        Boolean   @default(false)
+  coverImage          String?
+  published           Boolean   @default(true)
+  featured            Boolean   @default(false)
+  notifyOnApproval    Boolean   @default(false)
   views           Int       @default(0)
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt

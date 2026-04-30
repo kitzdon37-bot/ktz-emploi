@@ -10,11 +10,11 @@ export async function PUT(req: NextRequest) {
   const userId = (session.user as { id?: string }).id!;
 
   try {
-    const { name, website, description, sector, size, location, phone, email } = await req.json();
+    const { name, website, description, sector, size, location, phone, email, logo, banner, videoUrl, allowContact } = await req.json();
 
     const company = await prisma.company.upsert({
       where: { userId },
-      update: { name, website, description, sector, size, location, phone, email },
+      update: { name, website, description, sector, size, location, phone, email, logo, banner, videoUrl, allowContact: !!allowContact },
       create: {
         userId,
         name: name || "Mon entreprise",
@@ -26,6 +26,10 @@ export async function PUT(req: NextRequest) {
         location,
         phone,
         email,
+        logo,
+        banner,
+        videoUrl,
+        allowContact: !!allowContact,
       },
     });
 

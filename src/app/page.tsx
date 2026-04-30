@@ -5,24 +5,30 @@ import JobCard from "@/components/JobCard";
 import { JOB_CATEGORIES } from "@/lib/utils";
 
 async function getHomeData() {
-  const [featuredJobs, recentJobs, totalJobs, totalCompanies, totalUsers] = await Promise.all([
+  const [featuredJobs, recentJobs, topCompanies, totalJobs, totalCompanies, totalUsers] = await Promise.all([
     prisma.job.findMany({
-      where: { published: true, featured: true },
-      include: { company: { select: { name: true, logo: true, verified: true } } },
+      where: { published: true, featured: true, company: { suspended: false } },
+      include: { company: { select: { name: true, logo: true, verified: true, superRecruiter: true } } },
       orderBy: { createdAt: "desc" },
       take: 3,
     }),
     prisma.job.findMany({
-      where: { published: true },
-      include: { company: { select: { name: true, logo: true, verified: true } } },
+      where: { published: true, company: { suspended: false } },
+      include: { company: { select: { name: true, logo: true, verified: true, superRecruiter: true } } },
       orderBy: { createdAt: "desc" },
       take: 6,
+    }),
+    prisma.company.findMany({
+      where: { logo: { not: null } },
+      select: { name: true, logo: true, sector: true, slug: true },
+      orderBy: { createdAt: "desc" },
+      take: 10,
     }),
     prisma.job.count({ where: { published: true } }),
     prisma.company.count(),
     prisma.user.count({ where: { role: "JOBSEEKER" } }),
   ]);
-  return { featuredJobs, recentJobs, totalJobs, totalCompanies, totalUsers };
+  return { featuredJobs, recentJobs, topCompanies, totalJobs, totalCompanies, totalUsers };
 }
 
 const CATEGORY_ICONS: Record<string, string> = {
@@ -36,14 +42,6 @@ const CATEGORY_ICONS: Record<string, string> = {
   "Agriculture & Élevage": "🌾",
 };
 
-const COMPANIES = [
-  { name: "SOCATEL", sector: "Télécoms", color: "bg-blue-100 text-blue-700" },
-  { name: "Ecobank", sector: "Banque", color: "bg-green-100 text-green-700" },
-  { name: "PNUD", sector: "Humanitaire", color: "bg-indigo-100 text-indigo-700" },
-  { name: "TotalEnergies", sector: "Énergie", color: "bg-orange-100 text-orange-600" },
-  { name: "Airtel RCA", sector: "Mobile", color: "bg-orange-100 text-orange-700" },
-  { name: "MINUSCA", sector: "Nations Unies", color: "bg-sky-100 text-sky-700" },
-];
 
 const TIPS = [
   {
@@ -67,7 +65,7 @@ const TIPS = [
 ];
 
 export default async function HomePage() {
-  const { featuredJobs, recentJobs, totalJobs, totalCompanies, totalUsers } = await getHomeData();
+  const { featuredJobs, recentJobs, topCompanies, totalJobs, totalCompanies, totalUsers } = await getHomeData();
 
   return (
     <>
@@ -102,10 +100,8 @@ export default async function HomePage() {
             <h1 className="text-4xl lg:text-6xl font-extrabold text-white leading-tight mb-8 drop-shadow-lg">
               Notre job, vous aider<br />
               à trouver le vôtre parmi{" "}
-              <span className="text-orange-400">
-                {totalJobs > 0 ? `${totalJobs}+` : "des centaines d'"}
-              </span>
-              {totalJobs > 0 && " offres"}
+              <span className="text-orange-400">1500</span>
+              {" "}offres
             </h1>
 
             {/* Barre de recherche — style Hellowork */}
@@ -212,18 +208,23 @@ export default async function HomePage() {
               Voir toutes les entreprises <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            {COMPANIES.map((co) => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
+            {topCompanies.map((co) => (
               <Link
-                key={co.name}
-                href={`/emplois?q=${co.name}`}
-                className="bg-white rounded-2xl border border-gray-200 hover:border-orange-200 hover:shadow-md p-4 flex flex-col items-center gap-2 transition-all group"
+                key={co.slug}
+                href={`/entreprises/${co.slug}`}
+                className="bg-white rounded-2xl border border-gray-200 hover:border-orange-200 hover:shadow-md p-7 flex flex-col items-center gap-3 transition-all group"
               >
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-sm ${co.color}`}>
-                  {co.name.slice(0, 2).toUpperCase()}
+                <div className="w-24 h-24 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center font-bold text-lg text-orange-600 overflow-hidden">
+                  {co.logo ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={co.logo} alt={co.name} className="w-full h-full object-contain p-1.5" />
+                  ) : (
+                    co.name.slice(0, 2).toUpperCase()
+                  )}
                 </div>
-                <span className="text-xs font-semibold text-gray-800 text-center leading-tight group-hover:text-orange-600">{co.name}</span>
-                <span className="text-[10px] text-gray-400">{co.sector}</span>
+                <span className="text-sm font-semibold text-gray-800 text-center leading-tight group-hover:text-orange-600">{co.name}</span>
+                {co.sector && <span className="text-xs text-gray-400 text-center">{co.sector}</span>}
               </Link>
             ))}
           </div>
