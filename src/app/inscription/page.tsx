@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { Briefcase, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Briefcase, Eye, EyeOff, Loader2, MessageCircle, X } from "lucide-react";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
+import { JOB_CATEGORIES, RCA_LOCATIONS } from "@/lib/utils";
 
 const CONTRACT_TYPES = ["CDI", "CDD", "Stage", "Alternance", "Freelance", "Bénévolat"];
 
@@ -26,20 +27,34 @@ function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const defaultRole = searchParams.get("role") === "employer" ? "employer" : "jobseeker";
+  const defaultEmail = searchParams.get("email") ?? "";
 
   const [role, setRole] = useState(defaultRole);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(defaultEmail);
   const [password, setPassword] = useState("");
   const [jobTitle, setJobTitle] = useState("");
   const [location, setLocation] = useState("");
   const [contractTypes, setContractTypes] = useState<string[]>([]);
+  const [phone, setPhone] = useState("");
+  const [whatsappOptIn, setWhatsappOptIn] = useState(false);
   const [companyName, setCompanyName] = useState("");
+  const [companySector, setCompanySector] = useState("");
+  const [companyLocation, setCompanyLocation] = useState("Bangui");
+  const [companyWebsite, setCompanyWebsite] = useState("");
+  const [companyDescription, setCompanyDescription] = useState("");
   const [acceptCgu, setAcceptCgu] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showWaPopup, setShowWaPopup] = useState(false);
+
+  useEffect(() => {
+    if (role !== "jobseeker") return;
+    const timer = setTimeout(() => setShowWaPopup(true), 1500);
+    return () => clearTimeout(timer);
+  }, [role]);
 
   const strength = getPasswordStrength(password);
 
@@ -67,7 +82,13 @@ function RegisterForm() {
           email,
           password,
           role,
+          phone: phone.trim() || null,
+            whatsappOptIn: role === "jobseeker" ? whatsappOptIn : false,
           companyName,
+          companySector,
+          companyLocation,
+          companyWebsite,
+          companyDescription,
           jobTitle,
           location,
           contractTypes: contractTypes.join(","),
@@ -88,6 +109,42 @@ function RegisterForm() {
 
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-white flex items-start justify-center px-4 pt-10 pb-16">
+
+      {/* WhatsApp info popup */}
+      {showWaPopup && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/30 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 relative animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <button
+              onClick={() => setShowWaPopup(false)}
+              className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X className="h-5 w-5" />
+            </button>
+
+            {/* WhatsApp icon */}
+            <div className="flex items-center justify-center w-14 h-14 rounded-full bg-emerald-100 mx-auto mb-4">
+              <MessageCircle className="h-7 w-7 text-emerald-600" />
+            </div>
+
+            <h2 className="text-center text-gray-900 font-bold text-lg mb-2">
+              Recevez les offres sur WhatsApp 🎉
+            </h2>
+            <p className="text-center text-gray-500 text-sm leading-relaxed mb-5">
+              Saviez-vous que vous pouvez recevoir les nouvelles offres d&apos;emploi{" "}
+              <strong className="text-gray-700">directement sur WhatsApp</strong> ?<br /><br />
+              Ajoutez simplement votre numéro lors de l&apos;inscription et activez l&apos;option — vous serez alerté en temps réel !
+            </p>
+
+            <button
+              onClick={() => setShowWaPopup(false)}
+              className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-3 rounded-xl text-sm transition-colors"
+            >
+              J&apos;ai compris !
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="w-full max-w-[520px]">
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-6">
@@ -111,11 +168,17 @@ function RegisterForm() {
         </div>
 
         {/* Info banner */}
+        {defaultEmail ? (
+          <div className="bg-orange-50 border border-orange-200 rounded-xl px-4 py-3 mb-6 text-sm text-orange-800 leading-relaxed">
+            Aucun compte trouvé pour <strong>{defaultEmail}</strong>. Créez votre compte en quelques secondes.
+          </div>
+        ) : (
         <div className="bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-3 mb-6 text-sm text-indigo-800 leading-relaxed">
           En vous inscrivant à KTZ Emploi, nous vous aidons à trouver <strong>VOTRE</strong> job :
           <br />
           <strong>Offres personnalisées, gestion des candidatures, messages directs des recruteurs...</strong>
         </div>
+        )}
 
         {/* Google */}
         <GoogleSignInButton label="S'inscrire avec Google" />
@@ -239,16 +302,72 @@ function RegisterForm() {
           </div>
 
           {role === "employer" ? (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Nom de l&apos;entreprise</label>
-              <input
-                type="text"
-                value={companyName}
-                onChange={(e) => setCompanyName(e.target.value)}
-                required
-                placeholder="Ex : Ecobank RCA, ONG Espoir..."
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition"
-              />
+            <div className="space-y-4">
+              {/* Nom entreprise */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Nom de l&apos;entreprise *</label>
+                <input
+                  type="text"
+                  value={companyName}
+                  onChange={(e) => setCompanyName(e.target.value)}
+                  required
+                  placeholder="Ex : Ecobank RCA, ONG Espoir..."
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition"
+                />
+              </div>
+
+              {/* Secteur + Localisation */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Secteur d&apos;activité</label>
+                  <select
+                    value={companySector}
+                    onChange={(e) => setCompanySector(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white transition"
+                  >
+                    <option value="">Choisir...</option>
+                    {JOB_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Localisation</label>
+                  <select
+                    value={companyLocation}
+                    onChange={(e) => setCompanyLocation(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white transition"
+                  >
+                    {RCA_LOCATIONS.map((l) => <option key={l} value={l}>{l}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              {/* Site web */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Site web <span className="text-gray-400 font-normal">(optionnel)</span>
+                </label>
+                <input
+                  type="url"
+                  value={companyWebsite}
+                  onChange={(e) => setCompanyWebsite(e.target.value)}
+                  placeholder="https://www.monentreprise.cf"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition"
+                />
+              </div>
+
+              {/* Description */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Présentation de l&apos;entreprise <span className="text-gray-400 font-normal">(optionnel)</span>
+                </label>
+                <textarea
+                  value={companyDescription}
+                  onChange={(e) => setCompanyDescription(e.target.value)}
+                  rows={3}
+                  placeholder="Décrivez votre entreprise, sa mission, ses valeurs... (visible sur votre profil public)"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition resize-none"
+                />
+              </div>
             </div>
           ) : (
             <>
@@ -274,6 +393,50 @@ function RegisterForm() {
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition"
                   />
                 </div>
+              </div>
+
+              {/* Téléphone WhatsApp */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Numéro WhatsApp <span className="text-gray-400 font-normal">(optionnel)</span>
+                </label>
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="+236 77 00 00 00"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition"
+                />
+
+                {/* Opt-in WhatsApp — apparaît seulement si numéro saisi */}
+                {phone.trim().length >= 8 && (
+                  <button
+                    type="button"
+                    onClick={() => setWhatsappOptIn(v => !v)}
+                    className="flex items-center gap-3 mt-3 w-full group"
+                  >
+                    {/* Toggle */}
+                    <div
+                      className={`relative rounded-full transition-colors flex-shrink-0 ${whatsappOptIn ? "bg-emerald-500" : "bg-gray-200"}`}
+                      style={{ width: "40px", height: "22px" }}
+                    >
+                      <span
+                        className={`absolute top-0.5 bg-white rounded-full shadow transition-transform ${whatsappOptIn ? "translate-x-[18px]" : "translate-x-0.5"}`}
+                        style={{ width: "18px", height: "18px" }}
+                      />
+                    </div>
+                    <div className="text-left">
+                      <p className={`text-sm font-medium transition-colors ${whatsappOptIn ? "text-emerald-700" : "text-gray-700"}`}>
+                        Recevoir les offres par WhatsApp
+                      </p>
+                      <p className="text-xs text-gray-400 mt-0.5">
+                        {whatsappOptIn
+                          ? "✅ Vous recevrez les nouvelles offres directement sur WhatsApp"
+                          : "Soyez alerté dès qu'une offre correspond à votre profil"}
+                      </p>
+                    </div>
+                  </button>
+                )}
               </div>
 
               {/* Contract types */}

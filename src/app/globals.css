@@ -1,6 +1,43 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* ── Tiptap editor ───────────────────────────────────────────────────────── */
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #9ca3af;
+  pointer-events: none;
+  height: 0;
+}
+.tiptap:focus {
+  outline: none;
+}
+.tiptap pre {
+  background: #1e293b;
+  color: #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow-x: auto;
+}
+.tiptap pre code {
+  background: none;
+  color: inherit;
+  font-size: 0.875rem;
+  padding: 0;
+}
+.tiptap blockquote {
+  border-left: 4px solid #fed7aa;
+  background: #fff7ed;
+  padding: 0.5rem 1rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+  margin: 1rem 0;
+}
+.tiptap hr {
+  border: none;
+  border-top: 2px solid #e5e7eb;
+  margin: 1.5rem 0;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;

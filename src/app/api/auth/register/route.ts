@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { slugify } from "@/lib/utils";
 import { logActivity } from "@/lib/activity";
 import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
+import { sendWelcomeEmail } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   // Rate limiting : 5 inscriptions par IP sur 1 heure
@@ -13,7 +14,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { name, email, password, role, companyName, companySector, companyLocation, companyWebsite, companyDescription, jobTitle, location, contractTypes } =
+    const { name, email, password, role, phone, whatsappOptIn, companyName, companySector, companyLocation, companyWebsite, companyDescription, jobTitle, location, contractTypes } =
       await req.json();
 
     if (!name || !email || !password) {
@@ -62,9 +63,19 @@ export async function POST(req: NextRequest) {
           title: jobTitle || null,
           location: location || null,
           skills: contractTypes || null,
+          phone: phone || null,
+          whatsappOptIn: phone ? !!whatsappOptIn : false,
         },
       });
     }
+
+    // Email de bienvenue (non bloquant)
+    sendWelcomeEmail({
+      name,
+      email,
+      role: userRole,
+      companyName: companyName || null,
+    }).catch((err) => console.error("[Welcome email]", err));
 
     await logActivity({
       userId: user.id,

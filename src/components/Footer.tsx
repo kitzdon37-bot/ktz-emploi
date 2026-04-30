@@ -1,9 +1,25 @@
 ﻿import Link from "next/link";
-import { Briefcase, MapPin, Mail, Phone } from "lucide-react";
+import { Briefcase, MapPin, Mail } from "lucide-react";
+import NewsletterWidget from "./NewsletterWidget";
 
 export default function Footer() {
   return (
     <footer className="bg-gray-900 text-gray-300">
+      {/* Newsletter banner */}
+      <div className="border-b border-gray-700 bg-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div>
+              <h3 className="text-white font-semibold text-lg">Restez informé des nouvelles offres</h3>
+              <p className="text-gray-400 text-sm mt-1">Recevez les meilleures opportunités directement dans votre boîte mail.</p>
+            </div>
+            <div className="w-full md:w-auto md:min-w-[380px]">
+              <NewsletterWidget />
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
@@ -47,6 +63,7 @@ export default function Footer() {
               <li><Link href="/inscription?role=employer" className="hover:text-yellow-400 transition-colors">Publier une offre</Link></li>
               <li><Link href="/entreprises" className="hover:text-yellow-400 transition-colors">Annuaire entreprises</Link></li>
               <li><Link href="/tarifs" className="hover:text-yellow-400 transition-colors">Tarifs</Link></li>
+              <li><Link href="/a-propos" className="hover:text-yellow-400 transition-colors">Qui sommes-nous</Link></li>
               <li><Link href="/contact" className="hover:text-yellow-400 transition-colors">Nous contacter</Link></li>
             </ul>
           </div>

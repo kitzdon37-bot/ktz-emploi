@@ -1,0 +1,79 @@
+============================================================
+  MAIL À ENVOYER AUX ORGANISMES ONU EN RCA
+============================================================
+
+OBJET : KTZ Emploi — La première plateforme de recrutement
+         en ligne de la République Centrafricaine
+
+------------------------------------------------------------
+
+Madame, Monsieur,
+
+Je me permets de vous contacter pour vous présenter
+KTZ Emploi (www.ktz-emploi.cf), la première plateforme
+de recrutement en ligne dédiée à la République
+Centrafricaine.
+
+----- QU'EST-CE QUE KTZ EMPLOI ? -----
+
+KTZ Emploi est un site web et une application mobile
+qui met en relation les employeurs et les candidats
+centrafricains. La plateforme permet de :
+
+• Publier des offres d'emploi visibles par des milliers
+  de candidats qualifiés en RCA
+
+• Accéder à une CVthèque de candidats locaux
+  (développeurs, comptables, logisticiens, médecins,
+  juristes, etc.)
+
+• Recevoir et gérer les candidatures en ligne
+
+• Toucher les candidats via notre application mobile
+  disponible sur Android
+
+----- POURQUOI NOUS CONTACTER ? -----
+
+En tant qu'organisme présent en République Centrafricaine,
+vous recrutez régulièrement du personnel local
+(assistants, chauffeurs, agents de terrain, traducteurs,
+informaticiens, etc.).
+
+KTZ Emploi vous offre un accès direct au vivier de
+talents centrafricains, avec une visibilité maximale
+auprès de la communauté locale.
+
+----- NOTRE OFFRE POUR VOUS -----
+
+Nous vous proposons 1 mois d'essai gratuit sur notre
+plan Starter pour que vous puissiez publier vos offres
+et évaluer la plateforme sans engagement.
+
+Pour commencer, il vous suffit de créer un compte sur :
+www.ktz-emploi.cf/inscription
+
+----- NOUS CONTACTER -----
+
+Pour toute question ou pour une démonstration
+personnalisée, n'hésitez pas à nous répondre
+directement à ce mail.
+
+Nous restons disponibles pour échanger à votre
+convenance.
+
+Cordialement,
+
+Donald Chrysostome Kitzdon
+Fondateur — KTZ Emploi
+kitzdon37@gmail.com
+www.ktz-emploi.cf
+
+============================================================
+INSTRUCTIONS D'ENVOI :
+- Envoie un mail individuel à chaque organisme
+- Ne fais pas de copie groupée (BCC/CC) — chaque mail
+  doit être personnel
+- Attends quelques jours entre chaque envoi si possible
+- Remplace www.ktz-emploi.cf par ton URL Vercel
+  temporairement si le domaine n'est pas encore actif
+============================================================

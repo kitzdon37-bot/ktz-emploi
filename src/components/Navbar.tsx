@@ -11,7 +11,6 @@ export default function Navbar() {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Ferme le dropdown au clic extérieur
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -25,32 +24,39 @@ export default function Navbar() {
   return (
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
+        <div className="flex items-center justify-between h-16">
 
-          {/* Logo + liens desktop */}
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="bg-orange-500 p-1.5 rounded-lg">
-                <Briefcase className="h-5 w-5 text-white" />
-              </div>
-              <span className="font-bold text-xl text-gray-900">KTZ<span className="text-orange-500"> Emploi</span></span>
-            </Link>
-
-            <div className="hidden md:flex ml-8 gap-6">
-              <Link href="/emplois" className="text-gray-600 hover:text-orange-500 font-medium transition-colors text-sm">
-                Offres d&apos;emploi
-              </Link>
-              <Link href="/entreprises" className="text-gray-600 hover:text-orange-500 font-medium transition-colors text-sm">
-                Entreprises
-              </Link>
-              <Link href="/conseils" className="text-gray-600 hover:text-orange-500 font-medium transition-colors text-sm">
-                Conseils carrière
-              </Link>
+          {/* Logo seul à gauche */}
+          <Link href="/" className="flex items-center gap-2 shrink-0">
+            <div className="bg-orange-500 p-1.5 rounded-lg">
+              <Briefcase className="h-5 w-5 text-white" />
             </div>
-          </div>
+            <span className="font-bold text-xl text-gray-900">KTZ<span className="text-orange-500"> Emploi</span></span>
+          </Link>
 
-          {/* Côté droit */}
-          <div className="hidden md:flex items-center gap-3">
+          {/* Liens + auth — tout à droite */}
+          <div className="hidden md:flex items-center gap-6">
+            <Link href="/emplois" className="text-gray-600 hover:text-orange-500 font-medium transition-colors text-sm">
+              Offres d&apos;emploi
+            </Link>
+            <Link href="/entreprises" className="text-gray-600 hover:text-orange-500 font-medium transition-colors text-sm">
+              Entreprises
+            </Link>
+            <Link href="/conseils" className="text-gray-600 hover:text-orange-500 font-medium transition-colors text-sm">
+              Conseils carrière
+            </Link>
+            <Link href="/a-propos" className="text-gray-600 hover:text-orange-500 font-medium transition-colors text-sm">
+              À propos
+            </Link>
+            {(!session || (session.user as { role?: string })?.role === "EMPLOYER") && (
+              <Link href="/tarifs" className="text-gray-600 hover:text-orange-500 font-medium transition-colors text-sm">
+                Tarifs
+              </Link>
+            )}
+
+            {/* Séparateur vertical */}
+            <div className="w-px h-5 bg-gray-200" />
+
             {session ? (
               <>
                 {(session.user as { role?: string })?.role === "EMPLOYER" && (
@@ -107,7 +113,7 @@ export default function Navbar() {
                       )}
                       <hr className="my-1" />
                       <button
-                        onClick={() => { signOut(); setUserMenuOpen(false); }}
+                        onClick={() => { signOut({ callbackUrl: "/connexion" }); setUserMenuOpen(false); }}
                         className="flex items-center gap-2 px-4 py-2.5 text-sm text-orange-500 hover:bg-orange-50 w-full text-left"
                       >
                         <LogOut className="h-4 w-4" />
@@ -118,7 +124,7 @@ export default function Navbar() {
                 </div>
               </>
             ) : (
-              /* Bouton Se connecter → dropdown S'inscrire / Se connecter */
+              /* Bouton Se connecter → dropdown */
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
@@ -165,11 +171,12 @@ export default function Navbar() {
           <Link href="/emplois" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>Offres d&apos;emploi</Link>
           <Link href="/entreprises" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>Entreprises</Link>
           <Link href="/conseils" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>Conseils carrière</Link>
+          <Link href="/a-propos" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>À propos</Link>
           <hr />
           {session ? (
             <>
               <Link href="/tableau-de-bord" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>Mon espace</Link>
-              <button onClick={() => signOut()} className="block text-orange-500 font-medium">Déconnexion</button>
+              <button onClick={() => signOut({ callbackUrl: "/connexion" })} className="block text-orange-500 font-medium">Déconnexion</button>
             </>
           ) : (
             <>

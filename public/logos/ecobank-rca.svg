@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 50">
+  <!-- Ecobank — vert officiel #009A44 -->
+  <rect width="120" height="50" rx="8" fill="#009A44"/>
+  <!-- Feuille stylisée -->
+  <ellipse cx="18" cy="25" rx="9" ry="13" fill="#ffffff" opacity="0.95" transform="rotate(-20 18 25)"/>
+  <ellipse cx="18" cy="25" rx="5" ry="9" fill="#009A44" transform="rotate(-20 18 25)"/>
+  <!-- Texte -->
+  <text x="34" y="22" font-family="Arial,sans-serif" font-size="13" font-weight="800" fill="#ffffff" letter-spacing="0.5">eco</text>
+  <text x="34" y="37" font-family="Arial,sans-serif" font-size="13" font-weight="800" fill="#FFD700" letter-spacing="0.5">bank</text>
+</svg>

@@ -27,6 +27,9 @@ export default async function DashboardPage() {
   const role = (session.user as { role?: string }).role;
   const firstName = session.user?.name?.split(" ")[0] ?? "vous";
 
+  /* ─────────────── ADMIN ─────────────── */
+  if (role === "ADMIN") redirect("/tableau-de-bord/admin");
+
   /* ─────────────── EMPLOYER ─────────────── */
   if (role === "EMPLOYER") {
     const company = await prisma.company.findUnique({ where: { userId } });

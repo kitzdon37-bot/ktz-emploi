@@ -37,6 +37,11 @@ export async function PUT(req: NextRequest) {
     if (key in body) data[key] = body[key] || null;
   }
   if ("cvPublic" in body) data.cvPublic = !!body.cvPublic;
+  if ("smsOptIn" in body) data.smsOptIn = !!body.smsOptIn;
+  if ("whatsappOptIn" in body) data.whatsappOptIn = !!body.whatsappOptIn;
+  if ("notifCategories" in body) {
+    data.notifCategories = body.notifCategories ? JSON.stringify(body.notifCategories) : null;
+  }
 
   const profile = await prisma.jobSeekerProfile.upsert({
     where: { userId },

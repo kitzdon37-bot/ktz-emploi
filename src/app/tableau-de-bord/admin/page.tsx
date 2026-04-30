@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   Users, Mail, Search, CheckSquare, Square, Send,
   Briefcase, MapPin, Tag, Loader2, CheckCircle, XCircle, ChevronDown, ChevronUp,
   ClipboardList, Check, X, Building2, Clock, Shield, UserCog, ChevronDown as ChevDown,
   Star, BadgeCheck, Eye, EyeOff, Banknote, CalendarDays, GraduationCap,
   List, Trash2, Pencil, Save, ToggleLeft, ToggleRight,
-  BarChart2, Download, Flag, Settings, FileText, CreditCard
+  BarChart2, Download, Flag, Settings, FileText, CreditCard, Bell
 } from "lucide-react";
 import { JOB_CATEGORIES, JOB_TYPES, RCA_LOCATIONS, APPLICATION_STATUSES } from "@/lib/utils";
 
@@ -245,10 +246,11 @@ function ActivityTab({
   );
 }
 
-export default function AdminPage() {
-  const searchParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
-  const initialTab = (searchParams?.get("tab") as "offres" | "toutes-offres" | "moderation" | "recruteurs" | "candidats" | "utilisateurs" | "stats" | "all-applications" | "reports" | "settings" | "abonnements" | "activite") || "offres";
-  const [activeTab, setActiveTab] = useState<"offres" | "toutes-offres" | "moderation" | "recruteurs" | "candidats" | "utilisateurs" | "stats" | "all-applications" | "reports" | "settings" | "abonnements" | "activite">(initialTab);
+type AdminTab = "offres" | "toutes-offres" | "moderation" | "recruteurs" | "candidats" | "utilisateurs" | "stats" | "all-applications" | "reports" | "settings" | "abonnements" | "activite" | "messages";
+
+function AdminDashboard() {
+  const searchParamsHook = useSearchParams();
+  const [activeTab, setActiveTab] = useState<AdminTab>("offres");
 
   // --- Activité ---
   const [activityLogs, setActivityLogs] = useState<LogEntry[]>([]);
@@ -342,12 +344,35 @@ export default function AdminPage() {
   const [editingJob, setEditingJob] = useState<AllJob | null>(null);
   const [editForm, setEditForm] = useState<Partial<AllJob>>({});
   const [savingJob, setSavingJob] = useState(false);
+  const [notifyingJob, setNotifyingJob] = useState<string | null>(null);
+  const [notifyResults, setNotifyResults] = useState<Record<string, { smsSent: number; whatsappSent: number }>>({});
+
+  async function notifyJob(jobId: string) {
+    setNotifyingJob(jobId);
+    try {
+      const res = await fetch("/api/admin/notify-job", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jobId }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setNotifyResults(prev => ({ ...prev, [jobId]: { smsSent: data.smsSent, whatsappSent: data.whatsappSent } }));
+      }
+    } catch {
+      // silence
+    } finally {
+      setNotifyingJob(null);
+    }
+  }
 
   function loadAllJobs() {
     setAllJobsLoading(true);
     fetch("/api/admin/jobs?all=true")
       .then(r => r.json())
-      .then(d => { setAllJobs(d.jobs ?? []); setAllJobsLoading(false); });
+      .then(d => { setAllJobs(d.jobs ?? []); })
+      .catch(() => {})
+      .finally(() => setAllJobsLoading(false));
   }
 
   function openEdit(job: AllJob) {
@@ -410,14 +435,29 @@ export default function AdminPage() {
     }
   }
 
+  // Charge les offres en attente une seule fois (badge dans l'onglet)
   useEffect(() => {
     fetch("/api/admin/jobs")
       .then((r) => r.json())
       .then((data) => { setPendingJobs(data.jobs ?? []); setJobsLoading(false); })
       .catch(() => setJobsLoading(false));
-    // Charger les abonnements si on arrive directement sur cet onglet
-    if (initialTab === "abonnements") loadSubs();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Réagit à chaque changement d'URL (clic dans la sidebar ou sur les onglets)
+  useEffect(() => {
+    const tab = (searchParamsHook.get("tab") as AdminTab) || "offres";
+    setActiveTab(tab);
+    if (tab === "abonnements" && subsData.length === 0) loadSubs();
+    if (tab === "utilisateurs" && siteUsers.length === 0) loadUsers();
+    if (tab === "recruteurs" && companies.length === 0) loadCompanies();
+    if (tab === "stats" && !stats) loadStats();
+    if (tab === "toutes-offres" && allJobs.length === 0) loadAllJobs();
+    if (tab === "all-applications" && allApps.length === 0) loadAllApps();
+    if (tab === "reports" && reports.length === 0) loadReports("PENDING");
+    if (tab === "activite" && activityLogs.length === 0) loadActivity();
+    if (tab === "moderation" && moderationJobs.length === 0) loadModerationJobs();
+    if (tab === "settings" && Object.keys(settings).length === 0) loadSettings();
+  }, [searchParamsHook]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleJobAction(jobId: string, action: "approve" | "reject") {
     setJobAction(jobId + action);
@@ -440,7 +480,9 @@ export default function AdminPage() {
     setCompaniesLoading(true);
     fetch("/api/admin/companies")
       .then(r => r.json())
-      .then(d => { setCompanies(d.companies ?? []); setCompaniesLoading(false); });
+      .then(d => { setCompanies(d.companies ?? []); })
+      .catch(() => {})
+      .finally(() => setCompaniesLoading(false));
   }
 
   async function toggleCompanyField(companyId: string, field: "superRecruiter" | "verified", value: boolean) {
@@ -464,7 +506,9 @@ export default function AdminPage() {
     setUsersLoading(true);
     fetch("/api/admin/users")
       .then((r) => r.json())
-      .then((data) => { setSiteUsers(data.users ?? []); setUsersLoading(false); });
+      .then((data) => { setSiteUsers(data.users ?? []); })
+      .catch(() => {})
+      .finally(() => setUsersLoading(false));
   }
 
   async function changeRole(userId: string, role: string) {
@@ -489,7 +533,11 @@ export default function AdminPage() {
   const [statsLoading, setStatsLoading] = useState(false);
   function loadStats() {
     setStatsLoading(true);
-    fetch("/api/admin/stats").then(r => r.json()).then(d => { setStats(d); setStatsLoading(false); });
+    fetch("/api/admin/stats")
+      .then(r => r.json())
+      .then(d => { setStats(d); })
+      .catch(() => {})
+      .finally(() => setStatsLoading(false));
   }
 
   // ─── All Applications ─────────────────────────────────────────────────
@@ -501,7 +549,9 @@ export default function AdminPage() {
     setAllAppsLoading(true);
     fetch(`/api/admin/all-applications?search=${appsSearch}&status=${appsStatusFilter}`)
       .then(r => r.json())
-      .then(d => { setAllApps(d.applications ?? []); setAllAppsLoading(false); });
+      .then(d => { setAllApps(d.applications ?? []); })
+      .catch(() => {})
+      .finally(() => setAllAppsLoading(false));
   }
 
   // ─── Reports ─────────────────────────────────────────────────────────
@@ -521,6 +571,114 @@ export default function AdminPage() {
       body: JSON.stringify({ reportId, status }),
     });
     setReports(prev => prev.filter(r => r.id !== reportId));
+  }
+
+  // ─── WhatsApp (Green API) ─────────────────────────────────────────────
+  const [waState, setWaState] = useState<"unknown" | "authorized" | "notAuthorized" | "not_configured" | "error">("unknown");
+  const [waStateLoading, setWaStateLoading] = useState(false);
+  const [waQR, setWaQR] = useState<string | null>(null);
+  const [waQRLoading, setWaQRLoading] = useState(false);
+  const [waTestPhone, setWaTestPhone] = useState("");
+  const [waTesting, setWaTesting] = useState(false);
+  const [waTestResult, setWaTestResult] = useState<"ok" | "fail" | null>(null);
+
+  async function loadWaStatus() {
+    setWaStateLoading(true);
+    setWaQR(null);
+    try {
+      const res = await fetch("/api/admin/whatsapp/status");
+      const data = await res.json();
+      setWaState(data.state ?? "error");
+    } catch {
+      setWaState("error");
+    } finally {
+      setWaStateLoading(false);
+    }
+  }
+
+  async function loadWaQR() {
+    setWaQRLoading(true);
+    try {
+      const res = await fetch("/api/admin/whatsapp/qr");
+      const data = await res.json();
+      if (data.qr) setWaQR(data.qr);
+    } catch {
+      // ignore
+    } finally {
+      setWaQRLoading(false);
+    }
+  }
+
+  async function testWhatsApp() {
+    if (!waTestPhone) return;
+    setWaTesting(true);
+    setWaTestResult(null);
+    try {
+      const res = await fetch("/api/admin/whatsapp/test", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: waTestPhone }),
+      });
+      const data = await res.json();
+      setWaTestResult(data.success ? "ok" : "fail");
+    } catch {
+      setWaTestResult("fail");
+    } finally {
+      setWaTesting(false);
+    }
+  }
+
+  // ─── Messages directs ────────────────────────────────────────────────
+  interface DirectMessage { id: string; phone: string; name: string; message: string; sentAt: string; ok: boolean; }
+  const [dmSearch, setDmSearch] = useState("");
+  const [dmPhone, setDmPhone] = useState("");
+  const [dmName, setDmName] = useState("");
+  const [dmMessage, setDmMessage] = useState("");
+  const [dmSending, setDmSending] = useState(false);
+  const [dmHistory, setDmHistory] = useState<DirectMessage[]>([]);
+  const [dmSearchResults, setDmSearchResults] = useState<{ id: string; name: string | null; email: string; phone: string | null }[]>([]);
+  const [dmSearching, setDmSearching] = useState(false);
+
+  async function searchCandidates(q: string) {
+    if (!q || q.length < 2) { setDmSearchResults([]); return; }
+    setDmSearching(true);
+    try {
+      const res = await fetch(`/api/admin/users?search=${encodeURIComponent(q)}&role=JOBSEEKER&limit=8`);
+      const data = await res.json();
+      const withPhone = (data.users ?? []).filter((u: { phone: string | null }) => u.phone);
+      setDmSearchResults(withPhone);
+    } catch {
+      setDmSearchResults([]);
+    } finally {
+      setDmSearching(false);
+    }
+  }
+
+  async function sendDirectMessage() {
+    if (!dmPhone || !dmMessage) return;
+    setDmSending(true);
+    try {
+      const res = await fetch("/api/admin/whatsapp/send-direct", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: dmPhone, message: dmMessage }),
+      });
+      const data = await res.json();
+      const entry: DirectMessage = {
+        id: Date.now().toString(),
+        phone: dmPhone,
+        name: dmName || dmPhone,
+        message: dmMessage,
+        sentAt: new Date().toISOString(),
+        ok: data.success,
+      };
+      setDmHistory(prev => [entry, ...prev]);
+      if (data.success) setDmMessage("");
+    } catch {
+      // ignore
+    } finally {
+      setDmSending(false);
+    }
   }
 
   // ─── Settings ────────────────────────────────────────────────────────
@@ -697,8 +855,24 @@ export default function AdminPage() {
         <p className="text-gray-500 mt-0.5">Gestion du site KTZ Emploi</p>
       </div>
 
-      {/* Onglets */}
-      <div className="flex gap-2 mb-6 border-b border-gray-200 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
+      {/* Onglets avec défilement */}
+      <div className="relative mb-6">
+        {/* Bouton flèche gauche */}
+        <button
+          onClick={() => { const el = document.getElementById("admin-tabs"); if (el) el.scrollBy({ left: -200, behavior: "smooth" }); }}
+          className="absolute left-0 top-0 bottom-0 z-10 flex items-center justify-center w-8 bg-gradient-to-r from-gray-50 to-transparent text-gray-400 hover:text-gray-700 transition-colors"
+          aria-label="Défiler à gauche"
+        >
+          <ChevronDown className="h-4 w-4 rotate-90" />
+        </button>
+
+        {/* Barre d'onglets */}
+        <div
+          id="admin-tabs"
+          className="flex gap-1 border-b border-gray-200 overflow-x-auto px-8"
+          style={{ scrollbarWidth: "thin", scrollbarColor: "#f97316 #f3f4f6" }}
+        >
+          <style>{`#admin-tabs::-webkit-scrollbar { height: 3px; } #admin-tabs::-webkit-scrollbar-track { background: #f3f4f6; } #admin-tabs::-webkit-scrollbar-thumb { background: #f97316; border-radius: 9999px; }`}</style>
         <button
           onClick={() => setActiveTab("offres")}
           className={`flex-shrink-0 flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
@@ -839,6 +1013,17 @@ export default function AdminPage() {
           )}
         </button>
         <button
+          onClick={() => setActiveTab("messages")}
+          className={`flex-shrink-0 flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+            activeTab === "messages"
+              ? "border-orange-500 text-orange-600"
+              : "border-transparent text-gray-500 hover:text-gray-700"
+          }`}
+        >
+          <Bell className="h-4 w-4" />
+          Messages directs
+        </button>
+        <button
           onClick={() => { setActiveTab("settings"); if (!Object.keys(settings).length) loadSettings(); }}
           className={`flex-shrink-0 flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
             activeTab === "settings"
@@ -849,7 +1034,17 @@ export default function AdminPage() {
           <Settings className="h-4 w-4" />
           Paramètres
         </button>
-      </div>
+        </div>{/* fin barre d'onglets */}
+
+        {/* Bouton flèche droite */}
+        <button
+          onClick={() => { const el = document.getElementById("admin-tabs"); if (el) el.scrollBy({ left: 200, behavior: "smooth" }); }}
+          className="absolute right-0 top-0 bottom-0 z-10 flex items-center justify-center w-8 bg-gradient-to-l from-gray-50 to-transparent text-gray-400 hover:text-gray-700 transition-colors"
+          aria-label="Défiler à droite"
+        >
+          <ChevronDown className="h-4 w-4 -rotate-90" />
+        </button>
+      </div>{/* fin relative wrapper */}
 
       {/* ══════ ONGLET OFFRES À VALIDER ══════ */}
       {activeTab === "offres" && (
@@ -1303,6 +1498,24 @@ export default function AdminPage() {
                           {job.published ? "Dépublier" : "Publier"}
                         </button>
 
+                        {/* Notifier SMS/WhatsApp */}
+                        {notifyResults[job.id] ? (
+                          <span className="flex items-center gap-1 px-2.5 py-1.5 bg-green-50 text-green-700 rounded-lg text-xs font-medium">
+                            <CheckCircle className="h-3.5 w-3.5" />
+                            {notifyResults[job.id].smsSent}SMS / {notifyResults[job.id].whatsappSent}WA
+                          </span>
+                        ) : (
+                          <button
+                            onClick={() => notifyJob(job.id)}
+                            disabled={notifyingJob === job.id || !job.published}
+                            title={!job.published ? "L'offre doit être publiée pour notifier" : "Notifier les candidats opt-in par SMS/WhatsApp"}
+                            className="flex items-center gap-1 px-2.5 py-1.5 bg-purple-50 hover:bg-purple-100 disabled:opacity-50 text-purple-600 rounded-lg text-xs font-medium transition-colors"
+                          >
+                            {notifyingJob === job.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Bell className="h-3.5 w-3.5" />}
+                            Notifier
+                          </button>
+                        )}
+
                         {/* Modifier */}
                         <button onClick={() => openEdit(job)}
                           className="flex items-center gap-1 px-2.5 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg text-xs font-medium transition-colors">
@@ -1539,73 +1752,64 @@ export default function AdminPage() {
               {companies
                 .filter(c => !companySearch || c.name.toLowerCase().includes(companySearch.toLowerCase()))
                 .map(c => (
-                  <div key={c.id} className="bg-white rounded-2xl border border-gray-200 p-4 flex items-center gap-4">
-                    {/* Logo */}
-                    <div className="w-12 h-12 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
-                      {c.logo
-                        ? <img src={c.logo} alt={c.name} className="w-full h-full object-contain p-1" />
-                        : <Building2 className="h-5 w-5 text-gray-400" />}
-                    </div>
-
-                    {/* Infos */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <p className="font-medium text-gray-900 truncate">{c.name}</p>
-                        {c.superRecruiter && (
-                          <span className="flex items-center gap-1 text-xs bg-yellow-50 text-yellow-700 border border-yellow-200 px-2 py-0.5 rounded-full font-medium">
-                            <Star className="h-3 w-3 fill-yellow-500 text-yellow-500" /> Super Recruteur
-                          </span>
-                        )}
-                        {c.verified && (
-                          <span className="flex items-center gap-1 text-xs bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-full font-medium">
-                            <BadgeCheck className="h-3 w-3" /> Vérifié
-                          </span>
-                        )}
+                  <div key={c.id} className="bg-white rounded-2xl border border-gray-200 p-4">
+                    {/* Ligne 1 : logo + nom + infos */}
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-10 h-10 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
+                        {c.logo
+                          ? <img src={c.logo} alt={c.name} className="w-full h-full object-contain p-1" />
+                          : <Building2 className="h-4 w-4 text-gray-400" />}
                       </div>
-                      <p className="text-sm text-gray-400">{c.sector ?? "—"} · {c._count.jobs} offre(s)</p>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <p className="font-medium text-gray-900 truncate">{c.name}</p>
+                          {c.superRecruiter && (
+                            <span className="flex items-center gap-1 text-xs bg-yellow-50 text-yellow-700 border border-yellow-200 px-1.5 py-0.5 rounded-full font-medium whitespace-nowrap">
+                              <Star className="h-3 w-3 fill-yellow-500 text-yellow-500" /> Super Recruteur
+                            </span>
+                          )}
+                          {c.verified && (
+                            <span className="flex items-center gap-1 text-xs bg-blue-50 text-blue-700 border border-blue-200 px-1.5 py-0.5 rounded-full font-medium whitespace-nowrap">
+                              <BadgeCheck className="h-3 w-3" /> Vérifié
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-gray-400">{c.sector ?? "—"} · {c._count.jobs} offre(s)</p>
+                      </div>
                     </div>
 
-                    {/* Toggles */}
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      {/* Badge Super Recruteur */}
+                    {/* Ligne 2 : actions */}
+                    <div className="flex items-center gap-2 mt-3 flex-wrap">
                       <button
                         onClick={() => toggleCompanyField(c.id, "superRecruiter", !c.superRecruiter)}
                         disabled={togglingCompany === c.id + "superRecruiter"}
-                        className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
-                          c.superRecruiter
-                            ? "bg-yellow-100 text-yellow-700 hover:bg-yellow-200"
-                            : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                          c.superRecruiter ? "bg-yellow-100 text-yellow-700 hover:bg-yellow-200" : "bg-gray-100 text-gray-500 hover:bg-gray-200"
                         }`}
                       >
                         {togglingCompany === c.id + "superRecruiter"
-                          ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                          : <Star className={`h-3.5 w-3.5 ${c.superRecruiter ? "fill-yellow-500 text-yellow-500" : ""}`} />}
+                          ? <Loader2 className="h-3 w-3 animate-spin" />
+                          : <Star className={`h-3 w-3 ${c.superRecruiter ? "fill-yellow-500 text-yellow-500" : ""}`} />}
                         {c.superRecruiter ? "Retirer badge" : "Super Recruteur"}
                       </button>
 
-                      {/* Badge Vérifié */}
                       <button
                         onClick={() => toggleCompanyField(c.id, "verified", !c.verified)}
                         disabled={togglingCompany === c.id + "verified"}
-                        className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
-                          c.verified
-                            ? "bg-blue-100 text-blue-700 hover:bg-blue-200"
-                            : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                          c.verified ? "bg-blue-100 text-blue-700 hover:bg-blue-200" : "bg-gray-100 text-gray-500 hover:bg-gray-200"
                         }`}
                       >
                         {togglingCompany === c.id + "verified"
-                          ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                          : <BadgeCheck className="h-3.5 w-3.5" />}
+                          ? <Loader2 className="h-3 w-3 animate-spin" />
+                          : <BadgeCheck className="h-3 w-3" />}
                         {c.verified ? "Vérifié ✓" : "Vérifier"}
                       </button>
 
-                      {/* Suspendre / Réactiver */}
                       <button
                         onClick={() => suspendCompany(c.id, !c.suspended)}
-                        className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
-                          c.suspended
-                            ? "bg-red-100 text-red-700 hover:bg-red-200"
-                            : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ml-auto ${
+                          c.suspended ? "bg-red-100 text-red-700 hover:bg-red-200" : "bg-gray-100 text-gray-500 hover:bg-gray-200"
                         }`}
                       >
                         {c.suspended ? "Réactiver" : "Suspendre"}
@@ -1613,6 +1817,14 @@ export default function AdminPage() {
                     </div>
                   </div>
                 ))}
+
+              {companies.filter(c => !companySearch || c.name.toLowerCase().includes(companySearch.toLowerCase())).length === 0 && (
+                <div className="text-center py-16 bg-white rounded-2xl border border-gray-200">
+                  <Building2 className="h-10 w-10 mx-auto mb-3 text-gray-200" />
+                  <p className="font-medium text-gray-500">Aucun recruteur inscrit</p>
+                  <p className="text-sm text-gray-400 mt-1">Les entreprises apparaîtront ici dès leur inscription</p>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -1655,62 +1867,69 @@ export default function AdminPage() {
                   u.email.toLowerCase().includes(userSearch.toLowerCase())
                 )
                 .map((u) => (
-                  <div key={u.id} className={`bg-white rounded-2xl border p-4 flex items-center gap-4 ${selectedUsers.has(u.id) ? "border-orange-300 ring-1 ring-orange-100" : "border-gray-200"}`}>
-                    {/* Checkbox */}
-                    <input
-                      type="checkbox"
-                      checked={selectedUsers.has(u.id)}
-                      onChange={() => setSelectedUsers(p => { const n = new Set(p); n.has(u.id) ? n.delete(u.id) : n.add(u.id); return n; })}
-                      className="rounded text-orange-500 flex-shrink-0"
-                    />
-                    {/* Avatar */}
-                    <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center font-bold text-orange-600 text-sm flex-shrink-0">
-                      {(u.name ?? u.email).slice(0, 2).toUpperCase()}
+                  <div key={u.id} className={`bg-white rounded-2xl border p-4 ${selectedUsers.has(u.id) ? "border-orange-300 ring-1 ring-orange-100" : "border-gray-200"}`}>
+                    {/* Ligne 1 : checkbox + avatar + nom/email + badge rôle */}
+                    <div className="flex items-center gap-3 min-w-0">
+                      <input
+                        type="checkbox"
+                        checked={selectedUsers.has(u.id)}
+                        onChange={() => setSelectedUsers(p => { const n = new Set(p); n.has(u.id) ? n.delete(u.id) : n.add(u.id); return n; })}
+                        className="rounded text-orange-500 flex-shrink-0"
+                      />
+                      <div className="w-9 h-9 rounded-full bg-orange-100 flex items-center justify-center font-bold text-orange-600 text-sm flex-shrink-0">
+                        {(u.name ?? u.email).slice(0, 2).toUpperCase()}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-gray-900 truncate text-sm">{u.name ?? "—"}</p>
+                        <p className="text-xs text-gray-400 truncate">{u.email}</p>
+                      </div>
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0 ${ROLE_LABELS[u.role]?.color}`}>
+                        {u.role === "ADMIN" && <Shield className="h-3 w-3 inline mr-1" />}
+                        {ROLE_LABELS[u.role]?.label ?? u.role}
+                      </span>
                     </div>
 
-                    {/* Infos */}
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-gray-900 truncate">{u.name ?? "—"}</p>
-                      <p className="text-sm text-gray-400 truncate">{u.email}</p>
-                    </div>
-
-                    {/* Badge rôle actuel */}
-                    <span className={`text-xs px-2.5 py-1 rounded-full font-medium flex-shrink-0 ${ROLE_LABELS[u.role]?.color}`}>
-                      {u.role === "ADMIN" && <Shield className="h-3 w-3 inline mr-1" />}
-                      {ROLE_LABELS[u.role]?.label ?? u.role}
-                    </span>
-
-                    {/* Sélecteur de rôle */}
-                    <div className="relative flex-shrink-0">
-                      <select
-                        value={u.role}
-                        onChange={(e) => changeRole(u.id, e.target.value)}
-                        disabled={updatingRole === u.id}
-                        className="appearance-none border border-gray-200 rounded-xl px-3 py-2 pr-8 text-sm text-gray-700 bg-white hover:border-orange-300 focus:outline-none focus:border-orange-400 disabled:opacity-50 cursor-pointer"
+                    {/* Ligne 2 : changer le rôle + suspendre */}
+                    <div className="flex items-center gap-2 mt-3 flex-wrap pl-12">
+                      <div className="relative">
+                        <select
+                          value={u.role}
+                          onChange={(e) => changeRole(u.id, e.target.value)}
+                          disabled={updatingRole === u.id}
+                          className="appearance-none border border-gray-200 rounded-lg px-3 py-1.5 pr-7 text-xs text-gray-700 bg-white hover:border-orange-300 focus:outline-none focus:border-orange-400 disabled:opacity-50 cursor-pointer"
+                        >
+                          <option value="JOBSEEKER">Candidat</option>
+                          <option value="EMPLOYER">Recruteur</option>
+                          <option value="ADMIN">Admin</option>
+                        </select>
+                        {updatingRole === u.id
+                          ? <Loader2 className="h-3 w-3 animate-spin absolute right-2 top-2 text-gray-400 pointer-events-none" />
+                          : <ChevDown className="h-3 w-3 absolute right-2 top-2 text-gray-400 pointer-events-none" />
+                        }
+                      </div>
+                      <button
+                        onClick={() => suspendUser(u.id, !u.suspended)}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ml-auto ${
+                          u.suspended ? "bg-red-100 text-red-700 hover:bg-red-200" : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                        }`}
                       >
-                        <option value="JOBSEEKER">Candidat</option>
-                        <option value="EMPLOYER">Recruteur</option>
-                        <option value="ADMIN">Admin</option>
-                      </select>
-                      {updatingRole === u.id
-                        ? <Loader2 className="h-3.5 w-3.5 animate-spin absolute right-2.5 top-2.5 text-gray-400 pointer-events-none" />
-                        : <ChevDown className="h-3.5 w-3.5 absolute right-2.5 top-2.5 text-gray-400 pointer-events-none" />
-                      }
+                        {u.suspended ? "Réactiver" : "Suspendre"}
+                      </button>
                     </div>
-
-                    {/* Suspendre / Réactiver */}
-                    <button
-                      onClick={() => suspendUser(u.id, !u.suspended)}
-                      className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium transition-colors flex-shrink-0 ${
-                        u.suspended
-                          ? "bg-red-100 text-red-700 hover:bg-red-200"
-                          : "bg-gray-100 text-gray-500 hover:bg-gray-200"
-                      }`}
-                    >
-                      {u.suspended ? "Réactiver" : "Suspendre"}
-                    </button>
                   </div>
                 ))}
+
+              {siteUsers.filter((u) =>
+                !userSearch ||
+                u.name?.toLowerCase().includes(userSearch.toLowerCase()) ||
+                u.email.toLowerCase().includes(userSearch.toLowerCase())
+              ).length === 0 && (
+                <div className="text-center py-16 bg-white rounded-2xl border border-gray-200">
+                  <Users className="h-10 w-10 mx-auto mb-3 text-gray-200" />
+                  <p className="font-medium text-gray-500">Aucun utilisateur trouvé</p>
+                  <p className="text-sm text-gray-400 mt-1">Essayez une autre recherche</p>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -2220,6 +2439,347 @@ export default function AdminPage() {
                   Sauvegarder
                 </button>
               </div>
+
+              {/* ── Templates de notification ── */}
+              <div className="bg-white rounded-2xl border border-gray-200 p-5">
+                <h3 className="font-semibold text-gray-900 mb-1 flex items-center gap-2">
+                  <Bell className="h-4 w-4 text-orange-500" /> Templates de notification
+                </h3>
+                <p className="text-xs text-gray-400 mb-4">
+                  Variables disponibles :&nbsp;
+                  {["{{prenom}}", "{{offre}}", "{{entreprise}}", "{{ville}}", "{{type}}", "{{lien}}"].map(v => (
+                    <code key={v} className="bg-orange-50 text-orange-600 px-1.5 py-0.5 rounded text-xs font-mono mr-1">{v}</code>
+                  ))}
+                </p>
+
+                {/* Template WhatsApp */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                    💬 Message WhatsApp
+                  </label>
+                  <textarea
+                    value={settings["wa_template"] ?? ""}
+                    onChange={e => setSettings(p => ({ ...p, wa_template: e.target.value }))}
+                    rows={5}
+                    placeholder={`Bonjour {{prenom}} 👋\n\nNouvelle offre : *{{offre}}*\n🏢 {{entreprise}} — 📍 {{ville}}\n\n👉 {{lien}}`}
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none font-mono"
+                  />
+                  <button
+                    onClick={() => saveSetting("wa_template", settings["wa_template"] ?? "")}
+                    disabled={savingSettings}
+                    className="mt-2 flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors disabled:opacity-60"
+                  >
+                    {savingSettings ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                    Sauvegarder
+                  </button>
+                </div>
+
+                {/* Objet email */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                    📧 Objet de l&apos;email
+                  </label>
+                  <input
+                    type="text"
+                    value={settings["email_subject_template"] ?? ""}
+                    onChange={e => setSettings(p => ({ ...p, email_subject_template: e.target.value }))}
+                    placeholder="Nouvelle offre pour vous : {{offre}} chez {{entreprise}}"
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                  />
+                </div>
+
+                {/* Corps email */}
+                <div className="mb-3">
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                    📧 Corps de l&apos;email
+                  </label>
+                  <textarea
+                    value={settings["email_body_template"] ?? ""}
+                    onChange={e => setSettings(p => ({ ...p, email_body_template: e.target.value }))}
+                    rows={6}
+                    placeholder={`Bonjour {{prenom}},\n\nUne nouvelle offre correspond à votre profil :\n\n{{offre}} — {{entreprise}}\n📍 {{ville}} · {{type}}\n\nPostuler : {{lien}}`}
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none"
+                  />
+                </div>
+
+                <button
+                  onClick={async () => {
+                    await saveSetting("email_subject_template", settings["email_subject_template"] ?? "");
+                    await saveSetting("email_body_template", settings["email_body_template"] ?? "");
+                  }}
+                  disabled={savingSettings}
+                  className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors disabled:opacity-60"
+                >
+                  {savingSettings ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                  Sauvegarder les templates email
+                </button>
+
+                {/* Prévisualisation */}
+                <div className="mt-4 pt-4 border-t border-gray-100">
+                  <p className="text-xs font-medium text-gray-500 mb-2">Aperçu (exemple) :</p>
+                  <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-xs text-emerald-900 font-mono whitespace-pre-wrap">
+                    {(settings["wa_template"] || `Bonjour {{prenom}} 👋\n\nNouvelle offre : *{{offre}}*\n🏢 {{entreprise}} — 📍 {{ville}}\n\n👉 {{lien}}`)
+                      .replace(/\{\{prenom\}\}/g, "Marie")
+                      .replace(/\{\{offre\}\}/g, "Comptable Senior")
+                      .replace(/\{\{entreprise\}\}/g, "Total RCA")
+                      .replace(/\{\{ville\}\}/g, "Bangui")
+                      .replace(/\{\{type\}\}/g, "CDI")
+                      .replace(/\{\{lien\}\}/g, "ktzemploi.com/offres/...")
+                    }
+                  </div>
+                </div>
+              </div>
+
+              {/* ── WhatsApp (Green API) ── */}
+              <div className="bg-white rounded-2xl border border-gray-200 p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <p className="font-semibold text-gray-900 flex items-center gap-2">
+                      <span className="text-lg">💬</span> WhatsApp — Green API
+                    </p>
+                    <p className="text-sm text-gray-500 mt-0.5">Statut de la connexion WhatsApp pour les notifications</p>
+                  </div>
+                  <button
+                    onClick={loadWaStatus}
+                    disabled={waStateLoading}
+                    className="flex items-center gap-1.5 text-sm text-orange-500 hover:text-orange-600 font-medium"
+                  >
+                    {waStateLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <BarChart2 className="h-4 w-4" />}
+                    Vérifier
+                  </button>
+                </div>
+
+                {/* Statut */}
+                {waState !== "unknown" && (
+                  <div className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium mb-4 ${
+                    waState === "authorized" ? "bg-green-50 text-green-700 border border-green-200" :
+                    waState === "not_configured" ? "bg-gray-50 text-gray-500 border border-gray-200" :
+                    "bg-red-50 text-red-600 border border-red-200"
+                  }`}>
+                    <span className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                      waState === "authorized" ? "bg-green-500" :
+                      waState === "not_configured" ? "bg-gray-400" : "bg-red-500"
+                    }`} />
+                    {waState === "authorized" && "✅ WhatsApp connecté — prêt à envoyer"}
+                    {waState === "notAuthorized" && "⚠️ Non connecté — scannez le QR code"}
+                    {waState === "not_configured" && "⚙️ Green API non configuré — ajoutez les clés dans .env"}
+                    {waState === "error" && "❌ Erreur de connexion à Green API"}
+                  </div>
+                )}
+
+                {/* Bouton QR si non connecté */}
+                {waState === "notAuthorized" && (
+                  <div className="mb-4">
+                    <button
+                      onClick={loadWaQR}
+                      disabled={waQRLoading}
+                      className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-colors disabled:opacity-60 mb-3"
+                    >
+                      {waQRLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <span>📱</span>}
+                      Obtenir le QR code
+                    </button>
+                    {waQR && (
+                      <div className="flex flex-col items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                        <p className="text-xs text-gray-500 font-medium">Scannez ce QR avec WhatsApp → Appareil lié</p>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={`data:image/png;base64,${waQR}`}
+                          alt="QR Code WhatsApp"
+                          className="w-48 h-48 rounded-xl"
+                        />
+                        <button
+                          onClick={loadWaStatus}
+                          className="text-xs text-orange-500 hover:underline font-medium"
+                        >
+                          J&apos;ai scanné → vérifier la connexion
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Test d'envoi */}
+                {waState === "authorized" && (
+                  <div>
+                    <p className="text-sm font-medium text-gray-700 mb-2">Envoyer un message test</p>
+                    <div className="flex gap-2">
+                      <input
+                        type="tel"
+                        value={waTestPhone}
+                        onChange={e => { setWaTestPhone(e.target.value); setWaTestResult(null); }}
+                        placeholder="+236 77 00 00 00"
+                        className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                      />
+                      <button
+                        onClick={testWhatsApp}
+                        disabled={waTesting || !waTestPhone}
+                        className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-200 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-colors"
+                      >
+                        {waTesting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                        Tester
+                      </button>
+                    </div>
+                    {waTestResult === "ok" && (
+                      <p className="flex items-center gap-1.5 text-sm text-green-600 mt-2">
+                        <CheckCircle className="h-4 w-4" /> Message envoyé avec succès !
+                      </p>
+                    )}
+                    {waTestResult === "fail" && (
+                      <p className="flex items-center gap-1.5 text-sm text-red-500 mt-2">
+                        <XCircle className="h-4 w-4" /> Échec — vérifiez le numéro et la connexion
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {/* Instructions si non configuré */}
+                {waState === "not_configured" && (
+                  <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800 space-y-1">
+                    <p className="font-semibold">Pour configurer Green API :</p>
+                    <p>1. Crée un compte sur <span className="font-mono">green-api.com</span></p>
+                    <p>2. Crée une instance → copie l&apos;ID et le token</p>
+                    <p>3. Ajoute dans <span className="font-mono">.env</span> :</p>
+                    <pre className="bg-amber-100 rounded-lg px-3 py-2 text-xs mt-1 font-mono">
+{`GREEN_API_INSTANCE="ton_instance_id"
+GREEN_API_TOKEN="ton_api_token"
+WA_PROVIDER="greenapi"`}
+                    </pre>
+                    <p>4. Redémarre le serveur et clique sur Vérifier</p>
+                  </div>
+                )}
+              </div>
+
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ══════ ONGLET MESSAGES DIRECTS ══════ */}
+      {activeTab === "messages" && (
+        <div className="max-w-2xl">
+          <h2 className="font-semibold text-gray-900 text-lg mb-1">Messages directs WhatsApp</h2>
+          <p className="text-sm text-gray-500 mb-6">Envoyez un message WhatsApp à n&apos;importe quel candidat.</p>
+
+          <div className="bg-white rounded-2xl border border-gray-200 p-5 space-y-4">
+
+            {/* Recherche candidat */}
+            <div className="relative">
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Rechercher un candidat</label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={dmSearch}
+                  onChange={e => { setDmSearch(e.target.value); searchCandidates(e.target.value); }}
+                  placeholder="Nom ou email du candidat..."
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 pr-10"
+                />
+                {dmSearching && <Loader2 className="absolute right-3 top-3 h-4 w-4 animate-spin text-gray-400" />}
+              </div>
+
+              {/* Résultats */}
+              {dmSearchResults.length > 0 && (
+                <div className="absolute z-20 top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+                  {dmSearchResults.map(u => (
+                    <button
+                      key={u.id}
+                      onClick={() => {
+                        setDmPhone(u.phone ?? "");
+                        setDmName(u.name ?? u.email);
+                        setDmSearch(u.name ?? u.email);
+                        setDmSearchResults([]);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-3 hover:bg-orange-50 transition-colors text-left border-b border-gray-100 last:border-0"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-xs flex-shrink-0">
+                        {(u.name ?? u.email)[0].toUpperCase()}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">{u.name ?? "—"}</p>
+                        <p className="text-xs text-gray-400 truncate">{u.email} · {u.phone}</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {dmSearch.length >= 2 && dmSearchResults.length === 0 && !dmSearching && (
+                <p className="text-xs text-gray-400 mt-1">Aucun candidat trouvé avec un numéro enregistré.</p>
+              )}
+            </div>
+
+            {/* Ou saisie manuelle */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                Ou entrer un numéro directement
+              </label>
+              <input
+                type="tel"
+                value={dmPhone}
+                onChange={e => { setDmPhone(e.target.value); setDmName(""); }}
+                placeholder="+236 77 00 00 00"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+              />
+            </div>
+
+            {/* Destinataire sélectionné */}
+            {dmPhone && (
+              <div className="flex items-center gap-2 px-4 py-2.5 bg-emerald-50 border border-emerald-200 rounded-xl">
+                <span className="text-lg">💬</span>
+                <div>
+                  {dmName && <p className="text-sm font-semibold text-emerald-800">{dmName}</p>}
+                  <p className="text-xs text-emerald-600">{dmPhone}</p>
+                </div>
+                <button onClick={() => { setDmPhone(""); setDmName(""); setDmSearch(""); }} className="ml-auto text-emerald-400 hover:text-emerald-700">
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            )}
+
+            {/* Message */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Message</label>
+              <textarea
+                value={dmMessage}
+                onChange={e => setDmMessage(e.target.value)}
+                rows={4}
+                placeholder="Bonjour [Prénom], nous avons une opportunité qui pourrait vous intéresser..."
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none"
+              />
+              <p className="text-xs text-gray-400 mt-1">{dmMessage.length} caractères</p>
+            </div>
+
+            {/* Bouton envoyer */}
+            <button
+              onClick={sendDirectMessage}
+              disabled={dmSending || !dmPhone || !dmMessage}
+              className="w-full flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-200 text-white py-3 rounded-xl font-semibold text-sm transition-colors"
+            >
+              {dmSending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+              {dmSending ? "Envoi en cours..." : "Envoyer via WhatsApp"}
+            </button>
+          </div>
+
+          {/* Historique des envois */}
+          {dmHistory.length > 0 && (
+            <div className="mt-6">
+              <h3 className="font-semibold text-gray-900 mb-3">Historique de cette session</h3>
+              <div className="space-y-2">
+                {dmHistory.map(entry => (
+                  <div key={entry.id} className={`flex items-start gap-3 p-4 rounded-xl border ${entry.ok ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"}`}>
+                    <span className="text-lg flex-shrink-0">{entry.ok ? "✅" : "❌"}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <p className="text-sm font-semibold text-gray-900 truncate">{entry.name}</p>
+                        <p className="text-xs text-gray-400">{entry.phone}</p>
+                      </div>
+                      <p className="text-sm text-gray-600 line-clamp-2">{entry.message}</p>
+                    </div>
+                    <p className="text-xs text-gray-400 flex-shrink-0">
+                      {new Date(entry.sentAt).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
@@ -2266,5 +2826,17 @@ export default function AdminPage() {
       )}
 
     </div>
+  );
+}
+
+export default function AdminPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-6 w-6 animate-spin text-orange-500" />
+      </div>
+    }>
+      <AdminDashboard />
+    </Suspense>
   );
 }

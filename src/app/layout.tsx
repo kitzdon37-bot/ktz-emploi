@@ -3,6 +3,8 @@ import "./globals.css";
 import { Providers } from "./providers";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ChatWidget from "@/components/ChatWidget";
+import NewsletterPopup from "@/components/NewsletterPopup";
 
 export const metadata: Metadata = {
   title: "KTZ Emploi — Offres d'emploi en République Centrafricaine",
@@ -23,6 +25,8 @@ export default function RootLayout({
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />
+          <ChatWidget />
+          <NewsletterPopup />
         </Providers>
       </body>
     </html>

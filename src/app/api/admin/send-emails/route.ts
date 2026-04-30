@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
           ...(keywords.length === 0 && !location ? [{ published: true }] : []),
         ],
       },
-      include: { company: { select: { name: true } } },
+      include: { company: { select: { name: true, logo: true } } },
       orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
       take: 5,
     });

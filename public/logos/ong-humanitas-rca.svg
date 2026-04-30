@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 50">
+  <!-- Humanitas — rouge humanitaire -->
+  <rect width="120" height="50" rx="8" fill="#C0392B"/>
+  <!-- Croix + cœur -->
+  <rect x="15" y="18" width="5" height="14" rx="2" fill="#ffffff"/>
+  <rect x="11" y="22" width="13" height="5" rx="2" fill="#ffffff"/>
+  <!-- Petite flamme/coeur -->
+  <path d="M26 19 C26 19 23 16 23 20 C23 23 26 25 26 25 C26 25 29 23 29 20 C29 16 26 19 26 19Z" fill="#FF6B6B"/>
+  <!-- Texte -->
+  <text x="36" y="21" font-family="Arial,sans-serif" font-size="10" font-weight="800" fill="#ffffff" letter-spacing="0.3">HUMANITAS</text>
+  <text x="36" y="35" font-family="Arial,sans-serif" font-size="8" font-weight="500" fill="#FFB3B3" letter-spacing="0.2">ONG · RCA</text>
+</svg>

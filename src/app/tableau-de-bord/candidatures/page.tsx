@@ -1,10 +1,14 @@
-﻿import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { APPLICATION_STATUSES, timeAgo, formatDate } from "@/lib/utils";
-import { Briefcase } from "lucide-react";
+import { Briefcase, FileText } from "lucide-react";
+import ApplicationActions from "./ApplicationActions";
+import NotesButton from "./NotesButton";
+import ExportCsvButton from "./ExportCsvButton";
+import StatusTimeline from "./StatusTimeline";
 
 export default async function CandidaturesPage() {
   const session = await getServerSession(authOptions);
@@ -22,14 +26,17 @@ export default async function CandidaturesPage() {
       where: { job: { companyId: company.id } },
       include: {
         job: { select: { title: true, slug: true, type: true } },
-        user: { select: { name: true, email: true, profile: true } },
+        user: { select: { name: true, email: true } },
       },
       orderBy: { createdAt: "desc" },
     });
 
     return (
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Candidatures reçues</h1>
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-2xl font-bold text-gray-900">Candidatures reçues</h1>
+          <ExportCsvButton />
+        </div>
         <p className="text-gray-500 mb-6">{applications.length} candidature(s) au total</p>
 
         {applications.length > 0 ? (
@@ -53,15 +60,28 @@ export default async function CandidaturesPage() {
                           {app.coverLetter}
                         </p>
                       )}
+                      {app.cvUrl && (
+                        <a
+                          href={app.cvUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 mt-2 text-sm text-orange-500 hover:underline"
+                        >
+                          <FileText className="h-4 w-4" />
+                          Voir le CV
+                        </a>
+                      )}
                     </div>
                     <div className="flex flex-col items-end gap-2">
-                      <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${st?.color}`}>
-                        {st?.label}
-                      </span>
-                      <UpdateStatusButton appId={app.id} currentStatus={app.status} />
+                      <ApplicationActions
+                        applicationId={app.id}
+                        initialStatus={app.status}
+                        candidateName={app.user.name || app.user.email}
+                      />
                       <span className="text-xs text-gray-400">{timeAgo(app.createdAt)}</span>
                     </div>
                   </div>
+                  <NotesButton applicationId={app.id} />
                 </div>
               );
             })}
@@ -76,12 +96,16 @@ export default async function CandidaturesPage() {
     );
   }
 
-  // JOBSEEKER - show sent applications
+  // JOBSEEKER — affiche les candidatures envoyées avec historique des statuts
   const applications = await prisma.application.findMany({
     where: { userId },
     include: {
       job: {
         include: { company: { select: { name: true, logo: true } } },
+      },
+      statusHistory: {
+        orderBy: { changedAt: "asc" },
+        select: { id: true, status: true, note: true, changedAt: true },
       },
     },
     orderBy: { createdAt: "desc" },
@@ -96,6 +120,11 @@ export default async function CandidaturesPage() {
         <div className="space-y-3">
           {applications.map((app) => {
             const st = APPLICATION_STATUSES[app.status];
+            // Sérialise les dates pour le passage au composant client
+            const history = app.statusHistory.map((h) => ({
+              ...h,
+              changedAt: h.changedAt.toISOString(),
+            }));
             return (
               <div key={app.id} className="bg-white rounded-2xl border border-gray-200 p-5">
                 <div className="flex items-start gap-4">
@@ -113,6 +142,13 @@ export default async function CandidaturesPage() {
                       </p>
                     )}
                     <p className="text-xs text-gray-400 mt-2">Envoyée le {formatDate(app.createdAt)}</p>
+                    {/* Timeline des statuts */}
+                    <StatusTimeline
+                      applicationId={app.id}
+                      currentStatus={app.status}
+                      currentCreatedAt={app.createdAt.toISOString()}
+                      history={history}
+                    />
                   </div>
                   <div>
                     <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${st?.color}`}>
@@ -136,17 +172,3 @@ export default async function CandidaturesPage() {
     </div>
   );
 }
-
-function UpdateStatusButton({ appId, currentStatus }: { appId: string; currentStatus: string }) {
-  // This would be a client component for updating status
-  // Simplified version here
-  return (
-    <Link
-      href={`/api/applications/${appId}/status`}
-      className="text-xs text-blue-600 hover:underline"
-    >
-      Changer statut
-    </Link>
-  );
-}
-

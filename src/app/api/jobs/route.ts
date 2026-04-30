@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { slugify } from "@/lib/utils";
 import { getPlanLimits } from "@/lib/plans";
 import { logActivity } from "@/lib/activity";
+import { sendJobNotifications } from "@/lib/notifications";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -42,6 +43,7 @@ export async function POST(req: NextRequest) {
     const {
       title, type, category, location, remote, description,
       requirements, benefits, experienceLevel, salaryMin, salaryMax, deadline, coverImage,
+      notifyOnApproval,
     } = await req.json();
 
     if (!title || !type || !category || !location || !description) {
@@ -69,8 +71,10 @@ export async function POST(req: NextRequest) {
         salaryMax: salaryMax || null,
         deadline: deadline ? new Date(deadline) : null,
         coverImage: coverImage || null,
-        published: false,
+        published: true,
+        notifyOnApproval: !!notifyOnApproval,
       },
+      include: { company: { select: { name: true } } },
     });
 
     const dbUser = await prisma.user.findUnique({ where: { id: userId }, select: { name: true, email: true } });
@@ -83,10 +87,18 @@ export async function POST(req: NextRequest) {
       metadata: { jobId: job.id, slug: job.slug, companyName: company.name, category, location },
     });
 
+    // Notifications immédiates si le recruteur l'a demandé
+    if (notifyOnApproval) {
+      sendJobNotifications(job).catch(err =>
+        console.error("[Notifications] Erreur:", err)
+      );
+    }
+
     return NextResponse.json({ success: true, id: job.id, slug: job.slug });
   } catch (err) {
-    console.error(err);
-    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("[POST /api/jobs]", message);
+    return NextResponse.json({ error: "Erreur serveur", detail: message }, { status: 500 });
   }
 }
 

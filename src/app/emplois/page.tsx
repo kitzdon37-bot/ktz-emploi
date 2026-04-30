@@ -23,7 +23,7 @@ async function getJobs(params: Awaited<Props["searchParams"]>) {
   const page = parseInt(params.page || "1");
   const skip = (page - 1) * PAGE_SIZE;
 
-  const where: Record<string, unknown> = { published: true };
+  const where: Record<string, unknown> = { published: true, company: { suspended: false } };
 
   if (params.q) {
     where.OR = [
@@ -199,7 +199,7 @@ export default async function EmploisPage({ searchParams }: Props) {
         <div className="flex-1">
           {jobs.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
                 {jobs.map((job) => (
                   <JobCard key={job.id} job={job} />
                 ))}
