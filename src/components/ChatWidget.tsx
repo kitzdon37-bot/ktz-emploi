@@ -3,6 +3,47 @@
 import { useState, useRef, useEffect } from "react";
 import { MessageCircle, X, Send, Bot, Loader2, ChevronDown } from "lucide-react";
 
+// Rendu du texte : gère les tirets comme listes, le gras **...**, les sauts de ligne
+function renderText(text: string) {
+  const lines = text.split("\n");
+  const elements: React.ReactNode[] = [];
+  let key = 0;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+
+    // Ligne vide → espace vertical léger
+    if (line.trim() === "") {
+      elements.push(<div key={key++} className="h-1" />);
+      continue;
+    }
+
+    // Ligne de liste (commence par - ou •)
+    const isBullet = /^[-•]\s+/.test(line.trim());
+    const content = isBullet ? line.trim().replace(/^[-•]\s+/, "") : line;
+
+    const parts = content.split(/(\*\*[^*]+\*\*)/g).map((part, j) => {
+      if (part.startsWith("**") && part.endsWith("**")) {
+        return <strong key={j}>{part.slice(2, -2)}</strong>;
+      }
+      return part;
+    });
+
+    if (isBullet) {
+      elements.push(
+        <div key={key++} className="flex items-start gap-1.5">
+          <span className="text-orange-400 mt-0.5 flex-shrink-0">•</span>
+          <span>{parts}</span>
+        </div>
+      );
+    } else {
+      elements.push(<div key={key++}>{parts}</div>);
+    }
+  }
+
+  return <div className="space-y-0.5">{elements}</div>;
+}
+
 interface Message {
   role: "user" | "assistant";
   content: string;
@@ -153,13 +194,13 @@ export default function ChatWidget() {
                   </div>
                 )}
                 <div
-                  className={`rounded-2xl px-3 py-2 max-w-[260px] text-sm leading-relaxed whitespace-pre-wrap ${
+                  className={`rounded-2xl px-3 py-2 max-w-[260px] text-sm leading-relaxed ${
                     msg.role === "user"
                       ? "bg-orange-500 text-white rounded-tr-sm"
                       : "bg-gray-100 text-gray-700 rounded-tl-sm"
                   }`}
                 >
-                  {msg.content || (
+                  {msg.content ? renderText(msg.content) : (
                     <span className="flex items-center gap-1 text-gray-400">
                       <Loader2 className="h-3 w-3 animate-spin" />
                       En train d'écrire…
