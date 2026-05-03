@@ -17,7 +17,7 @@ interface Props {
   }>;
 }
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 20;
 
 async function getJobs(params: Awaited<Props["searchParams"]>) {
   const page = parseInt(params.page || "1");
@@ -27,12 +27,12 @@ async function getJobs(params: Awaited<Props["searchParams"]>) {
 
   if (params.q) {
     where.OR = [
-      { title: { contains: params.q } },
-      { description: { contains: params.q } },
-      { company: { name: { contains: params.q } } },
+      { title: { contains: params.q, mode: 'insensitive' } },
+      { description: { contains: params.q, mode: 'insensitive' } },
+      { company: { name: { contains: params.q, mode: 'insensitive' } } },
     ];
   }
-  if (params.location) where.location = { contains: params.location };
+  if (params.location) where.location = { contains: params.location, mode: 'insensitive' };
   if (params.category) where.category = params.category;
   if (params.type) where.type = params.type;
   if (params.experience) where.experienceLevel = params.experience;
@@ -199,7 +199,7 @@ export default async function EmploisPage({ searchParams }: Props) {
         <div className="flex-1">
           {jobs.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3">
                 {jobs.map((job) => (
                   <JobCard key={job.id} job={job} />
                 ))}

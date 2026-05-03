@@ -209,7 +209,7 @@ export default async function DashboardPage() {
     where: {
       published: true,
       ...(profile?.title
-        ? { title: { contains: profile.title.split(" ")[0] } }
+        ? { title: { contains: profile.title.split(" ")[0], mode: 'insensitive' } }
         : {}),
     },
     include: { company: { select: { name: true, logo: true, verified: true } } },

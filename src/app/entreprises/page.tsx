@@ -13,8 +13,8 @@ async function getCompanies(params: Awaited<Props["searchParams"]>) {
   const where: Record<string, unknown> = { suspended: false };
   if (params.q) {
     where.OR = [
-      { name: { contains: params.q } },
-      { description: { contains: params.q } },
+      { name: { contains: params.q, mode: 'insensitive' } },
+      { description: { contains: params.q, mode: 'insensitive' } },
     ];
   }
   if (params.sector) where.sector = params.sector;
@@ -36,16 +36,43 @@ const SECTORS = [
 ];
 
 const SECTOR_COLORS: Record<string, string> = {
-  "Banque & Finance":         "bg-blue-100 text-blue-700",
-  "Assurances":               "bg-indigo-100 text-indigo-700",
-  "Télécommunications":       "bg-cyan-100 text-cyan-700",
-  "Informatique & Télécoms":  "bg-violet-100 text-violet-700",
-  "BTP & Construction":       "bg-amber-100 text-amber-700",
-  "Transport & Logistique":   "bg-orange-100 text-orange-700",
-  "Santé":                    "bg-rose-100 text-rose-700",
-  "Éducation & Formation":    "bg-emerald-100 text-emerald-700",
-  "Industrie":                "bg-gray-100 text-gray-700",
-  "Hôtellerie & Tourisme":    "bg-teal-100 text-teal-700",
+  "Banque & Finance":         "from-blue-600 to-blue-800",
+  "Assurances":               "from-indigo-600 to-indigo-800",
+  "Télécommunications":       "from-cyan-500 to-cyan-700",
+  "Informatique & Télécoms":  "from-violet-600 to-violet-800",
+  "BTP & Construction":       "from-amber-500 to-amber-700",
+  "Transport & Logistique":   "from-orange-500 to-orange-700",
+  "Santé":                    "from-rose-500 to-rose-700",
+  "Médecine & Santé":         "from-rose-500 to-rose-700",
+  "Éducation & Formation":    "from-emerald-500 to-emerald-700",
+  "Industrie":                "from-gray-600 to-gray-800",
+  "Hôtellerie & Tourisme":    "from-teal-500 to-teal-700",
+  "Humanitaire & ONG":        "from-green-600 to-green-800",
+  "ONG / Humanitaire":        "from-green-600 to-green-800",
+  "Agriculture & Élevage":    "from-lime-600 to-lime-800",
+  "Journalisme & Médias":     "from-purple-500 to-purple-700",
+  "Énergie & Mines":          "from-yellow-600 to-yellow-800",
+  "Commerce & Vente":         "from-red-500 to-red-700",
+};
+
+const SECTOR_ICONS: Record<string, string> = {
+  "Banque & Finance":         "🏦",
+  "Assurances":               "🛡️",
+  "Télécommunications":       "📡",
+  "Informatique & Télécoms":  "💻",
+  "BTP & Construction":       "🏗️",
+  "Transport & Logistique":   "🚚",
+  "Santé":                    "🏥",
+  "Médecine & Santé":         "🏥",
+  "Éducation & Formation":    "📚",
+  "Industrie":                "🏭",
+  "Hôtellerie & Tourisme":    "🏨",
+  "Humanitaire & ONG":        "🤝",
+  "ONG / Humanitaire":        "🤝",
+  "Agriculture & Élevage":    "🌾",
+  "Journalisme & Médias":     "📰",
+  "Énergie & Mines":          "⚡",
+  "Commerce & Vente":         "🛒",
 };
 
 export default async function EntreprisesPage({ searchParams }: Props) {
@@ -116,49 +143,64 @@ export default async function EntreprisesPage({ searchParams }: Props) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {companies.map((company) => {
             const initials = company.name.slice(0, 2).toUpperCase();
+            const sectorColor = SECTOR_COLORS[company.sector ?? ""] ?? "from-orange-500 to-amber-500";
+            const sectorIcon = SECTOR_ICONS[company.sector ?? ""] ?? "🏢";
             return (
               <Link
                 key={company.id}
                 href={`/entreprises/${company.slug}`}
-                className="bg-white rounded-2xl border border-gray-200 p-5 hover:shadow-md hover:border-orange-100 transition-all"
+                className="bg-white rounded-2xl border border-gray-200 hover:shadow-lg hover:border-orange-200 transition-all overflow-hidden group"
               >
-                <div className="flex items-start gap-4 mb-3">
-                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center font-bold text-orange-600 text-xl border border-orange-50 flex-shrink-0">
+                {/* Mini-bannière colorée */}
+                <div className={`relative h-20 bg-gradient-to-r ${sectorColor} overflow-hidden`}>
+                  {/* Cercles déco */}
+                  <div className="absolute -top-4 -right-4 w-20 h-20 rounded-full bg-white/10" />
+                  <div className="absolute -bottom-3 left-8 w-12 h-12 rounded-full bg-white/10" />
+                  {/* Icône secteur */}
+                  <div className="absolute top-3 right-4 text-2xl opacity-60">{sectorIcon}</div>
+                  {/* Logo flottant */}
+                  <div className="absolute -bottom-5 left-4 w-14 h-14 rounded-xl bg-white shadow-md border-2 border-white flex items-center justify-center font-bold text-orange-600 text-lg overflow-hidden z-10">
                     {company.logo ? (
-                      <CompanyLogo src={company.logo} alt={company.name} initials={initials} className="rounded-2xl" />
-                    ) : initials}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <h3 className="font-semibold text-gray-900 truncate">{company.name}</h3>
-                      {company.verified && (
-                        <span className="text-xs text-blue-600">✓</span>
-                      )}
-                      {company.superRecruiter && (
-                        <span className="flex items-center gap-0.5 text-xs text-yellow-700 bg-yellow-50 px-1.5 py-0.5 rounded-full border border-yellow-200 font-medium">
-                          <Star className="h-2.5 w-2.5 fill-yellow-500 text-yellow-500" /> Super Recruteur
-                        </span>
-                      )}
-                    </div>
-                    {company.sector && <p className="text-xs text-gray-500 mt-0.5">{company.sector}</p>}
+                      <CompanyLogo src={company.logo} alt={company.name} initials={initials} className="rounded-xl" />
+                    ) : (
+                      <span className="text-base font-extrabold" style={{ color: "inherit" }}>{initials}</span>
+                    )}
                   </div>
                 </div>
 
-                {company.description && (
-                  <p className="text-sm text-gray-600 line-clamp-2 mb-3">{company.description}</p>
-                )}
+                {/* Contenu */}
+                <div className="pt-8 px-4 pb-4">
+                  <div className="flex items-start justify-between gap-2 mb-1">
+                    <div className="flex items-center gap-1.5 flex-wrap min-w-0">
+                      <h3 className="font-bold text-gray-900 truncate group-hover:text-orange-600 transition-colors">{company.name}</h3>
+                      {company.verified && (
+                        <span className="text-xs text-blue-500 font-bold flex-shrink-0">✓</span>
+                      )}
+                    </div>
+                    {company.superRecruiter && (
+                      <span className="flex items-center gap-0.5 text-xs text-yellow-700 bg-yellow-50 px-1.5 py-0.5 rounded-full border border-yellow-200 font-medium flex-shrink-0">
+                        <Star className="h-2.5 w-2.5 fill-yellow-500 text-yellow-500" /> Top
+                      </span>
+                    )}
+                  </div>
+                  {company.sector && <p className="text-xs text-gray-400 mb-2">{company.sector}</p>}
 
-                <div className="flex items-center justify-between text-xs text-gray-500">
-                  {company.location && (
-                    <span className="flex items-center gap-1">
-                      <MapPin className="h-3 w-3" />
-                      {company.location}
-                    </span>
+                  {company.description && (
+                    <p className="text-sm text-gray-600 line-clamp-2 mb-3">{company.description}</p>
                   )}
-                  <span className="flex items-center gap-1 text-orange-500 font-medium ml-auto">
-                    <Briefcase className="h-3 w-3" />
-                    {company._count.jobs} offre{company._count.jobs !== 1 ? "s" : ""}
-                  </span>
+
+                  <div className="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-gray-100">
+                    {company.location ? (
+                      <span className="flex items-center gap-1">
+                        <MapPin className="h-3 w-3" />
+                        {company.location}
+                      </span>
+                    ) : <span />}
+                    <span className="flex items-center gap-1 text-orange-500 font-semibold">
+                      <Briefcase className="h-3 w-3" />
+                      {company._count.jobs} offre{company._count.jobs !== 1 ? "s" : ""}
+                    </span>
+                  </div>
                 </div>
               </Link>
             );

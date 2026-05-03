@@ -15,10 +15,10 @@ export async function GET(req: NextRequest) {
   if (status) where.status = status;
   if (search) {
     where.OR = [
-      { user: { name: { contains: search } } },
-      { user: { email: { contains: search } } },
-      { job: { title: { contains: search } } },
-      { job: { company: { name: { contains: search } } } },
+      { user: { name: { contains: search, mode: 'insensitive' } } },
+      { user: { email: { contains: search, mode: 'insensitive' } } },
+      { job: { title: { contains: search, mode: 'insensitive' } } },
+      { job: { company: { name: { contains: search, mode: 'insensitive' } } } },
     ];
   }
 

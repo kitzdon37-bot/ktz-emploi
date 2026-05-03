@@ -32,9 +32,9 @@ export async function POST(req: NextRequest) {
         published: true,
         OR: [
           ...(keywords.length > 0
-            ? keywords.map((kw) => ({ title: { contains: kw } }))
+            ? keywords.map((kw) => ({ title: { contains: kw, mode: 'insensitive' } }))
             : []),
-          ...(location ? [{ location: { contains: location } }] : []),
+          ...(location ? [{ location: { contains: location, mode: 'insensitive' } }] : []),
           // Si pas de profil → envoie les 3 offres les plus récentes
           ...(keywords.length === 0 && !location ? [{ published: true }] : []),
         ],
