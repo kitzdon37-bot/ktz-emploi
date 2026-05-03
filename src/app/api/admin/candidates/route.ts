@@ -30,9 +30,9 @@ export async function GET() {
           published: true,
           OR: [
             ...(keywords.length > 0
-              ? keywords.map((kw) => ({ title: { contains: kw, mode: 'insensitive' } }))
+              ? keywords.map((kw) => ({ title: { contains: kw, mode: 'insensitive' as const } }))
               : []),
-            ...(location ? [{ location: { contains: location, mode: 'insensitive' } }] : []),
+            ...(location ? [{ location: { contains: location, mode: 'insensitive' as const } }] : []),
             ...(keywords.length === 0 && !location ? [{ published: true }] : []),
           ],
         },

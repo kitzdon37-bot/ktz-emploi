@@ -26,12 +26,12 @@ export async function GET(req: NextRequest) {
 
     if (q) {
       where.OR = [
-        { title: { contains: q, mode: 'insensitive' } },
-        { description: { contains: q, mode: 'insensitive' } },
-        { company: { name: { contains: q, mode: 'insensitive' } } },
+        { title: { contains: q, mode: 'insensitive' as const } },
+        { description: { contains: q, mode: 'insensitive' as const } },
+        { company: { name: { contains: q, mode: 'insensitive' as const } } },
       ];
     }
-    if (location) where.location = { contains: location, mode: 'insensitive' };
+    if (location) where.location = { contains: location, mode: 'insensitive' as const };
     if (category) where.category = category;
     if (type) where.type = type;
     if (experience) where.experienceLevel = experience;

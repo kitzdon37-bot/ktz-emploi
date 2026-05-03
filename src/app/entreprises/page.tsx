@@ -13,8 +13,8 @@ async function getCompanies(params: Awaited<Props["searchParams"]>) {
   const where: Record<string, unknown> = { suspended: false };
   if (params.q) {
     where.OR = [
-      { name: { contains: params.q, mode: 'insensitive' } },
-      { description: { contains: params.q, mode: 'insensitive' } },
+      { name: { contains: params.q, mode: 'insensitive' as const } },
+      { description: { contains: params.q, mode: 'insensitive' as const } },
     ];
   }
   if (params.sector) where.sector = params.sector;

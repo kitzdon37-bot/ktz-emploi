@@ -27,12 +27,12 @@ async function getJobs(params: Awaited<Props["searchParams"]>) {
 
   if (params.q) {
     where.OR = [
-      { title: { contains: params.q, mode: 'insensitive' } },
-      { description: { contains: params.q, mode: 'insensitive' } },
-      { company: { name: { contains: params.q, mode: 'insensitive' } } },
+      { title: { contains: params.q, mode: 'insensitive' as const } },
+      { description: { contains: params.q, mode: 'insensitive' as const } },
+      { company: { name: { contains: params.q, mode: 'insensitive' as const } } },
     ];
   }
-  if (params.location) where.location = { contains: params.location, mode: 'insensitive' };
+  if (params.location) where.location = { contains: params.location, mode: 'insensitive' as const };
   if (params.category) where.category = params.category;
   if (params.type) where.type = params.type;
   if (params.experience) where.experienceLevel = params.experience;
