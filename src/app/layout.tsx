@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ChatWidget from "@/components/ChatWidget";
 import NewsletterPopup from "@/components/NewsletterPopup";
+import VisitTracker from "@/components/VisitTracker";
 
 export const metadata: Metadata = {
   title: "KTZ Emploi — Offres d'emploi en République Centrafricaine",
@@ -27,6 +28,7 @@ export default function RootLayout({
           <Footer />
           {process.env.NODE_ENV !== "production" && <ChatWidget />}
           <NewsletterPopup />
+          <VisitTracker />
         </Providers>
       </body>
     </html>

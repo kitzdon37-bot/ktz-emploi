@@ -246,7 +246,7 @@ function ActivityTab({
   );
 }
 
-type AdminTab = "offres" | "toutes-offres" | "moderation" | "recruteurs" | "candidats" | "utilisateurs" | "stats" | "all-applications" | "reports" | "settings" | "abonnements" | "activite" | "messages";
+type AdminTab = "offres" | "toutes-offres" | "moderation" | "recruteurs" | "candidats" | "utilisateurs" | "stats" | "all-applications" | "reports" | "settings" | "abonnements" | "activite" | "messages" | "visiteurs";
 
 function AdminDashboard() {
   const searchParamsHook = useSearchParams();
@@ -256,6 +256,19 @@ function AdminDashboard() {
   const [activityLogs, setActivityLogs] = useState<LogEntry[]>([]);
   const [activityLoading, setActivityLoading] = useState(false);
   const [activityFilter, setActivityFilter] = useState("");
+
+  // --- Visiteurs ---
+  const [visitors, setVisitors] = useState<LogEntry[]>([]);
+  const [visitorsLoading, setVisitorsLoading] = useState(false);
+
+  async function loadVisiteurs() {
+    setVisitorsLoading(true);
+    try {
+      const r = await fetch("/api/admin/activity?type=PAGE_VIEW&limit=200");
+      const d = await r.json();
+      setVisitors(Array.isArray(d) ? d : []);
+    } finally { setVisitorsLoading(false); }
+  }
 
   async function loadActivity() {
     setActivityLoading(true);
@@ -455,6 +468,7 @@ function AdminDashboard() {
     if (tab === "all-applications" && allApps.length === 0) loadAllApps();
     if (tab === "reports" && reports.length === 0) loadReports("PENDING");
     if (tab === "activite" && activityLogs.length === 0) loadActivity();
+    if (tab === "visiteurs" && visitors.length === 0) loadVisiteurs();
     if (tab === "moderation" && moderationJobs.length === 0) loadModerationJobs();
     if (tab === "settings" && Object.keys(settings).length === 0) loadSettings();
   }, [searchParamsHook]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -995,6 +1009,17 @@ function AdminDashboard() {
         >
           <BarChart2 className="h-4 w-4" />
           Activité
+        </button>
+        <button
+          onClick={() => { setActiveTab("visiteurs"); if (visitors.length === 0) loadVisiteurs(); }}
+          className={`flex-shrink-0 flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+            activeTab === "visiteurs"
+              ? "border-orange-500 text-orange-600"
+              : "border-transparent text-gray-500 hover:text-gray-700"
+          }`}
+        >
+          <Eye className="h-4 w-4" />
+          Visiteurs
         </button>
         <button
           onClick={() => { setActiveTab("abonnements"); if (subsData.length === 0) loadSubs(); }}
@@ -2374,6 +2399,80 @@ function AdminDashboard() {
           colors={ACTIVITY_COLORS}
           icons={ACTIVITY_ICONS}
         />
+      )}
+
+      {/* ══════ ONGLET VISITEURS ══════ */}
+      {activeTab === "visiteurs" && (
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-lg font-bold text-gray-900">Visiteurs du site</h2>
+              <p className="text-sm text-gray-500 mt-0.5">Personnes qui ont visité le site (connectées ou non)</p>
+            </div>
+            <button onClick={loadVisiteurs} className="flex items-center gap-2 text-sm text-orange-500 hover:text-orange-600 font-medium">
+              <Clock className="h-4 w-4" /> Actualiser
+            </button>
+          </div>
+          {visitorsLoading ? (
+            <div className="flex items-center justify-center h-48">
+              <Loader2 className="h-6 w-6 animate-spin text-orange-500" />
+            </div>
+          ) : visitors.length === 0 ? (
+            <div className="text-center py-16 bg-white rounded-2xl border border-gray-200">
+              <Eye className="h-12 w-12 mx-auto mb-3 text-gray-300" />
+              <p className="font-medium text-gray-500">Aucun visiteur enregistré pour le moment</p>
+            </div>
+          ) : (
+            <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                      <th className="text-left px-4 py-3 font-semibold text-gray-600">Visiteur</th>
+                      <th className="text-left px-4 py-3 font-semibold text-gray-600">Compte</th>
+                      <th className="text-left px-4 py-3 font-semibold text-gray-600">Page visitée</th>
+                      <th className="text-left px-4 py-3 font-semibold text-gray-600">Date &amp; heure</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {visitors.map((v) => {
+                      const meta = v.metadata ? (() => { try { return JSON.parse(v.metadata!); } catch { return {}; } })() : {};
+                      return (
+                        <tr key={v.id} className="hover:bg-gray-50">
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-2">
+                              <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-xs flex-shrink-0">
+                                {v.userName ? v.userName.slice(0, 2).toUpperCase() : "?"}
+                              </div>
+                              <span className="font-medium text-gray-800">{v.userName || "Anonyme"}</span>
+                            </div>
+                          </td>
+                          <td className="px-4 py-3">
+                            {v.userEmail ? (
+                              <div>
+                                <div className="text-gray-700">{v.userEmail}</div>
+                                <div className="text-xs text-gray-400">{meta.role || "—"}</div>
+                              </div>
+                            ) : (
+                              <span className="text-gray-400 italic">Non connecté</span>
+                            )}
+                          </td>
+                          <td className="px-4 py-3 text-gray-600 font-mono text-xs">{meta.page || "/"}</td>
+                          <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
+                            {new Date(v.createdAt).toLocaleString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              <div className="px-4 py-3 bg-gray-50 border-t border-gray-200 text-xs text-gray-400">
+                {visitors.length} visite{visitors.length > 1 ? "s" : ""} enregistrée{visitors.length > 1 ? "s" : ""}
+              </div>
+            </div>
+          )}
+        </div>
       )}
 
       {/* ══════ ONGLET PARAMÈTRES ══════ */}

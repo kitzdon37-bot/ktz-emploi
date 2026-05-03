@@ -9,7 +9,8 @@ export type ActivityType =
   | "SUBSCRIPTION_ACTIVATED"
   | "SUBSCRIPTION_CANCELLED"
   | "COMPANY_UPDATED"
-  | "PROFILE_UPDATED";
+  | "PROFILE_UPDATED"
+  | "PAGE_VIEW";
 
 export const ACTIVITY_LABELS: Record<ActivityType, string> = {
   USER_REGISTERED: "Nouvelle inscription",
@@ -21,6 +22,7 @@ export const ACTIVITY_LABELS: Record<ActivityType, string> = {
   SUBSCRIPTION_CANCELLED: "Abonnement annulé",
   COMPANY_UPDATED: "Profil entreprise mis à jour",
   PROFILE_UPDATED: "Profil candidat mis à jour",
+  PAGE_VIEW: "Visite du site",
 };
 
 export const ACTIVITY_ICONS: Record<ActivityType, string> = {
@@ -33,6 +35,7 @@ export const ACTIVITY_ICONS: Record<ActivityType, string> = {
   SUBSCRIPTION_CANCELLED: "❌",
   COMPANY_UPDATED: "🏢",
   PROFILE_UPDATED: "✏️",
+  PAGE_VIEW: "👁️",
 };
 
 export const ACTIVITY_COLORS: Record<ActivityType, string> = {
@@ -45,6 +48,7 @@ export const ACTIVITY_COLORS: Record<ActivityType, string> = {
   SUBSCRIPTION_CANCELLED: "bg-gray-100 text-gray-600",
   COMPANY_UPDATED: "bg-indigo-100 text-indigo-700",
   PROFILE_UPDATED: "bg-teal-100 text-teal-700",
+  PAGE_VIEW: "bg-gray-100 text-gray-600",
 };
 
 interface LogOptions {
