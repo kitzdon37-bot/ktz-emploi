@@ -75,16 +75,16 @@ export default function JobCard({ job }: JobCardProps) {
           )}
         </div>
       ) : (
-        <div className="h-20 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center border-b border-gray-100 flex-shrink-0">
+        <div className="h-28 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center border-b border-gray-100 flex-shrink-0">
           {job.company.logo ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={job.company.logo}
               alt={job.company.name}
-              className="max-h-12 max-w-[120px] object-contain"
+              className="max-h-20 max-w-[160px] object-contain"
             />
           ) : (
-            <span className="text-xl font-bold text-orange-300">{initials}</span>
+            <span className="text-2xl font-bold text-orange-300">{initials}</span>
           )}
         </div>
       )}

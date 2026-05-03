@@ -152,24 +152,24 @@ export default async function EntreprisesPage({ searchParams }: Props) {
                 className="bg-white rounded-2xl border border-gray-200 hover:shadow-lg hover:border-orange-200 transition-all overflow-hidden group"
               >
                 {/* Mini-bannière colorée */}
-                <div className={`relative h-20 bg-gradient-to-r ${sectorColor} overflow-hidden`}>
+                <div className={`relative h-24 bg-gradient-to-r ${sectorColor} overflow-hidden`}>
                   {/* Cercles déco */}
                   <div className="absolute -top-4 -right-4 w-20 h-20 rounded-full bg-white/10" />
                   <div className="absolute -bottom-3 left-8 w-12 h-12 rounded-full bg-white/10" />
                   {/* Icône secteur */}
                   <div className="absolute top-3 right-4 text-2xl opacity-60">{sectorIcon}</div>
                   {/* Logo flottant */}
-                  <div className="absolute -bottom-5 left-4 w-14 h-14 rounded-xl bg-white shadow-md border-2 border-white flex items-center justify-center font-bold text-orange-600 text-lg overflow-hidden z-10">
+                  <div className="absolute -bottom-7 left-4 w-20 h-20 rounded-xl bg-white shadow-md border-2 border-white flex items-center justify-center font-bold text-orange-600 text-lg overflow-hidden z-10">
                     {company.logo ? (
                       <CompanyLogo src={company.logo} alt={company.name} initials={initials} className="rounded-xl" />
                     ) : (
-                      <span className="text-base font-extrabold" style={{ color: "inherit" }}>{initials}</span>
+                      <span className="text-xl font-extrabold" style={{ color: "inherit" }}>{initials}</span>
                     )}
                   </div>
                 </div>
 
                 {/* Contenu */}
-                <div className="pt-8 px-4 pb-4">
+                <div className="pt-12 px-4 pb-4">
                   <div className="flex items-start justify-between gap-2 mb-1">
                     <div className="flex items-center gap-1.5 flex-wrap min-w-0">
                       <h3 className="font-bold text-gray-900 truncate group-hover:text-orange-600 transition-colors">{company.name}</h3>
