@@ -273,6 +273,56 @@ export default async function JobDetailPage({ params }: Props) {
             </div>
           )}
 
+          {/* À propos de l'entreprise */}
+          {job.company.description && (
+            <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center font-bold text-orange-600 overflow-hidden flex-shrink-0">
+                  {job.company.logo ? (
+                    <CompanyLogo src={job.company.logo} alt={job.company.name} initials={companyInitials} className="p-0.5" />
+                  ) : companyInitials}
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-gray-900">À propos de {job.company.name}</h2>
+                  {job.company.sector && (
+                    <p className="text-xs text-gray-400">{job.company.sector}</p>
+                  )}
+                </div>
+              </div>
+              <div className="prose prose-sm max-w-none text-gray-700 leading-relaxed whitespace-pre-wrap">
+                {job.company.description}
+              </div>
+              <div className="flex flex-wrap gap-4 mt-4 pt-4 border-t border-gray-100 text-sm text-gray-500">
+                {job.company.location && (
+                  <span className="flex items-center gap-1.5">
+                    <MapPin className="h-4 w-4 text-gray-400" />
+                    {job.company.location}
+                  </span>
+                )}
+                {job.company.size && (
+                  <span className="flex items-center gap-1.5">
+                    <Users className="h-4 w-4 text-gray-400" />
+                    {job.company.size}
+                  </span>
+                )}
+                {job.company.website && (
+                  <a href={job.company.website} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 text-orange-500 hover:underline">
+                    <ExternalLink className="h-4 w-4" />
+                    {job.company.website.replace(/^https?:\/\//, "")}
+                  </a>
+                )}
+              </div>
+              <Link
+                href={`/entreprises/${job.company.slug}`}
+                className="inline-flex items-center gap-1.5 mt-3 text-sm text-orange-500 hover:text-orange-600 font-medium"
+              >
+                <Building2 className="h-4 w-4" />
+                Voir toutes les offres de {job.company.name}
+              </Link>
+            </div>
+          )}
+
           <ReportButton jobId={job.id} />
         </div>
 
@@ -308,7 +358,7 @@ export default async function JobDetailPage({ params }: Props) {
             </div>
 
             {job.company.description && (
-              <p className="text-sm text-gray-600 line-clamp-3 mb-3">{job.company.description}</p>
+              <p className="text-sm text-gray-600 mb-3">{job.company.description}</p>
             )}
 
             <div className="space-y-1.5 text-sm text-gray-500">
