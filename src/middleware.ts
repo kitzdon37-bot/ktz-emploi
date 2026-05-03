@@ -20,7 +20,8 @@ export function middleware(request: NextRequest) {
   // Désactivé en localhost pour continuer le développement
   const hostname = request.nextUrl.hostname;
   const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1";
-  if (COMING_SOON && !isLocalhost && !pathname.startsWith("/api/") && pathname !== "/") {
+  const isAdminRoute = pathname.startsWith("/tableau-de-bord") || pathname.startsWith("/connexion");
+  if (COMING_SOON && !isLocalhost && !pathname.startsWith("/api/") && pathname !== "/" && !isAdminRoute) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
