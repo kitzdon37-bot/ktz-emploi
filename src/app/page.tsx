@@ -1,152 +1,384 @@
-"use client";
+import { prisma } from "@/lib/prisma";
+import Link from "next/link";
+import { Search, MapPin, Briefcase, Building2, ArrowRight, Star, Users, CheckCircle, FileText, TrendingUp } from "lucide-react";
+import JobCard from "@/components/JobCard";
+import { JOB_CATEGORIES } from "@/lib/utils";
+import ComingSoon from "@/components/ComingSoon";
 
-import { useEffect, useState } from "react";
+async function getHomeData() {
+  const [featuredJobs, recentJobs, topCompanies, totalJobs, totalCompanies, totalUsers] = await Promise.all([
+    prisma.job.findMany({
+      where: { published: true, featured: true, company: { suspended: false } },
+      include: { company: { select: { name: true, logo: true, verified: true, superRecruiter: true } } },
+      orderBy: { createdAt: "desc" },
+      take: 8,
+    }),
+    prisma.job.findMany({
+      where: { published: true, company: { suspended: false } },
+      include: { company: { select: { name: true, logo: true, verified: true, superRecruiter: true } } },
+      orderBy: { createdAt: "desc" },
+      take: 12,
+    }),
+    prisma.company.findMany({
+      where: { logo: { not: null } },
+      select: { name: true, logo: true, sector: true, slug: true },
+      orderBy: { createdAt: "desc" },
+      take: 10,
+    }),
+    prisma.job.count({ where: { published: true } }),
+    prisma.company.count(),
+    prisma.user.count({ where: { role: "JOBSEEKER" } }),
+  ]);
+  return { featuredJobs, recentJobs, topCompanies, totalJobs, totalCompanies, totalUsers };
+}
 
-export default function ComingSoon() {
-  const [visible, setVisible] = useState(false);
+const CATEGORY_ICONS: Record<string, string> = {
+  "Humanitaire & ONG": "🤝",
+  "Informatique & Télécoms": "💻",
+  "Médecine & Santé": "🏥",
+  "Banque & Finance": "🏦",
+  "Éducation & Formation": "📚",
+  "Commerce & Vente": "🛒",
+  "BTP & Construction": "🏗️",
+  "Agriculture & Élevage": "🌾",
+};
 
-  useEffect(() => {
-    const t = setTimeout(() => setVisible(true), 100);
-    return () => clearTimeout(t);
-  }, []);
+const TIPS = [
+  {
+    icon: FileText,
+    tag: "CV & Candidature",
+    title: "Comment rédiger un CV qui attire les recruteurs en RCA",
+    desc: "Les clés pour structurer votre CV et vous démarquer parmi des centaines de candidats.",
+  },
+  {
+    icon: Users,
+    tag: "Entretien",
+    title: "Les 5 erreurs à éviter lors d'un entretien d'embauche",
+    desc: "Préparez-vous efficacement et faites bonne impression dès la première rencontre.",
+  },
+  {
+    icon: TrendingUp,
+    tag: "Salaires",
+    title: "Grilles de salaires en République Centrafricaine 2025",
+    desc: "Découvrez les rémunérations moyennes par secteur et par niveau d'expérience.",
+  },
+];
+
+export default async function HomePage() {
+  // En production → page coming soon
+  if (process.env.NODE_ENV === "production") {
+    return <ComingSoon />;
+  }
+
+  // En développement (localhost) → vrai site
+  const { featuredJobs, recentJobs, topCompanies, totalJobs, totalCompanies, totalUsers } = await getHomeData();
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 overflow-hidden relative"
-      style={{ background: "linear-gradient(135deg, #1e40af 0%, #3730a3 50%, #1e1b4b 100%)" }}
-    >
-      {/* Cercles animés en arrière-plan */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div style={{
-          position: "absolute", width: 400, height: 400,
-          borderRadius: "50%", background: "rgba(99,102,241,0.15)",
-          top: "-100px", left: "-100px",
-          animation: "pulse 4s ease-in-out infinite",
-        }} />
-        <div style={{
-          position: "absolute", width: 300, height: 300,
-          borderRadius: "50%", background: "rgba(139,92,246,0.1)",
-          bottom: "-80px", right: "-80px",
-          animation: "pulse 5s ease-in-out infinite 1s",
-        }} />
-        <div style={{
-          position: "absolute", width: 200, height: 200,
-          borderRadius: "50%", background: "rgba(59,130,246,0.1)",
-          top: "40%", right: "10%",
-          animation: "pulse 6s ease-in-out infinite 2s",
-        }} />
-      </div>
-
-      {/* Contenu principal */}
-      <div
-        className="text-center max-w-lg relative z-10"
-        style={{
-          opacity: visible ? 1 : 0,
-          transform: visible ? "translateY(0)" : "translateY(40px)",
-          transition: "opacity 0.8s ease, transform 0.8s ease",
-        }}
-      >
-        {/* Icône fusée animée */}
-        <div style={{
-          fontSize: 72,
-          marginBottom: 24,
-          display: "inline-block",
-          animation: "float 3s ease-in-out infinite",
-        }}>
-          🚀
-        </div>
-
-        {/* Titre */}
-        <h1
-          style={{
-            fontSize: "3rem", fontWeight: 800, color: "white",
-            marginBottom: 8, letterSpacing: "-0.02em",
-            opacity: visible ? 1 : 0,
-            transform: visible ? "translateY(0)" : "translateY(20px)",
-            transition: "opacity 0.8s ease 0.2s, transform 0.8s ease 0.2s",
-          }}
-        >
-          KTZ Emploi
-        </h1>
-
-        <p style={{
-          color: "#a5b4fc", fontSize: "1.1rem", marginBottom: 40,
-          opacity: visible ? 1 : 0,
-          transition: "opacity 0.8s ease 0.4s",
-        }}>
-          La plateforme emploi de la République Centrafricaine
-        </p>
-
-        {/* Carte centrale */}
-        <div
-          style={{
-            background: "rgba(255,255,255,0.08)",
-            backdropFilter: "blur(12px)",
-            borderRadius: 20,
-            padding: "40px 32px",
-            border: "1px solid rgba(255,255,255,0.15)",
-            marginBottom: 32,
-            opacity: visible ? 1 : 0,
-            transform: visible ? "translateY(0) scale(1)" : "translateY(30px) scale(0.95)",
-            transition: "opacity 0.9s ease 0.5s, transform 0.9s ease 0.5s",
-          }}
-        >
-          <h2 style={{ fontSize: "1.6rem", fontWeight: 700, color: "white", marginBottom: 12 }}>
-            Bientôt disponible
-          </h2>
-          <p style={{ color: "#c7d2fe", lineHeight: 1.7, fontSize: "1rem" }}>
-            Nous travaillons dur pour vous offrir la meilleure expérience.<br />
-            Le site sera lancé <strong style={{ color: "white" }}>très prochainement</strong>.
-          </p>
-
-          {/* Barre de progression animée */}
-          <div style={{
-            marginTop: 28,
-            height: 6, borderRadius: 99,
-            background: "rgba(255,255,255,0.15)",
-            overflow: "hidden",
-          }}>
-            <div style={{
-              height: "100%", borderRadius: 99,
-              background: "linear-gradient(90deg, #818cf8, #a78bfa, #60a5fa)",
-              animation: "progress 3s ease-in-out infinite",
-            }} />
+    <>
+      {/* ══════════════════════════════════════
+          1. HERO
+      ══════════════════════════════════════ */}
+      <section className="relative overflow-hidden" style={{ minHeight: "560px" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/accueil.png" alt="" className="absolute inset-0 w-full h-full object-cover object-center" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 to-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent" />
+        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-end h-full" style={{ minHeight: "560px" }}>
+          <div className="pb-12 pt-24">
+            <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/25 text-white text-sm font-medium px-4 py-1.5 rounded-full mb-6">
+              <span>🇨🇫</span>
+              <span>N°1 de l&apos;emploi en Centrafrique</span>
+            </div>
+            <h1 className="text-4xl lg:text-6xl font-extrabold text-white leading-tight mb-8 drop-shadow-lg">
+              Notre job, vous aider<br />
+              à trouver le vôtre parmi{" "}
+              <span className="text-orange-400">1500</span>
+              {" "}offres
+            </h1>
+            <form action="/emplois" method="GET">
+              <div className="flex flex-col sm:flex-row bg-white rounded-2xl shadow-2xl overflow-hidden">
+                <div className="flex items-center gap-3 flex-1 px-5 py-1 border-b sm:border-b-0 sm:border-r border-gray-200">
+                  <Search className="h-5 w-5 text-orange-400 flex-shrink-0" />
+                  <div className="flex flex-col py-2.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Quoi ?</label>
+                    <input type="text" name="q" placeholder="Métier, entreprise, compétence..." className="outline-none text-gray-800 placeholder-gray-400 text-sm bg-transparent mt-0.5" />
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 sm:w-56 px-5 py-1 border-b sm:border-b-0 sm:border-r border-gray-200">
+                  <MapPin className="h-5 w-5 text-orange-400 flex-shrink-0" />
+                  <div className="flex flex-col py-2.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Où ?</label>
+                    <select name="location" className="outline-none text-gray-800 text-sm bg-transparent mt-0.5 text-gray-500">
+                      <option value="">Ville, région...</option>
+                      <option value="Bangui">Bangui</option>
+                      <option value="Bambari">Bambari</option>
+                      <option value="Berbérati">Berbérati</option>
+                      <option value="Bouar">Bouar</option>
+                    </select>
+                  </div>
+                </div>
+                <button type="submit" className="bg-orange-500 hover:bg-orange-600 text-white px-10 py-5 font-bold text-sm transition-colors flex items-center justify-center gap-2">
+                  <Search className="h-4 w-4" />
+                  Rechercher
+                </button>
+              </div>
+              <div className="flex flex-wrap gap-2 mt-4">
+                {[
+                  { label: "CDI", type: "CDI" },
+                  { label: "Stage", type: "Stage" },
+                  { label: "Humanitaire", q: "Humanitaire" },
+                  { label: "IT & Tech", q: "Informatique" },
+                  { label: "Santé", q: "Santé" },
+                ].map((chip) => (
+                  <Link key={chip.label} href={`/emplois?${chip.type ? `type=${chip.type}` : `q=${chip.q}`}`} className="bg-white/20 backdrop-blur-sm hover:bg-white/35 border border-white/30 text-white text-sm px-4 py-1.5 rounded-full transition-all">
+                    {chip.label}
+                  </Link>
+                ))}
+              </div>
+            </form>
           </div>
-          <p style={{ color: "#a5b4fc", fontSize: "0.8rem", marginTop: 8 }}>
-            Préparation en cours...
-          </p>
         </div>
+      </section>
 
-        {/* Contact */}
-        <p style={{
-          color: "#93c5fd", fontSize: "0.85rem",
-          opacity: visible ? 1 : 0,
-          transition: "opacity 0.8s ease 0.9s",
-        }}>
-          Contact :{" "}
-          <a href="mailto:kitzdon37@gmail.com"
-            style={{ color: "white", textDecoration: "underline" }}>
-            kitzdon37@gmail.com
-          </a>
-        </p>
+      {/* Bande drapeau RCA */}
+      <div className="flex h-1.5">
+        <div className="flex-1 bg-blue-600" />
+        <div className="flex-1 bg-white border-t border-gray-200" />
+        <div className="flex-1 bg-green-500" />
+        <div className="flex-1 bg-yellow-400" />
+        <div className="flex-1 bg-red-600" />
       </div>
 
-      {/* Keyframes */}
-      <style>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-12px); }
-        }
-        @keyframes pulse {
-          0%, 100% { transform: scale(1); opacity: 0.6; }
-          50% { transform: scale(1.1); opacity: 1; }
-        }
-        @keyframes progress {
-          0% { width: 0%; opacity: 1; }
-          70% { width: 85%; opacity: 1; }
-          90% { width: 85%; opacity: 0.5; }
-          100% { width: 0%; opacity: 0; }
-        }
-      `}</style>
-    </div>
+      {/* Stats */}
+      <section className="bg-white border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="grid grid-cols-3 divide-x divide-gray-100">
+            <div className="text-center py-2">
+              <div className="text-3xl font-extrabold text-gray-900">{totalJobs > 0 ? `${totalJobs}` : "500"}+</div>
+              <div className="text-sm text-gray-500 mt-1">Offres d&apos;emploi</div>
+            </div>
+            <div className="text-center py-2">
+              <div className="text-3xl font-extrabold text-gray-900">{totalCompanies > 0 ? `${totalCompanies}` : "120"}+</div>
+              <div className="text-sm text-gray-500 mt-1">Entreprises partenaires</div>
+            </div>
+            <div className="text-center py-2">
+              <div className="text-3xl font-extrabold text-gray-900">{totalUsers > 0 ? `${totalUsers}` : "1 200"}+</div>
+              <div className="text-sm text-gray-500 mt-1">Candidats inscrits</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Entreprises */}
+      <section className="bg-gray-50 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-xl font-bold text-gray-900">Ils recrutent en RCA</h2>
+            <Link href="/entreprises" className="text-orange-500 hover:text-orange-600 text-sm font-medium flex items-center gap-1">
+              Voir toutes les entreprises <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
+            {topCompanies.map((co) => (
+              <Link key={co.slug} href={`/entreprises/${co.slug}`} className="bg-white rounded-2xl border border-gray-200 hover:border-orange-200 hover:shadow-md p-7 flex flex-col items-center gap-3 transition-all group">
+                <div className="w-24 h-24 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center font-bold text-lg text-orange-600 overflow-hidden">
+                  {co.logo ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={co.logo} alt={co.name} className="w-full h-full object-contain p-1.5" />
+                  ) : (
+                    co.name.slice(0, 2).toUpperCase()
+                  )}
+                </div>
+                <span className="text-sm font-semibold text-gray-800 text-center leading-tight group-hover:text-orange-600">{co.name}</span>
+                {co.sector && <span className="text-xs text-gray-400 text-center">{co.sector}</span>}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Comment ça marche */}
+      <section className="bg-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Comment ça marche ?</h2>
+            <p className="text-gray-500">Trouvez votre emploi en 3 étapes simples</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { step: "01", icon: Users, title: "Créez votre profil", desc: "Inscrivez-vous gratuitement et renseignez vos compétences, votre expérience et vos ambitions professionnelles.", color: "bg-orange-50 text-orange-500" },
+              { step: "02", icon: Search, title: "Explorez les offres", desc: "Parcourez des centaines d'offres d'emploi à Bangui et dans toute la RCA, filtrées selon vos critères.", color: "bg-blue-50 text-blue-500" },
+              { step: "03", icon: CheckCircle, title: "Postulez en un clic", desc: "Envoyez votre candidature directement aux recruteurs et suivez l'avancement depuis votre tableau de bord.", color: "bg-green-50 text-green-500" },
+            ].map(({ step, icon: Icon, title, desc, color }) => (
+              <div key={step} className="relative text-center">
+                <div className="hidden md:block absolute top-10 left-[60%] w-full h-px border-t-2 border-dashed border-gray-200" />
+                <div className={`w-20 h-20 rounded-2xl ${color} flex items-center justify-center mx-auto mb-5 relative z-10`}>
+                  <Icon className="h-9 w-9" />
+                </div>
+                <div className="text-xs font-bold text-gray-300 mb-2 tracking-widest">ÉTAPE {step}</div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">{title}</h3>
+                <p className="text-gray-500 text-sm leading-relaxed max-w-xs mx-auto">{desc}</p>
+              </div>
+            ))}
+          </div>
+          <div className="text-center mt-10">
+            <Link href="/inscription" className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-xl font-semibold transition-colors">
+              Commencer gratuitement <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Offres à la une */}
+      {featuredJobs.length > 0 && (
+        <section className="bg-gray-50 py-14">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-2">
+                <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
+                <h2 className="text-2xl font-bold text-gray-900">Offres à la une</h2>
+              </div>
+              <Link href="/emplois?featured=true" className="text-orange-500 hover:text-orange-600 text-sm font-medium flex items-center gap-1">
+                Voir tout <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3">
+              {featuredJobs.map((job) => (
+                <JobCard key={job.id} job={job} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Explorer par secteur */}
+      <section className="bg-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">Explorer par secteur</h2>
+              <p className="text-gray-500 text-sm mt-1">Trouvez des offres dans votre domaine d&apos;expertise</p>
+            </div>
+            <Link href="/emplois" className="text-orange-500 hover:text-orange-600 text-sm font-medium flex items-center gap-1">
+              Toutes les offres <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {JOB_CATEGORIES.slice(0, 8).map((cat) => (
+              <Link key={cat} href={`/emplois?category=${encodeURIComponent(cat)}`} className="group flex items-center gap-3 p-4 rounded-2xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50 transition-all bg-white">
+                <span className="text-2xl">{CATEGORY_ICONS[cat] || "📋"}</span>
+                <span className="text-sm font-medium text-gray-700 group-hover:text-orange-600 leading-tight">{cat}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Dernières offres */}
+      <section className="bg-gray-50 py-14">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-2xl font-bold text-gray-900">Dernières offres publiées</h2>
+            <Link href="/emplois" className="text-orange-500 hover:text-orange-600 text-sm font-medium flex items-center gap-1">
+              Voir toutes les offres <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+          {recentJobs.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3">
+              {recentJobs.map((job) => (
+                <JobCard key={job.id} job={job} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
+              <Briefcase className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+              <p className="text-lg font-semibold text-gray-700">Aucune offre pour le moment</p>
+              <p className="text-sm text-gray-400 mt-1">Soyez le premier à publier une offre !</p>
+              <Link href="/inscription?role=employer" className="mt-5 inline-block bg-orange-500 text-white px-6 py-2.5 rounded-lg text-sm font-semibold hover:bg-orange-600 transition-colors">
+                Recruter maintenant
+              </Link>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Espace recruteurs */}
+      <section className="bg-gray-900 text-white py-16 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div className="hidden lg:flex justify-center">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/recruter-illustration.svg" alt="Recruter en Centrafrique" className="w-full max-w-md opacity-90" />
+            </div>
+            <div>
+              <span className="inline-block bg-orange-500/20 text-orange-400 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-5">Espace recruteurs</span>
+              <h2 className="text-3xl lg:text-4xl font-extrabold leading-tight mb-4">
+                Vous recrutez ?<br />
+                <span className="text-orange-400">Trouvez vos talents en RCA.</span>
+              </h2>
+              <p className="text-gray-400 text-base mb-8 max-w-md">Publiez vos offres et accédez à des milliers de candidats qualifiés. Simple, rapide et gratuit pour commencer.</p>
+              <ul className="space-y-3 mb-8">
+                {["Publication d'offres en moins de 5 minutes", "Accès à plus de 1 200 profils de candidats", "Suivi des candidatures en temps réel", "Mise en avant de vos offres en page d'accueil"].map((item) => (
+                  <li key={item} className="flex items-center gap-3 text-gray-300 text-sm">
+                    <CheckCircle className="h-4 w-4 text-orange-400 flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Link href="/inscription?role=employer" className="bg-orange-500 hover:bg-orange-400 text-white px-8 py-3 rounded-xl font-bold transition-colors text-center text-sm">
+                  Publier une offre gratuitement
+                </Link>
+                <Link href="/entreprises" className="border border-gray-600 hover:border-gray-400 text-gray-300 hover:text-white px-8 py-3 rounded-xl font-semibold transition-colors text-center text-sm">
+                  Voir les entreprises
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Conseils carrière */}
+      <section className="bg-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">Conseils carrière</h2>
+              <p className="text-gray-500 text-sm mt-1">Nos experts vous accompagnent dans votre recherche d&apos;emploi</p>
+            </div>
+            <Link href="/conseils" className="text-orange-500 hover:text-orange-600 text-sm font-medium flex items-center gap-1">
+              Tous les conseils <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {TIPS.map(({ icon: Icon, tag, title, desc }) => (
+              <Link key={title} href="/conseils" className="group bg-white rounded-2xl border border-gray-200 hover:border-orange-200 hover:shadow-md p-6 transition-all">
+                <div className="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-orange-100 transition-colors">
+                  <Icon className="h-5 w-5 text-orange-500" />
+                </div>
+                <span className="text-xs font-semibold text-orange-500 uppercase tracking-wide">{tag}</span>
+                <h3 className="text-base font-bold text-gray-900 mt-2 mb-2 leading-snug group-hover:text-orange-600 transition-colors">{title}</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">{desc}</p>
+                <div className="flex items-center gap-1 text-orange-500 text-sm font-medium mt-4">
+                  Lire la suite <ArrowRight className="h-4 w-4" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Bannière inscription */}
+      <section className="bg-orange-500 py-14">
+        <div className="max-w-3xl mx-auto px-4 text-center">
+          <h2 className="text-2xl lg:text-3xl font-extrabold text-white mb-3">Prêt à trouver votre prochain emploi ?</h2>
+          <p className="text-orange-100 mb-8">Créez votre profil gratuitement et recevez des offres personnalisées directement dans votre boîte mail.</p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link href="/inscription" className="bg-white text-orange-600 hover:bg-orange-50 px-8 py-3 rounded-xl font-bold transition-colors">Créer mon profil</Link>
+            <Link href="/emplois" className="border-2 border-white text-white hover:bg-white/10 px-8 py-3 rounded-xl font-semibold transition-colors">Parcourir les offres</Link>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
