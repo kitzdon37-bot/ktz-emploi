@@ -17,7 +17,10 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Mode coming soon — bloquer toutes les pages sauf l'accueil et les API
-  if (COMING_SOON && !pathname.startsWith("/api/") && pathname !== "/") {
+  // Désactivé en localhost pour continuer le développement
+  const hostname = request.nextUrl.hostname;
+  const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1";
+  if (COMING_SOON && !isLocalhost && !pathname.startsWith("/api/") && pathname !== "/") {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
