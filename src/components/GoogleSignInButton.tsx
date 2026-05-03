@@ -20,7 +20,7 @@ const GoogleLogo = () => (
 
 export default function GoogleSignInButton({
   label = "Continuer avec Google",
-  callbackUrl = "/tableau-de-bord",
+  callbackUrl = "/",
 }: Props) {
   const [loading, setLoading] = useState(false);
 

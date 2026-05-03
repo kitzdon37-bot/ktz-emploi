@@ -102,7 +102,7 @@ function RegisterForm() {
         return;
       }
       await signIn("credentials", { email, password, redirect: false });
-      router.push("/tableau-de-bord");
+      router.push("/");
       router.refresh();
     } finally {
       setLoading(false);

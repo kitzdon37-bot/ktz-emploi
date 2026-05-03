@@ -35,7 +35,7 @@ function LoginForm() {
         setError("Email ou mot de passe incorrect.");
         return;
       }
-      router.push(callbackUrl);
+      router.push("/");
       router.refresh();
     } catch {
       setError("Une erreur est survenue. Veuillez réessayer.");
