@@ -28,8 +28,9 @@ export default function ComingSoon() {
           KTZ Emploi
         </h1>
 
-        <p style={{ color: "#a5b4fc", fontSize: "1.1rem", marginBottom: 40, opacity: visible ? 1 : 0, transition: "opacity 0.8s ease 0.4s" }}>
-          La plateforme emploi de la République Centrafricaine
+        <p style={{ color: "#a5b4fc", fontSize: "1.1rem", marginBottom: 40, opacity: visible ? 1 : 0, transition: "opacity 0.8s ease 0.4s", display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}>
+          <span style={{ fontSize: "1.5rem", display: "inline-block", animation: "wave-flag 1.8s ease-in-out infinite", transformOrigin: "bottom center" }}>🇨🇫</span>
+          1ère plateforme de recherche d&apos;emploi en Centrafrique
         </p>
 
         <div style={{ background: "rgba(255,255,255,0.08)", backdropFilter: "blur(12px)", borderRadius: 20, padding: "40px 32px", border: "1px solid rgba(255,255,255,0.15)", marginBottom: 32, opacity: visible ? 1 : 0, transform: visible ? "translateY(0) scale(1)" : "translateY(30px) scale(0.95)", transition: "opacity 0.9s ease 0.5s, transform 0.9s ease 0.5s" }}>
@@ -55,6 +56,7 @@ export default function ComingSoon() {
         @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-12px); } }
         @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.1); opacity: 1; } }
         @keyframes progress { 0% { width: 0%; opacity: 1; } 70% { width: 85%; opacity: 1; } 90% { width: 85%; opacity: 0.5; } 100% { width: 0%; opacity: 0; } }
+        @keyframes wave-flag { 0% { transform: rotate(-8deg) scale(1.05); } 25% { transform: rotate(6deg) scale(1.1); } 50% { transform: rotate(-5deg) scale(1.05); } 75% { transform: rotate(7deg) scale(1.1); } 100% { transform: rotate(-8deg) scale(1.05); } }
       `}</style>
     </div>
   );
