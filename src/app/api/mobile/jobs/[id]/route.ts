@@ -32,6 +32,7 @@ export async function GET(
             phone: true,
             email: true,
             verified: true,
+            allowContact: true,
           },
         },
         _count: { select: { applications: true } },

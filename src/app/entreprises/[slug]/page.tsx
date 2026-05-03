@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import JobCard from "@/components/JobCard";
 import CompanyLogo from "@/components/CompanyLogo";
+import CompanyBanner from "@/components/CompanyBanner";
 import CompanyReportButton from "./ReportButton";
 import ReviewModal from "./ReviewModal";
 
@@ -19,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const company = await prisma.company.findUnique({
     where: { slug },
-    select: { name: true, description: true, sector: true },
+    select: { name: true, description: true, sector: true, logo: true },
   });
   if (!company) return {};
 
@@ -74,13 +75,13 @@ export default async function EntrepriseDetailPage({ params }: Props) {
 
       {/* ── BANNIÈRE + LOGO ── */}
       <div className="relative">
-        {/* Bannière */}
-        <div className="h-52 w-full overflow-hidden bg-gradient-to-r from-orange-400 to-amber-500">
-          {company.banner && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={company.banner} alt="Bannière" className="w-full h-full object-cover" />
-          )}
-        </div>
+        <CompanyBanner
+          name={company.name}
+          sector={company.sector}
+          banner={company.banner}
+          location={company.location}
+          verified={company.verified}
+        />
 
         {/* Logo flottant */}
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">

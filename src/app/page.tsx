@@ -10,13 +10,13 @@ async function getHomeData() {
       where: { published: true, featured: true, company: { suspended: false } },
       include: { company: { select: { name: true, logo: true, verified: true, superRecruiter: true } } },
       orderBy: { createdAt: "desc" },
-      take: 3,
+      take: 8,
     }),
     prisma.job.findMany({
       where: { published: true, company: { suspended: false } },
       include: { company: { select: { name: true, logo: true, verified: true, superRecruiter: true } } },
       orderBy: { createdAt: "desc" },
-      take: 6,
+      take: 12,
     }),
     prisma.company.findMany({
       where: { logo: { not: null } },
@@ -302,7 +302,7 @@ export default async function HomePage() {
                 Voir tout <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3">
               {featuredJobs.map((job) => (
                 <JobCard key={job.id} job={job} />
               ))}
@@ -352,7 +352,7 @@ export default async function HomePage() {
             </Link>
           </div>
           {recentJobs.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3">
               {recentJobs.map((job) => (
                 <JobCard key={job.id} job={job} />
               ))}

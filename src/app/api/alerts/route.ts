@@ -1,14 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { getMobileUser } from "@/lib/mobile-auth";
 import { prisma } from "@/lib/prisma";
 
-// GET — retourne les alertes de l'utilisateur connecté
-export async function GET() {
+async function getAuthUserId(req: NextRequest): Promise<string | null> {
   const session = await getServerSession(authOptions);
-  if (!session?.user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+  if (session?.user) return (session.user as { id: string }).id;
+  const mobile = getMobileUser(req);
+  if (mobile) return mobile.id;
+  return null;
+}
 
-  const userId = (session.user as { id?: string }).id!;
+// GET — retourne les alertes de l'utilisateur connecté
+export async function GET(req: NextRequest) {
+  const userId = await getAuthUserId(req);
+  if (!userId) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
 
   const alerts = await prisma.jobAlert.findMany({
     where: { userId, active: true },
@@ -20,10 +27,9 @@ export async function GET() {
 
 // POST — crée une nouvelle alerte
 export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+  const userId = await getAuthUserId(req);
+  if (!userId) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
 
-  const userId = (session.user as { id?: string }).id!;
   const body = await req.json();
   const { keywords, location, frequency } = body;
 
@@ -51,10 +57,9 @@ export async function POST(req: NextRequest) {
 
 // DELETE — supprime une alerte { id }
 export async function DELETE(req: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+  const userId = await getAuthUserId(req);
+  if (!userId) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
 
-  const userId = (session.user as { id?: string }).id!;
   const body = await req.json();
   const { id } = body;
 
@@ -65,6 +70,5 @@ export async function DELETE(req: NextRequest) {
   if (alert.userId !== userId) return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
 
   await prisma.jobAlert.delete({ where: { id } });
-
   return NextResponse.json({ success: true });
 }

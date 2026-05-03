@@ -55,7 +55,7 @@ export default function JobCard({ job }: JobCardProps) {
 
       {/* Zone visuelle en haut : cover image ou logo en grand */}
       {job.coverImage ? (
-        <div className="relative h-36 bg-gray-100 flex-shrink-0">
+        <div className="relative h-24 bg-gray-100 flex-shrink-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={job.coverImage}
@@ -64,7 +64,7 @@ export default function JobCard({ job }: JobCardProps) {
           />
           {/* Logo en overlay bas-gauche */}
           {job.company.logo && (
-            <div className="absolute bottom-2 left-3 w-10 h-10 rounded-lg bg-white shadow border border-gray-100 flex items-center justify-center overflow-hidden">
+            <div className="absolute bottom-2 left-3 w-8 h-8 rounded-lg bg-white shadow border border-gray-100 flex items-center justify-center overflow-hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={job.company.logo}
@@ -75,24 +75,24 @@ export default function JobCard({ job }: JobCardProps) {
           )}
         </div>
       ) : (
-        <div className="h-28 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center border-b border-gray-100 flex-shrink-0">
+        <div className="h-20 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center border-b border-gray-100 flex-shrink-0">
           {job.company.logo ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={job.company.logo}
               alt={job.company.name}
-              className="max-h-16 max-w-[160px] object-contain"
+              className="max-h-12 max-w-[120px] object-contain"
             />
           ) : (
-            <span className="text-2xl font-bold text-orange-300">{initials}</span>
+            <span className="text-xl font-bold text-orange-300">{initials}</span>
           )}
         </div>
       )}
 
       {/* Contenu */}
-      <div className="p-4 flex flex-col flex-1">
+      <div className="p-3 flex flex-col flex-1">
         <div className="flex items-center gap-1.5 mb-1 flex-wrap">
-          <span className="text-sm text-gray-500 font-medium truncate">{job.company.name}</span>
+          <span className="text-xs text-gray-500 font-medium truncate">{job.company.name}</span>
           {job.company.verified && (
             <span className="text-xs bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded-full border border-blue-100">✓</span>
           )}
@@ -103,7 +103,7 @@ export default function JobCard({ job }: JobCardProps) {
           )}
         </div>
 
-        <h3 className="font-semibold text-gray-900 text-base leading-snug mb-3 line-clamp-2 flex-1">
+        <h3 className="font-semibold text-gray-900 text-sm leading-snug mb-2 line-clamp-2 flex-1">
           {job.title}
         </h3>
 
@@ -123,7 +123,7 @@ export default function JobCard({ job }: JobCardProps) {
           )}
         </div>
 
-        <div className="flex items-center justify-between mt-3">
+        <div className="flex items-center justify-between mt-2">
           <span className="text-xs text-gray-400 bg-gray-50 px-2 py-0.5 rounded-full">{job.category}</span>
           <span className="flex items-center gap-1 text-xs text-gray-400">
             <Clock className="h-3 w-3" />

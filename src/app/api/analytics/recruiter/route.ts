@@ -1,33 +1,40 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { getMobileUser } from "@/lib/mobile-auth";
 import { prisma } from "@/lib/prisma";
 
-export async function GET(_req: NextRequest) {
+async function getAuthUser(req: NextRequest) {
   const session = await getServerSession(authOptions);
-  if (!session?.user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+  if (session?.user) {
+    const u = session.user as { id: string; role: string };
+    return { id: u.id, role: u.role };
+  }
+  const mobile = getMobileUser(req);
+  if (mobile) return { id: mobile.id, role: mobile.role };
+  return null;
+}
 
-  const role = (session.user as { role?: string }).role;
-  if (role !== "EMPLOYER") return NextResponse.json({ error: "Réservé aux recruteurs" }, { status: 403 });
+export async function GET(req: NextRequest) {
+  const authUser = await getAuthUser(req);
+  if (!authUser) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+  if (authUser.role !== "EMPLOYER") return NextResponse.json({ error: "Réservé aux recruteurs" }, { status: 403 });
 
-  const userId = (session.user as { id?: string }).id!;
+  const userId = authUser.id;
 
   const company = await prisma.company.findUnique({ where: { userId } });
   if (!company) return NextResponse.json({ error: "Profil entreprise introuvable" }, { status: 404 });
 
   const companyId = company.id;
 
-  // Fetch all jobs for this company
   const jobs = await prisma.job.findMany({
     where: { companyId },
     select: { id: true, title: true, views: true },
   });
 
   const jobIds = jobs.map((j) => j.id);
-
   const totalJobs = jobs.length;
 
-  // Aggregate application counts per status
   const [
     totalApplications,
     pendingApplications,
@@ -51,7 +58,6 @@ export async function GET(_req: NextRequest) {
     }),
   ]);
 
-  // Applications per job (top 10 ordered by count desc)
   const appCountsByJob = await prisma.application.groupBy({
     by: ["jobId"],
     where: { jobId: { in: jobIds } },
