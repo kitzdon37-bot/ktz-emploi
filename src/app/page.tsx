@@ -20,10 +20,9 @@ async function getHomeData() {
       take: 12,
     }),
     prisma.company.findMany({
-      where: { logo: { not: null } },
       select: { name: true, logo: true, sector: true, slug: true },
-      orderBy: { createdAt: "desc" },
-      take: 10,
+      orderBy: [{ logo: "desc" }, { createdAt: "desc" }],
+      take: 20,
     }),
     prisma.job.count({ where: { published: true } }),
     prisma.company.count(),
@@ -86,8 +85,8 @@ export default async function HomePage() {
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-end h-full" style={{ minHeight: "560px" }}>
           <div className="pb-12 pt-24">
             <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/25 text-white text-sm font-medium px-4 py-1.5 rounded-full mb-6">
-              <span>🇨🇫</span>
-              <span>N°1 de l&apos;emploi en Centrafrique</span>
+              <span className="flag-wave text-xl">🇨🇫</span>
+              <span>1ère plateforme de recherche d&apos;emploi en Centrafrique</span>
             </div>
             <h1 className="text-4xl lg:text-6xl font-extrabold text-white leading-tight mb-8 drop-shadow-lg">
               Notre job, vous aider<br />
@@ -178,21 +177,26 @@ export default async function HomePage() {
               Voir toutes les entreprises <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
-            {topCompanies.map((co) => (
-              <Link key={co.slug} href={`/entreprises/${co.slug}`} className="bg-white rounded-2xl border border-gray-200 hover:border-orange-200 hover:shadow-md p-7 flex flex-col items-center gap-3 transition-all group">
-                <div className="w-24 h-24 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center font-bold text-lg text-orange-600 overflow-hidden">
-                  {co.logo ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={co.logo} alt={co.name} className="w-full h-full object-contain p-1.5" />
-                  ) : (
-                    co.name.slice(0, 2).toUpperCase()
-                  )}
-                </div>
-                <span className="text-sm font-semibold text-gray-800 text-center leading-tight group-hover:text-orange-600">{co.name}</span>
-                {co.sector && <span className="text-xs text-gray-400 text-center">{co.sector}</span>}
-              </Link>
-            ))}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            {topCompanies.map((co) => {
+              const initials = co.name.slice(0, 2).toUpperCase();
+              const colors = ["bg-orange-100 text-orange-600","bg-blue-100 text-blue-600","bg-green-100 text-green-600","bg-purple-100 text-purple-600","bg-rose-100 text-rose-600","bg-yellow-100 text-yellow-700","bg-teal-100 text-teal-600","bg-indigo-100 text-indigo-600"];
+              const color = colors[co.name.charCodeAt(0) % colors.length];
+              return (
+                <Link key={co.slug} href={`/entreprises/${co.slug}`} className="bg-white rounded-2xl border border-gray-200 hover:border-orange-200 hover:shadow-md p-5 flex flex-col items-center gap-2.5 transition-all group">
+                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-bold text-base overflow-hidden ${co.logo ? "bg-gray-50 border border-gray-100" : color}`}>
+                    {co.logo ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={co.logo} alt={co.name} className="w-full h-full object-contain p-1" />
+                    ) : (
+                      initials
+                    )}
+                  </div>
+                  <span className="text-xs font-semibold text-gray-800 text-center leading-tight group-hover:text-orange-600 line-clamp-2">{co.name}</span>
+                  {co.sector && <span className="text-[10px] text-gray-400 text-center line-clamp-1">{co.sector}</span>}
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
