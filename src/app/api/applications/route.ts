@@ -55,9 +55,18 @@ export async function POST(req: NextRequest) {
   });
   if (existing) return NextResponse.json({ error: "Vous avez déjà postulé" }, { status: 409 });
 
+  const responseDeadline = new Date();
+  responseDeadline.setDate(responseDeadline.getDate() + 10);
+
   const [app, candidate] = await Promise.all([
     prisma.application.create({
-      data: { jobId, userId: authUser.id, coverLetter: coverLetter || null, cvUrl: cvUrl || null },
+      data: {
+        jobId,
+        userId: authUser.id,
+        coverLetter: coverLetter || null,
+        cvUrl: cvUrl || null,
+        responseDeadline,
+      },
     }),
     prisma.user.findUnique({ where: { id: authUser.id }, select: { name: true } }),
   ]);

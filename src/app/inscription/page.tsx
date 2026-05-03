@@ -39,6 +39,7 @@ function RegisterForm() {
   const [contractTypes, setContractTypes] = useState<string[]>([]);
   const [phone, setPhone] = useState("");
   const [whatsappOptIn, setWhatsappOptIn] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
   const [companyName, setCompanyName] = useState("");
   const [companySector, setCompanySector] = useState("");
   const [companyLocation, setCompanyLocation] = useState("Bangui");
@@ -92,6 +93,7 @@ function RegisterForm() {
           jobTitle,
           location,
           contractTypes: contractTypes.join(","),
+          isDisabled: role === "jobseeker" ? isDisabled : false,
         }),
       });
       const data = await res.json();
@@ -458,6 +460,23 @@ function RegisterForm() {
                     </button>
                   ))}
                 </div>
+              </div>
+
+              {/* Statut travailleur handicapé */}
+              <div className="flex items-start gap-2.5">
+                <input
+                  id="isDisabled"
+                  type="checkbox"
+                  checked={isDisabled}
+                  onChange={(e) => setIsDisabled(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 rounded border-gray-300 text-orange-500 focus:ring-orange-400 cursor-pointer flex-shrink-0"
+                />
+                <label htmlFor="isDisabled" className="text-sm text-gray-600 cursor-pointer leading-relaxed">
+                  Je bénéficie d&apos;une <strong className="text-gray-800">Reconnaissance de Qualité de Travailleur Handicapé (RQTH)</strong>
+                  <span className="block text-xs text-gray-400 mt-0.5">
+                    Cette information est confidentielle et nous permet de vous orienter vers des offres adaptées.
+                  </span>
+                </label>
               </div>
             </>
           )}

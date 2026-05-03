@@ -35,8 +35,7 @@ export default function ComingSoon() {
         <div style={{ background: "rgba(255,255,255,0.08)", backdropFilter: "blur(12px)", borderRadius: 20, padding: "40px 32px", border: "1px solid rgba(255,255,255,0.15)", marginBottom: 32, opacity: visible ? 1 : 0, transform: visible ? "translateY(0) scale(1)" : "translateY(30px) scale(0.95)", transition: "opacity 0.9s ease 0.5s, transform 0.9s ease 0.5s" }}>
           <h2 style={{ fontSize: "1.6rem", fontWeight: 700, color: "white", marginBottom: 12 }}>Bientôt disponible</h2>
           <p style={{ color: "#c7d2fe", lineHeight: 1.7, fontSize: "1rem" }}>
-            Nous travaillons dur pour vous offrir la meilleure expérience.<br />
-            Le site sera lancé <strong style={{ color: "white" }}>très prochainement</strong>.
+            La plateforme sera disponible <strong style={{ color: "white" }}>très prochainement</strong>.
           </p>
           <div style={{ marginTop: 28, height: 6, borderRadius: 99, background: "rgba(255,255,255,0.15)", overflow: "hidden" }}>
             <div style={{ height: "100%", borderRadius: 99, background: "linear-gradient(90deg, #818cf8, #a78bfa, #60a5fa)", animation: "progress 3s ease-in-out infinite" }} />

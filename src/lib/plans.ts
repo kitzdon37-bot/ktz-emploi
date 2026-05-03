@@ -48,7 +48,7 @@ export const PLANS = {
   },
   STARTER: {
     name: "Starter",
-    price: 25000,
+    price: 70000,
     maxJobs: 10,
     jobDuration: 30,
     cvtheque: true,
@@ -71,7 +71,7 @@ export const PLANS = {
   },
   PRO: {
     name: "Pro",
-    price: 50000,
+    price: 100000,
     maxJobs: 999,
     jobDuration: 60,
     cvtheque: true,

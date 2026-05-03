@@ -93,6 +93,7 @@ model JobSeekerProfile {
   smsOptIn         Boolean  @default(false)
   whatsappOptIn    Boolean  @default(false)
   notifCategories  String?  // JSON array de secteurs, null = tous les secteurs
+  isDisabled       Boolean  @default(false) // Statut de travailleur handicapé (RQTH)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
@@ -213,14 +214,16 @@ model Job {
 }
 
 model Application {
-  id          String   @id @default(cuid())
-  jobId       String
-  userId      String
-  coverLetter String?
-  cvUrl       String?
-  status      String   @default("PENDING")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id               String    @id @default(cuid())
+  jobId            String
+  userId           String
+  coverLetter      String?
+  cvUrl            String?
+  status           String    @default("PENDING")
+  responseDeadline DateTime?            // Date limite de réponse du recruteur (J+10)
+  remindersSent    Int       @default(0) // Nb de rappels envoyés (0=aucun, 1=J-7, 2=J-3, 3=J-1)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   job           Job                        @relation(fields: [jobId], references: [id], onDelete: Cascade)
   user          User                       @relation(fields: [userId], references: [id], onDelete: Cascade)

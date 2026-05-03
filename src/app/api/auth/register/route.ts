@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { name, email, password, role, phone, whatsappOptIn, companyName, companySector, companyLocation, companyWebsite, companyDescription, jobTitle, location, contractTypes } =
+    const { name, email, password, role, phone, whatsappOptIn, isDisabled, companyName, companySector, companyLocation, companyWebsite, companyDescription, jobTitle, location, contractTypes } =
       await req.json();
 
     if (!name || !email || !password) {
@@ -65,6 +65,7 @@ export async function POST(req: NextRequest) {
           skills: contractTypes || null,
           phone: phone || null,
           whatsappOptIn: phone ? !!whatsappOptIn : false,
+          isDisabled: !!isDisabled,
         },
       });
     }

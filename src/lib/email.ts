@@ -1013,3 +1013,102 @@ export async function sendResetEmail({
     html,
   });
 }
+
+// ─── Email : rappel de délai de réponse au recruteur ─────────────────────────
+
+export async function sendDeadlineReminderEmail({
+  recruiterName,
+  recruiterEmail,
+  candidateName,
+  jobTitle,
+  daysLeft,
+  applicationId,
+}: {
+  recruiterName: string;
+  recruiterEmail: string;
+  candidateName: string;
+  jobTitle: string;
+  daysLeft: number;
+  applicationId: string;
+}): Promise<void> {
+  const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+  const applicationsUrl = `${baseUrl}/tableau-de-bord/recruteur/candidatures`;
+
+  const isUrgent = daysLeft <= 1;
+  const accentColor = isUrgent ? "#ef4444" : "#f97316";
+  const badgeBg = isUrgent ? "#fef2f2" : "#fff7ed";
+  const badgeBorder = isUrgent ? "#fecaca" : "#fed7aa";
+  const badgeText = isUrgent ? "#b91c1c" : "#9a3412";
+
+  const urgencyLabel = daysLeft <= 0
+    ? "⛔ Délai expiré aujourd'hui !"
+    : daysLeft === 1
+    ? "🚨 Dernier jour pour répondre !"
+    : `⏰ Plus que ${daysLeft} jours pour répondre`;
+
+  const intro = daysLeft <= 0
+    ? `Le délai de réponse pour la candidature de <strong>${candidateName}</strong> au poste <strong>${jobTitle}</strong> expire <strong>aujourd'hui</strong>. Merci d'apporter une réponse définitive dès que possible.`
+    : `Vous avez reçu la candidature de <strong>${candidateName}</strong> pour le poste <strong>${jobTitle}</strong>. Il vous reste <strong>${daysLeft} jour${daysLeft > 1 ? "s" : ""}</strong> pour apporter une réponse finale à ce candidat.`;
+
+  const html = `
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0">
+    <tr><td align="center" style="padding:40px 16px;">
+      <table width="520" cellpadding="0" cellspacing="0" style="background:white;border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.1);">
+        <tr><td style="background:${accentColor};padding:28px 32px;">
+          <span style="background:white;border-radius:10px;padding:6px 10px;font-weight:800;color:${accentColor};font-size:18px;">KTZ</span>
+          <span style="color:white;font-size:20px;font-weight:700;"> Emploi</span>
+        </td></tr>
+        <tr><td style="padding:32px;">
+          <h1 style="margin:0 0 16px;font-size:22px;color:#111827;">${urgencyLabel}</h1>
+          <p style="color:#374151;margin:0 0 8px;font-size:15px;line-height:1.7;">
+            Bonjour <strong>${recruiterName.split(" ")[0]}</strong>,
+          </p>
+          <p style="color:#374151;margin:0 0 24px;font-size:15px;line-height:1.7;">
+            ${intro}
+          </p>
+          <div style="background:${badgeBg};border:1px solid ${badgeBorder};border-radius:12px;padding:16px 20px;margin-bottom:24px;">
+            <p style="margin:0 0 6px;font-size:12px;color:${badgeText};font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">Candidature concernée</p>
+            <p style="margin:0;font-size:14px;color:#374151;line-height:1.8;">
+              👤 Candidat : <strong>${candidateName}</strong><br>
+              📌 Poste : <strong>${jobTitle}</strong>
+            </p>
+          </div>
+          <p style="color:#6b7280;font-size:13px;line-height:1.6;margin:0 0 24px;">
+            Sur KTZ Emploi, nous nous engageons à ce que chaque candidat reçoive une réponse dans un délai de <strong>10 jours</strong>.
+            Cela contribue à une expérience respectueuse pour tous les chercheurs d'emploi en RCA.
+          </p>
+          <div style="text-align:center;">
+            <a href="${applicationsUrl}"
+               style="display:inline-block;background:${accentColor};color:white;padding:12px 28px;border-radius:50px;text-decoration:none;font-weight:600;font-size:14px;">
+              Répondre maintenant →
+            </a>
+          </div>
+        </td></tr>
+        <tr><td style="background:#f9fafb;padding:20px 32px;text-align:center;border-top:1px solid #e5e7eb;">
+          <p style="margin:0;color:#9ca3af;font-size:12px;">
+            KTZ Emploi · Bangui, République Centrafricaine<br>
+            Cet email a été envoyé automatiquement via KTZ Emploi.
+          </p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
+  const subject = daysLeft <= 0
+    ? `⛔ Délai expiré — répondez à ${candidateName} pour "${jobTitle}"`
+    : daysLeft === 1
+    ? `🚨 Dernier jour — répondez à ${candidateName} pour "${jobTitle}"`
+    : `⏰ Rappel : encore ${daysLeft} jours pour répondre à ${candidateName}`;
+
+  try {
+    await sendEmail({ to: recruiterEmail, subject, html });
+  } catch (err) {
+    console.error("[Deadline reminder email]", err);
+  }
+}

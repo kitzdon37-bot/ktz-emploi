@@ -129,7 +129,7 @@ export default async function TarifsPage() {
             {[
               { label: "Offres actives", values: ["1", "3", "10", "Illimitées"] },
               { label: "Durée de visibilité", values: ["15 j", "30 j", "30 j", "60 j"] },
-              { label: "Prix/mois", values: ["Gratuit", "10 000 XAF", "25 000 XAF", "50 000 XAF"] },
+              { label: "Prix/mois", values: ["Gratuit", "10 000 XAF", "70 000 XAF", "100 000 XAF"] },
               { label: "CVthèque", values: [false, false, true, true] },
               { label: "Offres à la une", values: [false, false, false, true] },
               { label: "Analytics", values: [false, false, true, true] },
