@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import ChatWidget from "@/components/ChatWidget";
 import NewsletterPopup from "@/components/NewsletterPopup";
 import VisitTracker from "@/components/VisitTracker";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "KTZ Emploi — Offres d'emploi en République Centrafricaine",
@@ -29,6 +30,7 @@ export default function RootLayout({
           {process.env.NODE_ENV !== "production" && <ChatWidget />}
           <NewsletterPopup />
           <VisitTracker />
+          <Analytics />
         </Providers>
       </body>
     </html>
