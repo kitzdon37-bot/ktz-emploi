@@ -57,13 +57,13 @@ export default function ComingSoon() {
         {/* ── Drapeau RCA ── */}
         <div style={{ display: "flex", justifyContent: "center", alignItems: "flex-start", marginBottom: 32, opacity: visible ? 1 : 0, transition: "opacity 0.8s ease 0.1s" }}>
           {/* Mât */}
-          <div style={{ width: 7, height: 230, background: "linear-gradient(to right, #c9a227, #f5d060, #c9a227)", borderRadius: "4px 4px 2px 2px", flexShrink: 0, boxShadow: "2px 2px 8px rgba(0,0,0,0.5)", zIndex: 2 }} />
+          <div style={{ width: 6, height: 180, background: "linear-gradient(to right, #c9a227, #f5d060, #c9a227)", borderRadius: "4px 4px 2px 2px", flexShrink: 0, boxShadow: "2px 2px 8px rgba(0,0,0,0.5)", zIndex: 2 }} />
 
           {/* Tissu du drapeau avec filtre vague */}
           <div
             style={{
-              width: 330,
-              height: 200,
+              width: 250,
+              height: 150,
               position: "relative",
               overflow: "hidden",
               borderRadius: "0 8px 8px 0",
