@@ -25,7 +25,7 @@ export default function RootLayout({
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />
-          <ChatWidget />
+          {process.env.NODE_ENV !== "production" && <ChatWidget />}
           <NewsletterPopup />
         </Providers>
       </body>
