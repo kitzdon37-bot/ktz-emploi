@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 // ← Modifie cette date pour changer le compte à rebours
-const LAUNCH_DATE = new Date("2026-07-01T00:00:00");
+const LAUNCH_DATE = new Date("2026-07-15T00:00:00");
 
 function useCountdown(target: Date) {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0, done: false });
@@ -169,7 +169,7 @@ export default function ComingSoon() {
           <p style={{ color: "#c7d2fe", lineHeight: 1.7, fontSize: "0.95rem", marginBottom: 28 }}>
             {done
               ? "La plateforme est maintenant disponible. Bienvenue !"
-              : <>Lancement prévu le <strong style={{ color: "white" }}>1er juillet 2026</strong>. Restez connectés !</>
+              : <>Lancement prévu le <strong style={{ color: "white" }}>15 juillet 2026</strong>. Restez connectés !</>
             }
           </p>
 
