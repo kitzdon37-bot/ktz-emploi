@@ -2,8 +2,62 @@
 
 import { useEffect, useState } from "react";
 
+// ← Modifie cette date pour changer le compte à rebours
+const LAUNCH_DATE = new Date("2026-07-01T00:00:00");
+
+function useCountdown(target: Date) {
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0, done: false });
+
+  useEffect(() => {
+    function compute() {
+      const diff = target.getTime() - Date.now();
+      if (diff <= 0) {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0, done: true });
+        return;
+      }
+      const s = Math.floor(diff / 1000);
+      setTimeLeft({
+        days:    Math.floor(s / 86400),
+        hours:   Math.floor((s % 86400) / 3600),
+        minutes: Math.floor((s % 3600) / 60),
+        seconds: s % 60,
+        done: false,
+      });
+    }
+    compute();
+    const id = setInterval(compute, 1000);
+    return () => clearInterval(id);
+  }, [target]);
+
+  return timeLeft;
+}
+
+function CountUnit({ value, label }: { value: number; label: string }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, minWidth: 64 }}>
+      <div style={{
+        background: "rgba(255,255,255,0.12)",
+        border: "1px solid rgba(255,255,255,0.2)",
+        borderRadius: 14,
+        padding: "14px 10px",
+        minWidth: 64,
+        textAlign: "center",
+        backdropFilter: "blur(8px)",
+      }}>
+        <span style={{ fontSize: "2.2rem", fontWeight: 800, color: "white", letterSpacing: "-0.03em", lineHeight: 1 }}>
+          {String(value).padStart(2, "0")}
+        </span>
+      </div>
+      <span style={{ fontSize: "0.7rem", fontWeight: 600, color: "#a5b4fc", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+        {label}
+      </span>
+    </div>
+  );
+}
+
 export default function ComingSoon() {
   const [visible, setVisible] = useState(false);
+  const { days, hours, minutes, seconds, done } = useCountdown(LAUNCH_DATE);
 
   useEffect(() => {
     const t = setTimeout(() => setVisible(true), 100);
@@ -107,16 +161,30 @@ export default function ComingSoon() {
           1ère plateforme de recherche d&apos;emploi en Centrafrique
         </p>
 
-        {/* Carte Bientôt disponible */}
+        {/* Carte Bientôt disponible + Compte à rebours */}
         <div style={{ background: "rgba(255,255,255,0.08)", backdropFilter: "blur(12px)", borderRadius: 20, padding: "36px 32px", border: "1px solid rgba(255,255,255,0.15)", marginBottom: 28, opacity: visible ? 1 : 0, transform: visible ? "translateY(0) scale(1)" : "translateY(30px) scale(0.95)", transition: "opacity 0.9s ease 0.55s, transform 0.9s ease 0.55s" }}>
-          <h2 style={{ fontSize: "1.6rem", fontWeight: 700, color: "white", marginBottom: 12 }}>Bientôt disponible</h2>
-          <p style={{ color: "#c7d2fe", lineHeight: 1.7, fontSize: "1rem" }}>
-            La plateforme sera disponible <strong style={{ color: "white" }}>très prochainement</strong>.
+          <h2 style={{ fontSize: "1.6rem", fontWeight: 700, color: "white", marginBottom: 8 }}>
+            {done ? "Nous sommes en ligne !" : "Bientôt disponible"}
+          </h2>
+          <p style={{ color: "#c7d2fe", lineHeight: 1.7, fontSize: "0.95rem", marginBottom: 28 }}>
+            {done
+              ? "La plateforme est maintenant disponible. Bienvenue !"
+              : <>Lancement prévu le <strong style={{ color: "white" }}>1er juillet 2026</strong>. Restez connectés !</>
+            }
           </p>
-          <div style={{ marginTop: 28, height: 6, borderRadius: 99, background: "rgba(255,255,255,0.15)", overflow: "hidden" }}>
-            <div style={{ height: "100%", borderRadius: 99, background: "linear-gradient(90deg, #818cf8, #a78bfa, #60a5fa)", animation: "progress 3s ease-in-out infinite" }} />
-          </div>
-          <p style={{ color: "#a5b4fc", fontSize: "0.8rem", marginTop: 8 }}>Préparation en cours...</p>
+
+          {/* Compte à rebours */}
+          {!done && (
+            <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
+              <CountUnit value={days}    label="Jours"    />
+              <div style={{ color: "rgba(255,255,255,0.4)", fontSize: "2rem", fontWeight: 700, alignSelf: "flex-start", paddingTop: 14 }}>:</div>
+              <CountUnit value={hours}   label="Heures"   />
+              <div style={{ color: "rgba(255,255,255,0.4)", fontSize: "2rem", fontWeight: 700, alignSelf: "flex-start", paddingTop: 14 }}>:</div>
+              <CountUnit value={minutes} label="Minutes"  />
+              <div style={{ color: "rgba(255,255,255,0.4)", fontSize: "2rem", fontWeight: 700, alignSelf: "flex-start", paddingTop: 14 }}>:</div>
+              <CountUnit value={seconds} label="Secondes" />
+            </div>
+          )}
         </div>
 
         {/* Contact */}
@@ -132,12 +200,6 @@ export default function ComingSoon() {
         @keyframes pulse {
           0%, 100% { transform: scale(1); opacity: 0.6; }
           50%       { transform: scale(1.1); opacity: 1; }
-        }
-        @keyframes progress {
-          0%   { width: 0%;  opacity: 1; }
-          70%  { width: 85%; opacity: 1; }
-          90%  { width: 85%; opacity: 0.5; }
-          100% { width: 0%;  opacity: 0; }
         }
       `}</style>
     </div>

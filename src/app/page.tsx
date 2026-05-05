@@ -64,8 +64,8 @@ const TIPS = [
 ];
 
 export default async function HomePage() {
-  // En production → page coming soon
-  if (process.env.NODE_ENV === "production") {
+  // Coming soon (production + preview locale via SHOW_COMING_SOON=true)
+  if (process.env.NODE_ENV === "production" || process.env.SHOW_COMING_SOON === "true") {
     return <ComingSoon />;
   }
 
