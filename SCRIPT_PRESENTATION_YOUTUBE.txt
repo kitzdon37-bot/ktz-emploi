@@ -1,0 +1,300 @@
+================================================================
+SCRIPT VIDEO YOUTUBE — Presentation de KTZ Emploi
+================================================================
+Duree estimee : 8 a 10 minutes
+Ton : Dynamique, professionnel, accessible
+Public cible : Chercheurs d'emploi et recruteurs centrafricains
+================================================================
+
+
+----------------------------------------------------------------
+INTRO — [0:00 -> 0:30]
+----------------------------------------------------------------
+[Ecran noir. Musique montante. Logo KTZ Emploi apparait en animation.]
+
+VOIX OFF :
+"Tu cherches un emploi a Bangui... ou en Centrafrique ?
+Tu postules partout, tu envoies des CV, tu attends.
+Et souvent, rien ne se passe.
+Parce que dans ce pays, trouver un travail, ca passe trop souvent
+par quelqu'un qui connait quelqu'un.
+Aujourd'hui, ca change."
+
+[Transition vers la page d'accueil du site, vue plein ecran]
+
+"Je te presente KTZ Emploi — la premiere plateforme de recherche
+d'emploi en Republique Centrafricaine."
+
+
+----------------------------------------------------------------
+SECTION 1 — LA PAGE D'ACCUEIL [0:30 -> 2:00]
+----------------------------------------------------------------
+[Scroll lent sur la page d'accueil — hero visible]
+
+VOIX OFF :
+"Des que tu arrives sur le site, tu vois notre promesse :
+'Pas besoin de connaitre quelqu'un qui connait quelqu'un.
+Ici, tu postules toi-meme — et ca change tout.'"
+
+[Zoom sur le badge drapeau centrafricain anime]
+
+"KTZ Emploi, c'est la premiere plateforme 100% dediee a l'emploi
+en Centrafrique.
+On est la pour toi, que tu sois a Bangui, a Bouar, a Bambari ou ailleurs."
+
+[Montrer la barre de recherche — cliquer sur le champ 'Quoi?']
+
+"La barre de recherche est intelligente.
+Des que tu cliques dessus... les offres les plus populaires du moment
+apparaissent automatiquement.
+Et si tu commences a taper — par exemple 'comptable'..."
+
+[Taper 'comp' dans la barre de recherche — montrer les suggestions en temps reel]
+
+"...les suggestions s'affichent en temps reel, avec la partie que tu as
+tapee mise en evidence. Tu gagnes du temps. Tu trouves plus vite."
+
+[Montrer les chips de recherche rapide : CDI, Stage, Humanitaire, IT & Tech, Sante]
+
+"Tu peux aussi cliquer directement sur les categories rapides ici en bas."
+
+[Scroll vers les stats animees]
+
+"Et regarde ces chiffres : 85 offres publiees, 38 entreprises partenaires,
+des centaines de candidats inscrits. Et ca grossit chaque semaine."
+
+
+----------------------------------------------------------------
+SECTION 2 — LES OFFRES D'EMPLOI [2:00 -> 3:30]
+----------------------------------------------------------------
+[Naviguer vers /emplois]
+
+VOIX OFF :
+"Voici la page des offres d'emploi.
+Toutes les opportunites disponibles en RCA, au meme endroit."
+
+[Montrer les filtres a gauche]
+
+"A gauche, les filtres. Tu peux rechercher par mot-cle, par ville,
+par secteur d'activite, par type de contrat — CDI, CDD, Stage, Freelance —
+et meme par niveau d'experience."
+
+[Cliquer sur le champ recherche dans les filtres — montrer les suggestions]
+
+"Meme ici dans les filtres, le champ de recherche te propose
+des suggestions automatiques."
+
+[Faire une recherche 'Humanitaire']
+
+"Les resultats s'affichent instantanement.
+ONG internationales, agences de l'ONU, organisations humanitaires...
+UNICEF, IRC, MSF, UNDP, FAO, IOM — tous recrutent ici."
+
+[Cliquer sur une offre d'emploi pour l'ouvrir]
+
+"Sur chaque offre, tu as toutes les informations :
+le poste, la description complete, les prerequis, le type de contrat,
+la localisation, la date limite de candidature."
+
+[Montrer le bouton 'Postuler']
+
+"Et pour postuler... un seul clic. C'est tout."
+
+
+----------------------------------------------------------------
+SECTION 3 — LES ENTREPRISES [3:30 -> 4:30]
+----------------------------------------------------------------
+[Naviguer vers /entreprises]
+
+VOIX OFF :
+"La page entreprises, c'est l'annuaire de tous les recruteurs actifs en RCA."
+
+[Montrer la grille d'entreprises avec logos]
+
+"38 organisations referencees : des ONG internationales,
+des entreprises privees, des institutions publiques.
+Street Child, COOPI, Solidarites International, Welthungerhilfe,
+Orange Centrafrique, Ecobank, SODECA..."
+
+[Cliquer sur une entreprise]
+
+"En cliquant sur une entreprise, tu accedes a son profil complet :
+qui ils sont, leur secteur, leur localisation, et surtout —
+toutes leurs offres d'emploi actuelles."
+
+
+----------------------------------------------------------------
+SECTION 4 — S'INSCRIRE COMME CANDIDAT [4:30 -> 5:30]
+----------------------------------------------------------------
+[Naviguer vers /inscription]
+
+VOIX OFF :
+"S'inscrire sur KTZ Emploi, c'est gratuit.
+Et c'est fait en moins de deux minutes."
+
+[Montrer les deux boutons : Email / WhatsApp]
+
+"On a pense a tout le monde.
+Tu peux t'inscrire avec ton adresse email...
+ou directement avec ton numero WhatsApp."
+
+[Montrer la methode WhatsApp — saisie du numero]
+
+"Avec WhatsApp, on t'envoie un code de verification sur ton telephone.
+Tu le saisis, et c'est bon — ton compte est cree.
+Pas besoin d'email. Pas besoin de mot de passe complique."
+
+[Montrer le formulaire d'inscription — nom, prenom, etc.]
+
+"Tu remplis ton profil : ton nom, ton secteur, ton experience.
+Plus ton profil est complet, plus tu as de chances d'etre vu
+par les recruteurs."
+
+
+----------------------------------------------------------------
+SECTION 5 — LE TABLEAU DE BORD CANDIDAT [5:30 -> 6:30]
+----------------------------------------------------------------
+[Se connecter et aller sur /tableau-de-bord]
+
+VOIX OFF :
+"Une fois connecte, tu accedes a ton tableau de bord personnel.
+C'est ici que tout se passe."
+
+[Montrer les differentes sections du dashboard]
+
+"Tu vois toutes tes candidatures en un coup d'oeil —
+celles en attente, celles en cours d'examen, celles acceptees.
+Plus besoin de courir apres les recruteurs pour savoir ou tu en es."
+
+[Montrer la section CV]
+
+"Tu peux uploader ton CV directement sur la plateforme.
+Et si tu coches l'option 'CV public', les recruteurs pourront
+te trouver meme si tu n'as pas encore postule."
+
+[Montrer les alertes emploi]
+
+"Tu peux aussi creer des alertes : des qu'une offre correspond
+a ton profil, tu recois une notification automatique.
+Comme ca, tu es toujours le premier informe."
+
+
+----------------------------------------------------------------
+SECTION 6 — L'ESPACE RECRUTEUR [6:30 -> 7:30]
+----------------------------------------------------------------
+[Montrer le dashboard recruteur / tableau de bord entreprise]
+
+VOIX OFF :
+"KTZ Emploi, c'est aussi fait pour les recruteurs."
+
+[Montrer la section 'Publier une offre']
+
+"Vous pouvez publier une offre d'emploi en moins de 5 minutes.
+Titre, description, prerequis, type de contrat, localisation, date limite.
+Et votre offre est visible immediatement par tous les candidats."
+
+[Montrer le pipeline Kanban]
+
+"Le pipeline de recrutement vous permet de gerer vos candidatures
+comme un pro.
+Glissez les candidats de 'En attente' a 'En cours d'examen',
+puis 'Entretien', 'Accepte' ou 'Refuse'.
+Tout est visuel, tout est clair."
+
+[Montrer la CVtheque]
+
+"Et avec la CVtheque, vous accedez directement aux profils
+des candidats qui ont rendu leur CV public.
+Filtrez par competences, par niveau d'experience, contactez-les.
+Le recrutement proactif, enfin accessible en RCA."
+
+
+----------------------------------------------------------------
+SECTION 7 — POURQUOI KTZ EMPLOI [7:30 -> 8:30]
+----------------------------------------------------------------
+[Retour sur la page d'accueil — scroll sur 'Comment ca marche?']
+
+VOIX OFF :
+"Alors pourquoi KTZ Emploi ?"
+
+[Afficher 3 arguments a l'ecran]
+
+"PREMIEREMENT — c'est 100% centrafricain.
+On connait le marche, on connait les realites du terrain.
+Les offres viennent des vrais recruteurs qui operent ici, maintenant."
+
+"DEUXIEMEMENT — c'est gratuit pour les candidats. Toujours.
+Tu postules, tu suis tes candidatures, tu geres ton profil —
+sans debourser un franc."
+
+"TROISIEMEMENT — c'est simple.
+Pas besoin d'etre un expert en informatique.
+Si tu as un telephone et WhatsApp,
+tu peux t'inscrire et commencer a postuler."
+
+[Montrer les logos des ONG et entreprises partenaires]
+
+"Nos partenaires, c'est le gratin du recrutement en RCA :
+UNICEF, MSF, IRC, UNDP, FAO, IOM, DanChurchAid,
+Solidarites International, COOPI, NRC,
+Orange Centrafrique, Ecobank...
+Toutes ces organisations font confiance a KTZ Emploi
+pour trouver leurs talents."
+
+
+----------------------------------------------------------------
+OUTRO — [8:30 -> 9:00]
+----------------------------------------------------------------
+[Logo KTZ Emploi en plein ecran. Musique montante.]
+
+VOIX OFF :
+"Tu cherches un emploi ?
+Va sur ktzemploi.com et cree ton profil gratuitement des maintenant.
+
+Tu recrutes ?
+Publie ta premiere offre en 5 minutes.
+
+KTZ Emploi — parce que le talent centrafricain merite d'etre vu."
+
+[Afficher le lien du site en grand]
+
+    www.ktzemploi.com
+
+[Fin avec musique + ecran de fin YouTube]
+
+TEXTE A L'ECRAN :
+    Lien dans la description
+    Like si tu trouves ca utile
+    Abonne-toi pour suivre l'evolution du site
+
+
+================================================================
+NOTES DE TOURNAGE
+================================================================
+
+SCENES A FILMER (capture d'ecran en direct) :
+----------------------------------------------
+Scene 1  | Page d'accueil  | Scroll lent de haut en bas
+Scene 2  | Barre recherche | Clic -> suggestions -> taper "comptable"
+Scene 3  | /emplois        | Filtrer par "Humanitaire" -> resultats
+Scene 4  | Fiche offre     | Ouvrir et scroller
+Scene 5  | /entreprises    | Grille logos -> cliquer sur une fiche
+Scene 6  | /inscription    | Montrer email / WhatsApp avec OTP
+Scene 7  | /tableau-de-bord| Vue candidat : candidatures + CV + alertes
+Scene 8  | Dashboard recr. | Pipeline Kanban + CVtheque
+Scene 9  | Page d'accueil  | Stats animees en scroll
+
+MUSIQUE SUGGEREE :
+------------------
+- Intro/outro : musique africaine moderne, rythme (libre de droits)
+- Fond pendant presentation : musique douce, instrumentale
+
+CONSEILS DE MONTAGE :
+---------------------
+- Ajoute des zooms doux sur les elements importants
+- Utilise des sous-titres pour chaque section
+- Mets en surbrillance les elements cliques (curseur anime)
+- Duree de chaque scene : 5 a 15 secondes maximum
+- Utilise des transitions en fondu enchaine
+
+================================================================
