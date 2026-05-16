@@ -97,7 +97,7 @@ export default async function HomePage() {
               <span className="text-orange-400">Ici, vous postulez vous-même</span>{" "}—<br />
               et ça change tout.
             </h1>
-            <div className="flex flex-col sm:flex-row bg-white rounded-2xl shadow-2xl">
+            <div className="relative z-50 flex flex-col sm:flex-row bg-white rounded-2xl shadow-2xl">
               {/* Champ Quoi — composant client avec suggestions */}
               <div className="flex-1 border-b sm:border-b-0 sm:border-r border-gray-200 rounded-tl-2xl rounded-bl-2xl overflow-visible">
                 <SearchBar />
