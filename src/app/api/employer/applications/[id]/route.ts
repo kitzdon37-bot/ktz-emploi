@@ -56,8 +56,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   // Envoi d'email personnalisé
   if (sendEmail) {
     const result = await sendStatusNotificationEmail({
-      candidateName: application.user.name || application.user.email,
-      candidateEmail: application.user.email,
+      candidateName: application.user.name || application.user.email || "Candidat",
+      candidateEmail: application.user.email ?? "",
       jobTitle: application.job.title,
       companyName: company.name,
       status: status || application.status,

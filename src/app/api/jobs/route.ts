@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
     const dbUser = await prisma.user.findUnique({ where: { id: userId }, select: { name: true, email: true } });
     await logActivity({
       userId,
-      userEmail: dbUser?.email,
+      userEmail: dbUser?.email ?? undefined,
       userName: dbUser?.name ?? undefined,
       type: "JOB_PUBLISHED",
       label: `Offre publiée : ${title}`,

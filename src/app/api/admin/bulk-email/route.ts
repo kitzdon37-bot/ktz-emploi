@@ -45,6 +45,7 @@ export async function POST(req: NextRequest) {
   const results: { email: string; sent: boolean; error?: string }[] = [];
 
   for (const user of users) {
+    if (!user.email) continue;
     try {
       await sendEmail({ to: user.email, subject, html });
       results.push({ email: user.email, sent: true });

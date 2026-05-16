@@ -9,30 +9,30 @@ datasource db {
 }
 
 model User {
-  id               String    @id @default(cuid())
+  id               String            @id @default(cuid())
   name             String?
-  email            String    @unique
+  email            String?           @unique
+  phone            String?           @unique
   emailVerified    DateTime?
   image            String?
   password         String?
-  role             String    @default("JOBSEEKER")
-  suspended        Boolean   @default(false)
+  role             String            @default("JOBSEEKER")
+  suspended        Boolean           @default(false)
   resetToken       String?
   resetTokenExpiry DateTime?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-
-  accounts        Account[]
-  sessions        Session[]
-  profile         JobSeekerProfile?
-  company         Company?
-  applications    Application[]
-  savedJobs       SavedJob[]
-  reviews         CompanyReview[]
-  blogPosts       BlogPost[]
-  recruiterNotes  RecruiterNote[]
-  jobAlerts       JobAlert[]
-  activityLogs    ActivityLog[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  accounts         Account[]
+  activityLogs     ActivityLog[]
+  applications     Application[]
+  blogPosts        BlogPost[]
+  company          Company?
+  reviews          CompanyReview[]
+  jobAlerts        JobAlert[]
+  profile          JobSeekerProfile?
+  recruiterNotes   RecruiterNote[]
+  savedJobs        SavedJob[]
+  sessions         Session[]
 
   @@index([role])
   @@index([suspended])
@@ -52,8 +52,7 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@index([userId])
@@ -64,8 +63,7 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -79,36 +77,34 @@ model VerificationToken {
 }
 
 model JobSeekerProfile {
-  id               String   @id @default(cuid())
-  userId           String   @unique
-  title            String?
-  bio              String?
-  phone            String?
-  location         String?
-  cv               String?
-  cvPublic         Boolean  @default(false)
-  skills           String?
-  experience       String?
-  education        String?
-  smsOptIn         Boolean  @default(false)
-  whatsappOptIn    Boolean  @default(false)
-  notifCategories  String?  // JSON array de secteurs, null = tous les secteurs
-  isDisabled       Boolean  @default(false) // Statut de travailleur handicapé (RQTH)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-
-  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  cvViews CvView[]
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  title           String?
+  bio             String?
+  phone           String?
+  location        String?
+  cv              String?
+  cvPublic        Boolean  @default(false)
+  skills          String?
+  experience      String?
+  education       String?
+  smsOptIn        Boolean  @default(false)
+  whatsappOptIn   Boolean  @default(false)
+  notifCategories String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  isDisabled      Boolean  @default(false)
+  cvViews         CvView[]
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model CvView {
-  id          String   @id @default(cuid())
+  id          String           @id @default(cuid())
   profileId   String
   viewerId    String
   companyName String?
-  viewedAt    DateTime @default(now())
-
-  profile JobSeekerProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  viewedAt    DateTime         @default(now())
+  profile     JobSeekerProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   @@index([profileId])
   @@index([profileId, viewedAt])
@@ -116,10 +112,10 @@ model CvView {
 }
 
 model Company {
-  id             String   @id @default(cuid())
-  userId         String   @unique
+  id             String          @id @default(cuid())
+  userId         String          @unique
   name           String
-  slug           String   @unique
+  slug           String          @unique
   logo           String?
   website        String?
   description    String?
@@ -132,18 +128,17 @@ model Company {
   videoUrl       String?
   photos         String?
   foundedYear    Int?
-  verified       Boolean  @default(false)
-  superRecruiter Boolean  @default(false)
-  suspended      Boolean  @default(false)
-  allowContact   Boolean  @default(false)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  jobs         Job[]
-  reviews      CompanyReview[]
-  jobTemplates JobTemplate[]
-  subscription Subscription?
+  verified       Boolean         @default(false)
+  superRecruiter Boolean         @default(false)
+  suspended      Boolean         @default(false)
+  allowContact   Boolean         @default(false)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reviews        CompanyReview[]
+  jobs           Job[]
+  jobTemplates   JobTemplate[]
+  subscription   Subscription?
 
   @@index([verified])
   @@index([suspended])
@@ -161,43 +156,40 @@ model Subscription {
   paymentMethod String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-
-  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  company       Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
   @@index([status])
   @@index([plan, status])
 }
 
 model Job {
-  id              String    @id @default(cuid())
-  companyId       String
-  title           String
-  slug            String    @unique
-  description     String
-  requirements    String?
-  benefits        String?
-  type            String
-  category        String
-  location        String
-  remote          Boolean   @default(false)
-  salaryMin       Int?
-  salaryMax       Int?
-  salaryCurrency  String    @default("XAF")
-  experienceLevel String?
-  deadline        DateTime?
-  coverImage          String?
-  published           Boolean   @default(true)
-  featured            Boolean   @default(false)
-  notifyOnApproval    Boolean   @default(false)
-  views           Int       @default(0)
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id               String        @id @default(cuid())
+  companyId        String
+  title            String
+  slug             String        @unique
+  description      String
+  requirements     String?
+  benefits         String?
+  type             String
+  category         String
+  location         String
+  remote           Boolean       @default(false)
+  salaryMin        Int?
+  salaryMax        Int?
+  salaryCurrency   String        @default("XAF")
+  experienceLevel  String?
+  deadline         DateTime?
+  coverImage       String?
+  published        Boolean       @default(true)
+  featured         Boolean       @default(false)
+  notifyOnApproval Boolean       @default(false)
+  views            Int           @default(0)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  applications     Application[]
+  company          Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  savedBy          SavedJob[]
 
-  company      Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  applications Application[]
-  savedBy      SavedJob[]
-
-  // Index simples
   @@index([companyId])
   @@index([published])
   @@index([featured])
@@ -205,47 +197,44 @@ model Job {
   @@index([location])
   @@index([type])
   @@index([createdAt])
-  // Index composés pour les requêtes courantes
-  @@index([published, createdAt])         // liste des offres triée
-  @@index([published, featured, createdAt]) // page d'accueil
-  @@index([published, category])          // filtre par secteur
-  @@index([published, location])          // filtre par ville
-  @@index([published, type])              // filtre par type de contrat
+  @@index([published, createdAt])
+  @@index([published, featured, createdAt])
+  @@index([published, category])
+  @@index([published, location])
+  @@index([published, type])
 }
 
 model Application {
-  id               String    @id @default(cuid())
+  id               String                     @id @default(cuid())
   jobId            String
   userId           String
   coverLetter      String?
   cvUrl            String?
-  status           String    @default("PENDING")
-  responseDeadline DateTime?            // Date limite de réponse du recruteur (J+10)
-  remindersSent    Int       @default(0) // Nb de rappels envoyés (0=aucun, 1=J-7, 2=J-3, 3=J-1)
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-
-  job           Job                        @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  user          User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  notes         RecruiterNote[]
-  statusHistory ApplicationStatusHistory[]
+  status           String                     @default("PENDING")
+  createdAt        DateTime                   @default(now())
+  updatedAt        DateTime                   @updatedAt
+  remindersSent    Int                        @default(0)
+  responseDeadline DateTime?
+  job              Job                        @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  user             User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  statusHistory    ApplicationStatusHistory[]
+  notes            RecruiterNote[]
 
   @@unique([jobId, userId])
   @@index([userId])
   @@index([jobId])
   @@index([status])
-  @@index([userId, createdAt])   // historique candidatures d'un user
-  @@index([jobId, status])       // candidatures d'une offre par statut
+  @@index([userId, createdAt])
+  @@index([jobId, status])
 }
 
 model ApplicationStatusHistory {
-  id            String   @id @default(cuid())
+  id            String      @id @default(cuid())
   applicationId String
   status        String
   note          String?
-  changedAt     DateTime @default(now())
-
-  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  changedAt     DateTime    @default(now())
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 
   @@index([applicationId])
 }
@@ -255,9 +244,8 @@ model SavedJob {
   jobId     String
   userId    String
   createdAt DateTime @default(now())
-
-  job  Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([jobId, userId])
   @@index([userId])
@@ -283,15 +271,14 @@ model SiteSetting {
 }
 
 model RecruiterNote {
-  id            String   @id @default(cuid())
+  id            String      @id @default(cuid())
   applicationId String
   recruiterId   String
   content       String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-  recruiter   User        @relation(fields: [recruiterId], references: [id], onDelete: Cascade)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  recruiter     User        @relation(fields: [recruiterId], references: [id], onDelete: Cascade)
 
   @@index([applicationId])
   @@index([recruiterId])
@@ -307,9 +294,8 @@ model CompanyReview {
   anonymous Boolean  @default(true)
   status    String   @default("APPROVED")
   createdAt DateTime @default(now())
-
-  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([companyId, userId])
   @@index([companyId, status])
@@ -326,8 +312,7 @@ model BlogPost {
   authorId  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   @@index([published, createdAt])
 }
@@ -354,15 +339,13 @@ model ActivityLog {
   label     String
   metadata  String?
   createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id])
 
-  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
-
-  // Indexes critiques — cette table grossit très vite
   @@index([createdAt])
   @@index([type])
   @@index([userId])
-  @@index([type, createdAt])    // filtre admin par type + tri
-  @@index([userId, createdAt])  // historique d'un user
+  @@index([type, createdAt])
+  @@index([userId, createdAt])
 }
 
 model JobAlert {
@@ -373,8 +356,7 @@ model JobAlert {
   frequency String   @default("daily")
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([active, frequency])
@@ -390,6 +372,16 @@ model NewsletterSubscriber {
   createdAt DateTime @default(now())
 
   @@index([active, frequency])
+}
+
+model OtpCode {
+  id        String   @id @default(cuid())
+  phone     String
+  code      String
+  expires   DateTime
+  createdAt DateTime @default(now())
+
+  @@index([phone])
 }
 
 model NewsletterCampaign {
@@ -417,8 +409,7 @@ model JobTemplate {
   salaryMax    Int?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-
-  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  company      Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
   @@index([companyId])
 }

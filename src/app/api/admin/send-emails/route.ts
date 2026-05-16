@@ -44,6 +44,8 @@ export async function POST(req: NextRequest) {
       take: 5,
     });
 
+    if (!user.email) { results.push({ email: (user as { phone?: string | null }).phone ?? "N/A", sent: false, jobCount: 0 }); continue; }
+
     if (jobs.length === 0) {
       results.push({ email: user.email, sent: false, jobCount: 0 });
       continue;

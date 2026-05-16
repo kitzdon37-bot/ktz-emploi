@@ -2,7 +2,9 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Search, MapPin, Briefcase, Building2, ArrowRight, Star, Users, CheckCircle, FileText, TrendingUp } from "lucide-react";
 import JobCard from "@/components/JobCard";
-import { JOB_CATEGORIES } from "@/lib/utils";
+import StatsCounter from "@/components/StatsCounter";
+import SearchBar from "@/components/SearchBar";
+import { JOB_CATEGORIES, RCA_LOCATIONS } from "@/lib/utils";
 import ComingSoon from "@/components/ComingSoon";
 
 async function getHomeData() {
@@ -84,44 +86,49 @@ export default async function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent" />
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-end h-full" style={{ minHeight: "560px" }}>
           <div className="pb-12 pt-24">
-            <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/25 text-white text-sm font-medium px-4 py-1.5 rounded-full mb-6">
-              <span className="flag-wave text-xl">🇨🇫</span>
+            <div className="inline-flex items-center gap-2 bg-white/90 backdrop-blur-sm border border-white text-[#1e3a5f] text-sm font-bold px-4 py-1.5 rounded-full mb-6 shadow-md">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="https://upload.wikimedia.org/wikipedia/commons/6/6f/Flag_of_the_Central_African_Republic.svg" alt="Drapeau RCA" className="flag-wave h-5 w-7 object-cover rounded-sm shadow-sm" />
               <span>1ère plateforme de recherche d&apos;emploi en Centrafrique</span>
             </div>
-            <h1 className="text-4xl lg:text-6xl font-extrabold text-white leading-tight mb-8 drop-shadow-lg">
-              Notre job, vous aider<br />
-              à trouver le vôtre parmi{" "}
-              <span className="text-orange-400">1500</span>
-              {" "}offres
+            <h1 className="text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-8 drop-shadow-lg">
+              Pas besoin de connaître<br />
+              quelqu&apos;un qui connaît quelqu&apos;un.<br />
+              <span className="text-orange-400">Ici, vous postulez vous-même</span>{" "}—<br />
+              et ça change tout.
             </h1>
-            <form action="/emplois" method="GET">
-              <div className="flex flex-col sm:flex-row bg-white rounded-2xl shadow-2xl overflow-hidden">
-                <div className="flex items-center gap-3 flex-1 px-5 py-1 border-b sm:border-b-0 sm:border-r border-gray-200">
-                  <Search className="h-5 w-5 text-orange-400 flex-shrink-0" />
-                  <div className="flex flex-col py-2.5">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Quoi ?</label>
-                    <input type="text" name="q" placeholder="Métier, entreprise, compétence..." className="outline-none text-gray-800 placeholder-gray-400 text-sm bg-transparent mt-0.5" />
-                  </div>
-                </div>
+            <div className="flex flex-col sm:flex-row bg-white rounded-2xl shadow-2xl">
+              {/* Champ Quoi — composant client avec suggestions */}
+              <div className="flex-1 border-b sm:border-b-0 sm:border-r border-gray-200 rounded-tl-2xl rounded-bl-2xl overflow-visible">
+                <SearchBar />
+              </div>
+              {/* Champ Où — input libre + datalist */}
+              <form action="/emplois" method="GET" className="flex rounded-tr-2xl rounded-br-2xl overflow-hidden">
                 <div className="flex items-center gap-3 sm:w-56 px-5 py-1 border-b sm:border-b-0 sm:border-r border-gray-200">
                   <MapPin className="h-5 w-5 text-orange-400 flex-shrink-0" />
-                  <div className="flex flex-col py-2.5">
+                  <div className="flex flex-col py-2.5 w-full">
                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Où ?</label>
-                    <select name="location" className="outline-none text-gray-800 text-sm bg-transparent mt-0.5 text-gray-500">
-                      <option value="">Ville, région...</option>
-                      <option value="Bangui">Bangui</option>
-                      <option value="Bambari">Bambari</option>
-                      <option value="Berbérati">Berbérati</option>
-                      <option value="Bouar">Bouar</option>
-                    </select>
+                    <input
+                      type="text"
+                      name="location"
+                      list="rca-locations"
+                      placeholder="Ville, région..."
+                      className="outline-none text-gray-800 placeholder-gray-400 text-sm bg-transparent mt-0.5 w-full"
+                    />
+                    <datalist id="rca-locations">
+                      {RCA_LOCATIONS.map((loc) => (
+                        <option key={loc} value={loc} />
+                      ))}
+                    </datalist>
                   </div>
                 </div>
                 <button type="submit" className="bg-orange-500 hover:bg-orange-600 text-white px-10 py-5 font-bold text-sm transition-colors flex items-center justify-center gap-2">
                   <Search className="h-4 w-4" />
                   Rechercher
                 </button>
-              </div>
-              <div className="flex flex-wrap gap-2 mt-4">
+              </form>
+            </div>
+            <div className="flex flex-wrap gap-2 mt-4">
                 {[
                   { label: "CDI", type: "CDI" },
                   { label: "Stage", type: "Stage" },
@@ -133,8 +140,7 @@ export default async function HomePage() {
                     {chip.label}
                   </Link>
                 ))}
-              </div>
-            </form>
+            </div>
           </div>
         </div>
       </section>
@@ -151,25 +157,34 @@ export default async function HomePage() {
       {/* Stats */}
       <section className="bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-3 divide-x divide-gray-100">
-            <div className="text-center py-2">
-              <div className="text-3xl font-extrabold text-gray-900">{totalJobs > 0 ? `${totalJobs}` : "500"}+</div>
-              <div className="text-sm text-gray-500 mt-1">Offres d&apos;emploi</div>
-            </div>
-            <div className="text-center py-2">
-              <div className="text-3xl font-extrabold text-gray-900">{totalCompanies > 0 ? `${totalCompanies}` : "120"}+</div>
-              <div className="text-sm text-gray-500 mt-1">Entreprises partenaires</div>
-            </div>
-            <div className="text-center py-2">
-              <div className="text-3xl font-extrabold text-gray-900">{totalUsers > 0 ? `${totalUsers}` : "1 200"}+</div>
-              <div className="text-sm text-gray-500 mt-1">Candidats inscrits</div>
-            </div>
-          </div>
+          <StatsCounter totalJobs={totalJobs} totalCompanies={totalCompanies} totalUsers={totalUsers} />
         </div>
       </section>
 
+      {/* Offres à la une */}
+      {featuredJobs.length > 0 && (
+        <section className="bg-gray-50 py-14">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-2">
+                <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
+                <h2 className="text-2xl font-bold text-gray-900">Offres à la une</h2>
+              </div>
+              <Link href="/emplois?featured=true" className="text-orange-500 hover:text-orange-600 text-sm font-medium flex items-center gap-1">
+                Voir tout <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3">
+              {featuredJobs.map((job) => (
+                <JobCard key={job.id} job={job} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Entreprises */}
-      <section className="bg-gray-50 py-12">
+      <section className="bg-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-xl font-bold text-gray-900">Ils recrutent en RCA</h2>
@@ -202,7 +217,7 @@ export default async function HomePage() {
       </section>
 
       {/* Comment ça marche */}
-      <section className="bg-white py-16">
+      <section className="bg-gray-50 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Comment ça marche ?</h2>
@@ -232,28 +247,6 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* Offres à la une */}
-      {featuredJobs.length > 0 && (
-        <section className="bg-gray-50 py-14">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center gap-2">
-                <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
-                <h2 className="text-2xl font-bold text-gray-900">Offres à la une</h2>
-              </div>
-              <Link href="/emplois?featured=true" className="text-orange-500 hover:text-orange-600 text-sm font-medium flex items-center gap-1">
-                Voir tout <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3">
-              {featuredJobs.map((job) => (
-                <JobCard key={job.id} job={job} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Explorer par secteur */}
       <section className="bg-white py-16">

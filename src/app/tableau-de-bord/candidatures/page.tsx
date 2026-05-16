@@ -76,7 +76,7 @@ export default async function CandidaturesPage() {
                       <ApplicationActions
                         applicationId={app.id}
                         initialStatus={app.status}
-                        candidateName={app.user.name || app.user.email}
+                        candidateName={app.user.name || app.user.email || "Candidat"}
                       />
                       <span className="text-xs text-gray-400">{timeAgo(app.createdAt)}</span>
                     </div>

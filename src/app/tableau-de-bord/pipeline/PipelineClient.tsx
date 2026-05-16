@@ -8,7 +8,7 @@ export interface PipelineApplication {
   id: string;
   status: string;
   candidateName: string;
-  candidateEmail: string;
+  candidateEmail: string | null;
   jobTitle: string;
   jobSlug: string;
   createdAt: string;

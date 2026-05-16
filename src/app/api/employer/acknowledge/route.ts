@@ -32,8 +32,8 @@ export async function POST(req: NextRequest) {
 
   // Envoyer l'email
   const result = await sendApplicationAcknowledgementEmail({
-    candidateName: application.user.name || application.user.email,
-    candidateEmail: application.user.email,
+    candidateName: application.user.name || application.user.email || "Candidat",
+    candidateEmail: application.user.email ?? "",
     jobTitle: application.job.title,
     companyName: company.name,
   });

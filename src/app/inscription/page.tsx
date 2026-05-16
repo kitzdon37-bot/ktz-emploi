@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { Briefcase, Eye, EyeOff, Loader2, MessageCircle, X } from "lucide-react";
+import { Briefcase, Eye, EyeOff, Loader2, MessageCircle, Mail, X } from "lucide-react";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
 import { JOB_CATEGORIES, RCA_LOCATIONS } from "@/lib/utils";
 
@@ -28,6 +28,17 @@ function RegisterForm() {
   const searchParams = useSearchParams();
   const defaultRole = searchParams.get("role") === "employer" ? "employer" : "jobseeker";
   const defaultEmail = searchParams.get("email") ?? "";
+  const defaultPhone = searchParams.get("phone") ?? "";
+  const phonePreVerified = searchParams.get("verified") === "1";
+
+  // Méthode d'inscription
+  const [method, setMethod] = useState<"email" | "whatsapp">(defaultPhone ? "whatsapp" : "email");
+
+  // WhatsApp OTP
+  const [waPhone, setWaPhone] = useState(defaultPhone);
+  const [otpStep, setOtpStep] = useState(phonePreVerified);
+  const [phoneVerified, setPhoneVerified] = useState(phonePreVerified);
+  const [otp, setOtp] = useState("");
 
   const [role, setRole] = useState(defaultRole);
   const [firstName, setFirstName] = useState("");
@@ -52,10 +63,55 @@ function RegisterForm() {
   const [showWaPopup, setShowWaPopup] = useState(false);
 
   useEffect(() => {
-    if (role !== "jobseeker") return;
+    if (role !== "jobseeker" || method !== "email") return;
     const timer = setTimeout(() => setShowWaPopup(true), 1500);
     return () => clearTimeout(timer);
-  }, [role]);
+  }, [role, method]);
+
+  async function handleSendOtp(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      const res = await fetch("/api/auth/otp/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: waPhone }),
+      });
+      const data = await res.json();
+      if (!res.ok) { setError(data.error || "Erreur envoi OTP"); return; }
+      setOtpStep(true);
+    } catch {
+      setError("Impossible d'envoyer le code.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleVerifyOtp(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      const res = await fetch("/api/auth/otp/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: waPhone, code: otp }),
+      });
+      const data = await res.json();
+      if (!res.ok) { setError(data.error || "Code invalide"); return; }
+      if (data.exists) {
+        // Compte déjà existant → connexion
+        router.push(`/connexion?phone=${encodeURIComponent(waPhone)}`);
+        return;
+      }
+      setPhoneVerified(true);
+    } catch {
+      setError("Erreur de vérification.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const strength = getPasswordStrength(password);
 
@@ -67,40 +123,58 @@ function RegisterForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!acceptCgu) {
-      setError("Vous devez accepter les CGU pour continuer.");
-      return;
-    }
+    if (!acceptCgu) { setError("Vous devez accepter les CGU pour continuer."); return; }
     setError("");
     setLoading(true);
     try {
       const name = `${firstName.trim()} ${lastName.trim()}`.trim();
+
+      // ── Inscription WhatsApp ───────────────────────────────────────────────
+      if (method === "whatsapp" && phoneVerified) {
+        const res = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name, phone: waPhone, phoneVerified: true, role,
+            companyName, companySector, companyLocation, companyWebsite, companyDescription,
+            jobTitle, location, contractTypes: contractTypes.join(","), isDisabled: role === "jobseeker" ? isDisabled : false,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) { setError(data.error || "Erreur inscription"); return; }
+
+        // Connecter via provider phone — on envoie un OTP de session
+        const sendRes = await fetch("/api/auth/otp/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phone: waPhone }),
+        });
+        const sendData = await sendRes.json();
+        if (!sendRes.ok) { setError("Compte créé ! Connectez-vous depuis /connexion"); return; }
+
+        // Afficher l'entrée OTP pour la connexion finale
+        setOtpStep(true);
+        setPhoneVerified(false); // reset pour flux connexion
+        setOtp("");
+        setError("Compte créé ! Un code WhatsApp vous a été envoyé pour vous connecter.");
+        return;
+      }
+
+      // ── Inscription Email ─────────────────────────────────────────────────
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name,
-          email,
-          password,
-          role,
+          name, email, password, role,
           phone: phone.trim() || null,
-            whatsappOptIn: role === "jobseeker" ? whatsappOptIn : false,
-          companyName,
-          companySector,
-          companyLocation,
-          companyWebsite,
-          companyDescription,
-          jobTitle,
-          location,
-          contractTypes: contractTypes.join(","),
+          whatsappOptIn: role === "jobseeker" ? whatsappOptIn : false,
+          companyName, companySector, companyLocation, companyWebsite, companyDescription,
+          jobTitle, location, contractTypes: contractTypes.join(","),
           isDisabled: role === "jobseeker" ? isDisabled : false,
         }),
       });
       const data = await res.json();
-      if (!res.ok) {
-        setError(data.error || "Erreur lors de l'inscription");
-        return;
-      }
+      if (!res.ok) { setError(data.error || "Erreur lors de l'inscription"); return; }
       await signIn("credentials", { email, password, redirect: false });
       router.push("/");
       router.refresh();
@@ -182,14 +256,74 @@ function RegisterForm() {
         </div>
         )}
 
-        {/* Google */}
-        <GoogleSignInButton label="S'inscrire avec Google" />
+        {/* Méthode : Email ou WhatsApp */}
+        <div className="grid grid-cols-2 gap-2 mb-5">
+          <button type="button" onClick={() => { setMethod("email"); setError(""); setOtpStep(false); setPhoneVerified(false); }}
+            className={`flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 text-sm font-medium transition-all ${
+              method === "email" ? "border-orange-400 bg-orange-50 text-orange-600" : "border-gray-200 text-gray-500 hover:border-gray-300"
+            }`}>
+            <Mail className="h-4 w-4" /> Email
+          </button>
+          <button type="button" onClick={() => { setMethod("whatsapp"); setError(""); }}
+            className={`flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 text-sm font-medium transition-all ${
+              method === "whatsapp" ? "border-emerald-400 bg-emerald-50 text-emerald-700" : "border-gray-200 text-gray-500 hover:border-gray-300"
+            }`}>
+            <MessageCircle className="h-4 w-4" /> WhatsApp
+          </button>
+        </div>
 
-        <div className="flex items-center gap-3 my-1">
+        {/* Étape OTP WhatsApp — avant le formulaire complet */}
+        {method === "whatsapp" && !phoneVerified && (
+          <div className="mb-6">
+            {!otpStep ? (
+              <form onSubmit={handleSendOtp} className="space-y-4">
+                <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 text-sm text-emerald-800">
+                  Entrez votre numéro WhatsApp. Nous vous enverrons un code de vérification.
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Numéro WhatsApp</label>
+                  <input type="tel" value={waPhone} onChange={(e) => setWaPhone(e.target.value)} required placeholder="+236 77 00 00 00"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition" />
+                </div>
+                {error && <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm">{error}</div>}
+                <button type="submit" disabled={loading}
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-400 text-white py-3.5 rounded-full font-semibold text-sm flex items-center justify-center gap-2">
+                  {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <MessageCircle className="h-4 w-4" />}
+                  Envoyer le code
+                </button>
+              </form>
+            ) : (
+              <form onSubmit={handleVerifyOtp} className="space-y-4">
+                <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 text-sm text-emerald-800">
+                  Code envoyé sur <strong>{waPhone}</strong>. Valable 10 minutes.
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Code à 6 chiffres</label>
+                  <input type="text" inputMode="numeric" pattern="[0-9]{6}" maxLength={6} value={otp}
+                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))} required placeholder="· · · · · ·"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm text-center tracking-[0.5em] text-xl font-bold focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition" />
+                </div>
+                {error && <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm">{error}</div>}
+                <button type="submit" disabled={loading || otp.length < 6}
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-400 text-white py-3.5 rounded-full font-semibold text-sm flex items-center justify-center gap-2">
+                  {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+                  Vérifier le code
+                </button>
+                <button type="button" onClick={() => { setOtpStep(false); setOtp(""); setError(""); }}
+                  className="w-full text-sm text-gray-500 hover:text-gray-700 py-2">← Changer de numéro</button>
+              </form>
+            )}
+          </div>
+        )}
+
+        {/* Google — seulement pour l'inscription email */}
+        {method === "email" && <GoogleSignInButton label="S'inscrire avec Google" />}
+
+        {method === "email" && <div className="flex items-center gap-3 my-1">
           <hr className="flex-1 border-gray-200" />
           <span className="text-xs text-gray-400 font-medium">ou</span>
           <hr className="flex-1 border-gray-200" />
-        </div>
+        </div>}
 
         {/* Role switcher */}
         <div className="grid grid-cols-2 gap-3 mb-5">
@@ -216,6 +350,9 @@ function RegisterForm() {
             Je recrute
           </button>
         </div>
+
+        {/* Formulaire principal — visible si email OU si WhatsApp vérifié */}
+        {(method === "email" || (method === "whatsapp" && phoneVerified)) && <>
 
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm mb-5">
@@ -250,8 +387,8 @@ function RegisterForm() {
             </div>
           </div>
 
-          {/* Email + Password */}
-          <div className="grid grid-cols-2 gap-3">
+          {/* Email + Password — seulement pour méthode email */}
+          {method === "email" && <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Adresse mail</label>
               <input
@@ -301,7 +438,15 @@ function RegisterForm() {
                 </div>
               )}
             </div>
-          </div>
+          </div>}
+
+          {/* Indicateur numéro vérifié pour WhatsApp */}
+          {method === "whatsapp" && phoneVerified && (
+            <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 text-sm text-emerald-800 flex items-center gap-2">
+              <MessageCircle className="h-4 w-4 flex-shrink-0" />
+              Numéro <strong>{waPhone}</strong> vérifié ✓
+            </div>
+          )}
 
           {role === "employer" ? (
             <div className="space-y-4">
@@ -510,6 +655,7 @@ function RegisterForm() {
             Je m&apos;inscris
           </button>
         </form>
+        </> }
       </div>
     </div>
   );

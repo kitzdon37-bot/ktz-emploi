@@ -1,8 +1,9 @@
 ﻿import { prisma } from "@/lib/prisma";
 import JobCard from "@/components/JobCard";
 import { JOB_CATEGORIES, JOB_TYPES, EXPERIENCE_LEVELS, RCA_LOCATIONS } from "@/lib/utils";
-import { Search, MapPin, Filter, Briefcase } from "lucide-react";
+import { MapPin, Filter, Briefcase } from "lucide-react";
 import Link from "next/link";
+import EmploisSearchBar from "./EmploisClient";
 
 interface Props {
   searchParams: Promise<{
@@ -80,7 +81,7 @@ export default async function EmploisPage({ searchParams }: Props) {
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Sidebar filters */}
         <aside className="w-full lg:w-72 flex-shrink-0">
-          <form action="/emplois" method="GET" className="bg-white rounded-2xl border border-gray-200 p-5 sticky top-20">
+          <form id="emplois-filter-form" action="/emplois" method="GET" className="bg-white rounded-2xl border border-gray-200 p-5 sticky top-20">
             <h2 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <Filter className="h-4 w-4" />
               Filtres
@@ -89,16 +90,7 @@ export default async function EmploisPage({ searchParams }: Props) {
             {/* Search */}
             <div className="mb-4">
               <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">Recherche</label>
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <input
-                  type="text"
-                  name="q"
-                  defaultValue={params.q}
-                  placeholder="Mot-clé..."
-                  className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
-                />
-              </div>
+              <EmploisSearchBar defaultValue={params.q} />
             </div>
 
             {/* Location */}

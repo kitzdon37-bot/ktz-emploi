@@ -40,7 +40,7 @@ export default async function DashboardPage() {
     let recentApps: {
       id: string; status: string; createdAt: Date;
       job: { title: string; slug: string };
-      user: { name: string | null; email: string };
+      user: { name: string | null; email: string | null; phone?: string | null };
     }[] = [];
     let totalViews = 0;
 
@@ -55,7 +55,7 @@ export default async function DashboardPage() {
         where: { job: { companyId: company.id } },
         include: {
           job: { select: { title: true, slug: true } },
-          user: { select: { name: true, email: true } },
+          user: { select: { name: true, email: true, phone: true } },
         },
         orderBy: { createdAt: "desc" },
         take: 5,
@@ -151,7 +151,7 @@ export default async function DashboardPage() {
                   return (
                     <div key={app.id} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-800">{app.user.name || app.user.email}</p>
+                        <p className="text-sm font-medium text-gray-800">{app.user.name || app.user.email || app.user.phone || "Candidat"}</p>
                         <p className="text-xs text-gray-400">{app.job.title} · {timeAgo(app.createdAt)}</p>
                       </div>
                       <span className={`text-xs px-2 py-0.5 rounded-full ${st?.color || "bg-gray-100 text-gray-600"}`}>

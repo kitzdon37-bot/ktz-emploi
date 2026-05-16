@@ -64,6 +64,24 @@ export default function ComingSoon() {
     return () => clearTimeout(t);
   }, []);
 
+  // Animation du drapeau via requestAnimationFrame (SMIL non fiable sur Chrome)
+  useEffect(() => {
+    const el = document.getElementById("flag-turbulence") as SVGFETurbulenceElement | null;
+    if (!el) return;
+    let animId: number;
+    let start: number | null = null;
+    function animate(ts: number) {
+      if (start === null) start = ts;
+      const t = (ts - start) / 1000;
+      const bf1 = (0.012 + 0.006 * Math.sin(t * 1.2)).toFixed(4);
+      const bf2 = (0.04  + 0.010 * Math.sin(t * 0.9)).toFixed(4);
+      el!.setAttribute("baseFrequency", `${bf1} ${bf2}`);
+      animId = requestAnimationFrame(animate);
+    }
+    animId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animId);
+  }, []);
+
   return (
     <div
       className="min-h-screen flex items-center justify-center px-4 overflow-hidden relative"
@@ -81,18 +99,12 @@ export default function ComingSoon() {
         <defs>
           <filter id="flag-wave" x="0%" y="-20%" width="125%" height="140%">
             <feTurbulence
+              id="flag-turbulence"
               type="fractalNoise"
               baseFrequency="0.012 0.04"
               numOctaves="2"
               result="noise"
-            >
-              <animate
-                attributeName="baseFrequency"
-                values="0.012 0.04; 0.018 0.05; 0.012 0.04"
-                dur="2.8s"
-                repeatCount="indefinite"
-              />
-            </feTurbulence>
+            />
             <feDisplacementMap
               in="SourceGraphic"
               in2="noise"
@@ -190,8 +202,8 @@ export default function ComingSoon() {
         {/* Contact */}
         <p style={{ color: "#93c5fd", fontSize: "0.85rem", opacity: visible ? 1 : 0, transition: "opacity 0.8s ease 0.9s" }}>
           Contact :{" "}
-          <a href="mailto:kitzdon37@gmail.com" style={{ color: "white", textDecoration: "underline" }}>
-            kitzdon37@gmail.com
+          <a href="mailto:contact@ktzemploi.com" style={{ color: "white", textDecoration: "underline" }}>
+            contact@ktzemploi.com
           </a>
         </p>
       </div>

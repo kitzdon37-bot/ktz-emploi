@@ -14,7 +14,7 @@ export default async function CvthequePage() {
   const [candidates, employer] = await Promise.all([
     prisma.jobSeekerProfile.findMany({
       where: { cvPublic: true, cv: { not: null } },
-      include: { user: { select: { name: true, email: true } } },
+      include: { user: { select: { name: true, email: true, phone: true } } },
       orderBy: { updatedAt: "desc" },
     }),
     prisma.user.findUnique({
@@ -27,7 +27,7 @@ export default async function CvthequePage() {
     id: c.id,
     userId: c.userId,
     name: c.user.name,
-    email: c.user.email,
+    email: c.user.email ?? c.user.phone ?? "",
     phone: c.phone,
     title: c.title,
     location: c.location,

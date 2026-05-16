@@ -15,6 +15,7 @@ export const authOptions: NextAuthOptions = {
       : []),
 
     CredentialsProvider({
+      id: "credentials",
       name: "credentials",
       credentials: {
         email: { label: "Email", type: "email" },
@@ -27,7 +28,32 @@ export const authOptions: NextAuthOptions = {
         const valid = await bcrypt.compare(credentials.password, user.password);
         if (!valid) throw new Error("WrongPassword");
         if (user.suspended) throw new Error("AccountSuspended");
-        return { id: user.id, email: user.email, name: user.name, role: user.role };
+        return { id: user.id, email: user.email ?? user.phone ?? "", name: user.name, role: user.role };
+      },
+    }),
+
+    // Connexion via numéro WhatsApp (OTP déjà vérifié côté client)
+    CredentialsProvider({
+      id: "phone",
+      name: "phone",
+      credentials: {
+        phone: { label: "Téléphone", type: "text" },
+        otpToken: { label: "Token OTP", type: "text" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.phone || !credentials?.otpToken) return null;
+        // Vérifier le token signé en DB (table OtpCode avec champ "verified")
+        const otp = await prisma.otpCode.findFirst({
+          where: { phone: credentials.phone, code: credentials.otpToken },
+          orderBy: { createdAt: "desc" },
+        });
+        if (!otp || otp.expires < new Date()) return null;
+        await prisma.otpCode.delete({ where: { id: otp.id } });
+
+        const user = await prisma.user.findUnique({ where: { phone: credentials.phone } });
+        if (!user) return null;
+        if (user.suspended) throw new Error("AccountSuspended");
+        return { id: user.id, email: user.email ?? user.phone ?? "", name: user.name, role: user.role };
       },
     }),
   ],

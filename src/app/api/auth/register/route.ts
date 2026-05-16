@@ -14,9 +14,60 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { name, email, password, role, phone, whatsappOptIn, isDisabled, companyName, companySector, companyLocation, companyWebsite, companyDescription, jobTitle, location, contractTypes } =
+    const { name, email, password, role, phone, whatsappOptIn, isDisabled, companyName, companySector, companyLocation, companyWebsite, companyDescription, jobTitle, location, contractTypes, phoneVerified } =
       await req.json();
 
+    const userRole = role === "employer" ? "EMPLOYER" : "JOBSEEKER";
+
+    // ── Inscription par WhatsApp (sans email) ─────────────────────────────────
+    if (phoneVerified && phone && !email) {
+      if (!name) return NextResponse.json({ error: "Le prénom est requis" }, { status: 400 });
+
+      const existingPhone = await prisma.user.findUnique({ where: { phone } });
+      if (existingPhone) {
+        return NextResponse.json({ error: "Ce numéro est déjà utilisé" }, { status: 409 });
+      }
+
+      const user = await prisma.user.create({
+        data: { name, phone, role: userRole },
+      });
+
+      if (userRole === "JOBSEEKER") {
+        await prisma.jobSeekerProfile.create({
+          data: {
+            userId: user.id,
+            title: jobTitle || null,
+            location: location || null,
+            skills: contractTypes || null,
+            phone,
+            whatsappOptIn: true,
+            isDisabled: !!isDisabled,
+          },
+        });
+      }
+
+      if (userRole === "EMPLOYER" && companyName) {
+        let slug = slugify(companyName);
+        const existingSlug = await prisma.company.findUnique({ where: { slug } });
+        if (existingSlug) slug = `${slug}-${Date.now()}`;
+        await prisma.company.create({
+          data: { userId: user.id, name: companyName, slug, sector: companySector || null, location: companyLocation || null, website: companyWebsite || null, description: companyDescription || null },
+        });
+      }
+
+      await logActivity({
+        userId: user.id,
+        userEmail: phone,
+        userName: user.name ?? undefined,
+        type: "USER_REGISTERED",
+        label: `Nouvelle inscription WhatsApp (${userRole === "EMPLOYER" ? "Recruteur" : "Candidat"})`,
+        metadata: { role: userRole, phone },
+      });
+
+      return NextResponse.json({ success: true, userId: user.id });
+    }
+
+    // ── Inscription par email (flux classique) ────────────────────────────────
     if (!name || !email || !password) {
       return NextResponse.json({ error: "Champs obligatoires manquants" }, { status: 400 });
     }
@@ -31,7 +82,6 @@ export async function POST(req: NextRequest) {
     }
 
     const hashed = await bcrypt.hash(password, 12);
-    const userRole = role === "employer" ? "EMPLOYER" : "JOBSEEKER";
 
     const user = await prisma.user.create({
       data: { name, email, password: hashed, role: userRole },
@@ -80,7 +130,7 @@ export async function POST(req: NextRequest) {
 
     await logActivity({
       userId: user.id,
-      userEmail: user.email,
+      userEmail: user.email ?? undefined,
       userName: user.name ?? undefined,
       type: "USER_REGISTERED",
       label: `Nouvelle inscription (${userRole === "EMPLOYER" ? "Recruteur" : "Candidat"})`,

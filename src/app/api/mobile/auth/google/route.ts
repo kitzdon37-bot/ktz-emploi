@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
 
     const token = signMobileToken({
       id: user.id,
-      email: user.email,
+      email: user.email ?? "",
       role: user.role,
       name: user.name,
     });

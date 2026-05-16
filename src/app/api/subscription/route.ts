@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
   // Log + email admin
   await logActivity({
     userId,
-    userEmail: user?.email,
+    userEmail: user?.email ?? undefined,
     userName: user?.name ?? undefined,
     type: "SUBSCRIPTION_REQUESTED",
     label: `Demande plan ${plan} — ${company.name}`,

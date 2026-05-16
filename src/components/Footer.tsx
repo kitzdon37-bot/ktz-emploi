@@ -40,7 +40,7 @@ export default function Footer() {
             </div>
             <div className="mt-2 flex items-center gap-2 text-sm text-gray-400">
               <Mail className="h-4 w-4 text-yellow-400 flex-shrink-0" />
-              <span>contact@ktz-emploi.cf</span>
+              <span>contact@ktzemploi.com</span>
             </div>
           </div>
 

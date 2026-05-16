@@ -86,6 +86,7 @@ export async function POST(req: NextRequest) {
 </body>
 </html>`;
 
+    if (!alert.user.email) continue;
     try {
       await sendEmail({
         to: alert.user.email,

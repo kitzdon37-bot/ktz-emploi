@@ -108,6 +108,7 @@ export async function sendJobNotifications(job: Job): Promise<{
     const emailHtml = textToEmailHtml(bodyText, jobUrl, job.title);
 
     try {
+      if (!candidate.user.email) { emailFailed++; continue; }
       await sendEmail({ to: candidate.user.email, subject, html: emailHtml });
       emailSent++;
     } catch {

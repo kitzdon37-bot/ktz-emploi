@@ -23,7 +23,7 @@ export default async function PipelinePage() {
     where: { job: { companyId: company.id } },
     include: {
       job: { select: { title: true, slug: true } },
-      user: { select: { name: true, email: true } },
+      user: { select: { name: true, email: true, phone: true } },
     },
     orderBy: { createdAt: "desc" },
   });
@@ -32,7 +32,7 @@ export default async function PipelinePage() {
     id: app.id,
     status: app.status,
     candidateName: app.user.name ?? "",
-    candidateEmail: app.user.email,
+    candidateEmail: app.user.email ?? app.user.phone ?? null,
     jobTitle: app.job.title,
     jobSlug: app.job.slug,
     createdAt: app.createdAt.toISOString(),
