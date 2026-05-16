@@ -79,7 +79,7 @@ export default async function HomePage() {
       {/* ══════════════════════════════════════
           1. HERO
       ══════════════════════════════════════ */}
-      <section className="relative overflow-hidden" style={{ minHeight: "560px" }}>
+      <section className="relative" style={{ minHeight: "560px" }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/accueil.png" alt="" className="absolute inset-0 w-full h-full object-cover object-center" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 to-black/20" />
