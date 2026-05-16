@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const COMING_SOON = true; // passer à false pour rouvrir le site
+const COMING_SOON = process.env.SHOW_COMING_SOON === "true";
 
 function getAllowedOrigins(): string[] {
   const env = process.env.ALLOWED_ORIGINS || process.env.NEXTAUTH_URL || "http://localhost:3000";
@@ -46,5 +46,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.png|.*\\.jpg|.*\\.jpeg|.*\\.gif|.*\\.svg|.*\\.webp|.*\\.ico|.*\\.pdf).*)"],
 };
