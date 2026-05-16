@@ -157,7 +157,7 @@ export default async function HomePage() {
       {/* Stats */}
       <section className="bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <StatsCounter totalJobs={totalJobs} totalCompanies={totalCompanies} totalUsers={totalUsers} />
+          <StatsCounter totalJobs={totalJobs} totalCompanies={totalCompanies} totalUsers={200} />
         </div>
       </section>
 
