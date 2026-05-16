@@ -33,7 +33,7 @@ const companies = [
     sector: "Humanitaire & ONG",
     description:
       "Le PNUD œuvre dans près de 170 pays pour éradiquer la pauvreté, réduire les inégalités et renforcer la résilience des populations. En RCA, il appuie la stabilisation, la gouvernance et le développement économique.",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/UNDP_logo.svg/640px-UNDP_logo.svg.png",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/a/a4/Undp_logo_%281%29.png",
     website: "https://www.undp.org/fr/central-african-republic",
     location: "Bangui",
     verified: true,
@@ -45,7 +45,7 @@ const companies = [
     sector: "Humanitaire & ONG",
     description:
       "DanChurchAid (DCA) est une ONG danoise qui travaille à réduire la vulnérabilité des personnes les plus démunies. En RCA, elle intervient dans les domaines de l'aide d'urgence, la résilience et la société civile.",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/DanChurchAid_logo.svg/320px-DanChurchAid_logo.svg.png",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/9/9f/DCA_logo1.png",
     website: "https://www.danchurchaid.org",
     location: "Bangui",
     verified: true,
@@ -57,7 +57,7 @@ const companies = [
     sector: "Humanitaire & ONG",
     description:
       "COOPI est une ONG italienne fondée en 1965 qui mène des projets humanitaires et de développement dans plus de 30 pays. En RCA, COOPI intervient dans les secteurs de la sécurité alimentaire, la nutrition et la protection.",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Coopi_logo.svg/320px-Coopi_logo.svg.png",
+    logo: "https://upload.wikimedia.org/wikipedia/it/thumb/1/1d/Coopi.jpg/250px-Coopi.jpg",
     website: "https://www.coopi.org",
     location: "Bangui",
     verified: true,
@@ -69,7 +69,7 @@ const companies = [
     sector: "Humanitaire & ONG",
     description:
       "L'IRC aide les personnes touchées par les crises humanitaires à survivre, se rétablir et reconstruire leur vie. En RCA, l'IRC apporte une aide d'urgence et des programmes de protection, santé et moyens de subsistance.",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/IRC_logo.svg/320px-IRC_logo.svg.png",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/International_Rescue_Committee_Logo.svg/500px-International_Rescue_Committee_Logo.svg.png",
     website: "https://www.rescue.org",
     location: "Bangui",
     verified: true,
@@ -81,7 +81,7 @@ const companies = [
     sector: "Humanitaire & ONG",
     description:
       "UNICEF travaille dans les endroits les plus difficiles pour protéger les enfants les plus défavorisés. En RCA, UNICEF soutient la nutrition, la santé, l'éducation, la protection de l'enfance et l'eau.",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/UNICEF_Logo.svg/640px-UNICEF_Logo.svg.png",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Logo_of_UNICEF.svg/960px-Logo_of_UNICEF.svg.png",
     website: "https://www.unicef.org/car/fr",
     location: "Bangui",
     verified: true,
@@ -93,7 +93,7 @@ const companies = [
     sector: "Humanitaire & ONG",
     description:
       "L'OIM est l'organisation intergouvernementale de référence dans le domaine des migrations. En RCA, elle gère des programmes de déplacement interne, retour et réintégration des populations déplacées.",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/IOM_logo.svg/640px-IOM_logo.svg.png",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/a/a3/Logo_der_International_Organization_for_Migration_%28IOM%29.jpg",
     website: "https://www.iom.int",
     location: "Bangui",
     verified: true,
@@ -105,7 +105,7 @@ const companies = [
     sector: "Humanitaire & ONG",
     description:
       "Solidarités International est une ONG française spécialisée dans l'aide d'urgence aux populations victimes de conflits et catastrophes. En RCA, elle intervient dans l'eau, l'assainissement et la sécurité alimentaire.",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Logo_Solidarit%C3%A9s_International.svg/320px-Logo_Solidarit%C3%A9s_International.svg.png",
+    logo: "https://www.solidarites.org/wp-content/uploads/2018/05/logo.svg",
     website: "https://www.solidarites.org",
     location: "Bangui",
     verified: true,
@@ -117,7 +117,7 @@ const companies = [
     sector: "Humanitaire & ONG",
     description:
       "La Fédération internationale des Sociétés de la Croix-Rouge et du Croissant-Rouge soutient les populations vulnérables à travers ses sociétés nationales. En RCA, l'IFRC appuie la Croix-Rouge Centrafricaine.",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/IFRC_logo.svg/320px-IFRC_logo.svg.png",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/c/c9/IFRC_Logo.png",
     website: "https://www.ifrc.org",
     location: "Bangui",
     verified: true,
@@ -129,7 +129,7 @@ const companies = [
     sector: "Humanitaire & ONG",
     description:
       "Le Conseil Norvégien pour les Réfugiés (NRC) aide les personnes déplacées de force à satisfaire leurs besoins essentiels. En RCA, le NRC intervient dans le shelter, l'éducation, la protection et les moyens de subsistance.",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/NRC_logo_RGB.png/320px-NRC_logo_RGB.png",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Norwegian_Refugee_council_english_logo.svg/960px-Norwegian_Refugee_council_english_logo.svg.png",
     website: "https://www.nrc.no",
     location: "Bangui",
     verified: true,
@@ -141,7 +141,7 @@ const companies = [
     sector: "Médecine & Santé",
     description:
       "L'OMS est l'autorité directrice et coordinatrice de la santé au sein du système des Nations Unies. En RCA, elle appuie le renforcement du système de santé, la surveillance épidémiologique et la réponse aux urgences sanitaires.",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/World_Health_Organization_Logo.svg/500px-World_Health_Organization_Logo.svg.png",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/WHO_logo.svg/500px-WHO_logo.svg.png",
     website: "https://www.afro.who.int/fr/countries/central-african-republic",
     location: "Bangui",
     verified: true,
@@ -153,7 +153,7 @@ const companies = [
     sector: "Humanitaire & ONG",
     description:
       "Welthungerhilfe (WHH) est l'une des plus grandes ONG allemandes d'aide au développement. En RCA, elle intervient dans la sécurité alimentaire, la résilience et le renforcement des capacités locales.",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Welthungerhilfe_Logo.svg/320px-Welthungerhilfe_Logo.svg.png",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/c/cf/WHH-International_Logo_Green_sRGB.png",
     website: "https://www.welthungerhilfe.org",
     location: "Bangui",
     verified: true,
