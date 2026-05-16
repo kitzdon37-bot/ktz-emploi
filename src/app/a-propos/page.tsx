@@ -194,7 +194,7 @@ export default function AProposPage() {
               </div>
               <h2 className="text-2xl md:text-3xl font-extrabold mb-2">Donald KITEZE</h2>
               <p className="text-orange-400 text-sm font-medium mb-6">
-                Développeur & Entrepreneur — Bangui, RCA
+                Ingénieur en Microélectronique, Télécommunications & Réseaux · Entrepreneur — Bangui, RCA
               </p>
 
               {/* Citation */}
@@ -211,10 +211,10 @@ export default function AProposPage() {
 
               <div className="space-y-4 text-gray-300 text-sm leading-relaxed">
                 <p>
-                  Formé en informatique, Donald KITEZE a choisi de mettre ses compétences techniques
-                  au service d&apos;un problème réel qu&apos;il a lui-même vécu. Plutôt que de développer
-                  des solutions pour d&apos;autres marchés, il a décidé de partir d&apos;un constat local
-                  et d&apos;y apporter une réponse locale.
+                  Ingénieur en Microélectronique, Télécommunications et Réseaux, Donald KITEZE a choisi
+                  de mettre ses compétences techniques au service d&apos;un problème réel qu&apos;il a lui-même
+                  vécu. Entrepreneur dans l&apos;âme, plutôt que de développer des solutions pour d&apos;autres
+                  marchés, il a décidé de partir d&apos;un constat local et d&apos;y apporter une réponse locale.
                 </p>
                 <p>
                   KTZ Emploi est le résultat de cette démarche : une plateforme pensée en RCA,
