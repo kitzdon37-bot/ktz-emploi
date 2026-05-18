@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { sendWelcomeEmail } from "@/lib/email";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -77,6 +78,12 @@ export const authOptions: NextAuthOptions = {
           await prisma.jobSeekerProfile.create({
             data: { userId: newUser.id },
           });
+          // Email de bienvenue (non bloquant)
+          sendWelcomeEmail({
+            name: user.name ?? "Utilisateur",
+            email: user.email!,
+            role: "JOBSEEKER",
+          }).catch((err) => console.error("[Welcome Google]", err));
         }
         return true;
       }
