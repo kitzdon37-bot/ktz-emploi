@@ -1,3 +1,13 @@
+"use client";
+
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
+
+interface Props {
+  label?: string;
+  callbackUrl?: string;
+}
+
 const GoogleLogo = () => (
   <svg viewBox="0 0 24 24" className="h-5 w-5 flex-shrink-0" aria-hidden="true">
     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -7,24 +17,49 @@ const GoogleLogo = () => (
   </svg>
 );
 
-interface Props {
-  label?: string;
-  callbackUrl?: string;
-}
-
 export default function GoogleSignInButton({
   label = "Continuer avec Google",
   callbackUrl = "/",
 }: Props) {
-  const url = `/api/auth/signin/google?callbackUrl=${encodeURIComponent(callbackUrl)}`;
+  const [loading, setLoading] = useState(false);
+
+  async function handleClick() {
+    setLoading(true);
+    try {
+      // 1. Récupérer le token CSRF
+      const csrfRes = await fetch("/api/auth/csrf");
+      const { csrfToken } = await csrfRes.json() as { csrfToken: string };
+
+      // 2. POST vers NextAuth pour obtenir l'URL Google
+      const res = await fetch("/api/auth/signin/google", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-Auth-Return-Redirect": "1",
+        },
+        body: new URLSearchParams({ csrfToken, callbackUrl, json: "true" }).toString(),
+      });
+
+      const data = await res.json() as { url?: string };
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setLoading(false);
+      }
+    } catch {
+      setLoading(false);
+    }
+  }
 
   return (
-    <a
-      href={url}
-      className="w-full flex items-center justify-center gap-3 border border-gray-300 bg-white hover:bg-gray-50 active:bg-gray-100 text-gray-700 font-medium py-3 rounded-xl text-sm transition-colors"
+    <button
+      type="button"
+      onClick={handleClick}
+      disabled={loading}
+      className="w-full flex items-center justify-center gap-3 border border-gray-300 bg-white hover:bg-gray-50 active:bg-gray-100 text-gray-700 font-medium py-3 rounded-xl text-sm transition-colors disabled:opacity-70"
     >
-      <GoogleLogo />
-      {label}
-    </a>
+      {loading ? <Loader2 className="h-4 w-4 animate-spin text-gray-500" /> : <GoogleLogo />}
+      {loading ? "Redirection vers Google..." : label}
+    </button>
   );
 }
