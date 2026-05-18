@@ -16,8 +16,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Code expiré — demandez un nouveau code" }, { status: 401 });
   }
 
-  // OTP valide — le supprimer
-  await prisma.otpCode.delete({ where: { id: otp.id } });
+  // OTP valide — NE PAS supprimer ici : il sera consommé par signIn("phone") côté client
 
   // Chercher si un compte existe déjà avec ce numéro
   const existing = await prisma.user.findUnique({ where: { phone } });

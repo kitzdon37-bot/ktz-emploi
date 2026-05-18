@@ -27,6 +27,7 @@ function LoginForm() {
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [devCode, setDevCode] = useState("");
 
   async function handleEmailSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -64,6 +65,7 @@ function LoginForm() {
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error || "Erreur envoi OTP"); return; }
+      if (data.devCode) setDevCode(data.devCode);
       setOtpStep(true);
     } catch {
       setError("Impossible d'envoyer le code.");
@@ -77,7 +79,7 @@ function LoginForm() {
     setError("");
     setLoading(true);
     try {
-      // Vérifier l'OTP via l'API
+      // 1. Vérifier que le code est correct et que le compte existe
       const verifyRes = await fetch("/api/auth/otp/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -87,24 +89,22 @@ function LoginForm() {
       if (!verifyRes.ok) { setError(verifyData.error || "Code invalide"); return; }
 
       if (!verifyData.exists) {
-        // Compte inexistant → rediriger vers inscription
+        // Pas de compte → inscription
         router.push(`/inscription?phone=${encodeURIComponent(phone)}&verified=1`);
         return;
       }
 
-      // Compte existant → connecter via le provider phone
-      // On renvoie un nouvel OTP de session pour le signIn
-      const sendRes = await fetch("/api/auth/otp/send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone }),
-      });
-      if (!sendRes.ok) { setError("Erreur de connexion"); return; }
-
-      // On demande à l'utilisateur de saisir à nouveau le code
-      setOtp("");
-      setError("Un nouveau code a été envoyé pour confirmer la connexion.");
-
+      // 2. Compte trouvé → créer la session directement avec le code déjà vérifié
+      // (le provider "phone" de NextAuth va le consommer et supprimer le code)
+      const result = await signIn("phone", { phone, otpToken: otp, redirect: false });
+      if (!result?.ok) {
+        setError("Connexion échouée. Renvoyez un nouveau code.");
+        setOtpStep(false);
+        setOtp("");
+        return;
+      }
+      router.push(callbackUrl);
+      router.refresh();
     } catch {
       setError("Une erreur est survenue.");
     } finally {
@@ -235,6 +235,11 @@ function LoginForm() {
             <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 text-sm text-emerald-800">
               Code envoyé sur <strong>{phone}</strong> via WhatsApp. Valable 10 minutes.
             </div>
+            {devCode && (
+              <div className="bg-yellow-50 border border-yellow-300 rounded-xl px-4 py-2 text-sm text-yellow-800">
+                <strong>[DEV]</strong> Code : <strong className="tracking-widest">{devCode}</strong>
+              </div>
+            )}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Code à 6 chiffres</label>
               <input type="text" inputMode="numeric" pattern="[0-9]{6}" maxLength={6} value={otp}

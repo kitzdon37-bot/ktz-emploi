@@ -19,7 +19,7 @@ function normalizePhone(raw: string) {
 async function sendWhatsApp(phone: string, code: string) {
   const instance = process.env.ULTRAMSG_INSTANCE;
   const token = process.env.ULTRAMSG_TOKEN;
-  if (!instance || !token) throw new Error("UltraMsg non configuré");
+  if (!instance || !token) throw new Error("ULTRAMSG_NOT_CONFIGURED");
 
   const body = `🔐 *KTZ Emploi* — Votre code de vérification est : *${code}*\n\nCe code expire dans 10 minutes. Ne le partagez avec personne.`;
 
@@ -57,8 +57,19 @@ export async function POST(req: NextRequest) {
   try {
     await sendWhatsApp(phone, code);
   } catch (err) {
+    const msg = err instanceof Error ? err.message : "";
+
+    // Mode développement : retourner le code directement si UltraMsg absent
+    if (msg === "ULTRAMSG_NOT_CONFIGURED" && process.env.NODE_ENV !== "production") {
+      console.log(`\n[DEV OTP] ${phone} → ${code}\n`);
+      return NextResponse.json({ success: true, phone, devCode: code });
+    }
+
     console.error("[OTP send error]", err);
-    return NextResponse.json({ error: "Impossible d'envoyer le message WhatsApp. Vérifiez que UltraMsg est connecté." }, { status: 500 });
+    return NextResponse.json(
+      { error: "Impossible d'envoyer le code WhatsApp. Vérifiez que votre compte UltraMsg est connecté (ULTRAMSG_INSTANCE et ULTRAMSG_TOKEN)." },
+      { status: 500 }
+    );
   }
 
   return NextResponse.json({ success: true, phone });

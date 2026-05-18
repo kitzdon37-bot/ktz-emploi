@@ -40,6 +40,7 @@ function RegisterForm() {
   const [otpStep, setOtpStep] = useState(phonePreVerified);
   const [phoneVerified, setPhoneVerified] = useState(phonePreVerified);
   const [otp, setOtp] = useState("");
+  const [devCode, setDevCode] = useState("");
 
   const [role, setRole] = useState(defaultRole);
   const [firstName, setFirstName] = useState("");
@@ -69,6 +70,14 @@ function RegisterForm() {
     return () => clearTimeout(timer);
   }, [role, method]);
 
+  // Pré-remplir téléphone + opt-in dès que la vérification WhatsApp est confirmée
+  useEffect(() => {
+    if (method === "whatsapp" && phoneVerified && waPhone) {
+      setPhone(waPhone);
+      setWhatsappOptIn(true);
+    }
+  }, [method, phoneVerified, waPhone]);
+
   async function handleSendOtp(e: React.FormEvent) {
     e.preventDefault();
     setError("");
@@ -81,6 +90,7 @@ function RegisterForm() {
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error || "Erreur envoi OTP"); return; }
+      if (data.devCode) setDevCode(data.devCode);
       setOtpStep(true);
     } catch {
       setError("Impossible d'envoyer le code.");
@@ -157,20 +167,16 @@ function RegisterForm() {
         const data = await res.json();
         if (!res.ok) { setError(data.error || "Erreur inscription"); return; }
 
-        // Connecter via provider phone — on envoie un OTP de session
-        const sendRes = await fetch("/api/auth/otp/send", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ phone: waPhone }),
-        });
-        const sendData = await sendRes.json();
-        if (!sendRes.ok) { setError("Compte créé ! Connectez-vous depuis /connexion"); return; }
-
-        // Afficher l'entrée OTP pour la connexion finale
-        setOtpStep(true);
-        setPhoneVerified(false); // reset pour flux connexion
-        setOtp("");
-        setError("Compte créé ! Un code WhatsApp vous a été envoyé pour vous connecter.");
+        // Auto-connexion : le code OTP n'a pas été supprimé lors de la vérification,
+        // on peut l'utiliser directement avec le provider "phone" de NextAuth
+        const signResult = await signIn("phone", { phone: waPhone, otpToken: otp, redirect: false });
+        if (signResult?.ok) {
+          router.push("/tableau-de-bord");
+          router.refresh();
+        } else {
+          // Fallback si le code a expiré entre-temps
+          router.push(`/connexion?phone=${encodeURIComponent(waPhone)}`);
+        }
         return;
       }
 
@@ -311,6 +317,11 @@ function RegisterForm() {
                 <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 text-sm text-emerald-800">
                   Code envoyé sur <strong>{waPhone}</strong>. Valable 10 minutes.
                 </div>
+                {devCode && (
+                  <div className="bg-yellow-50 border border-yellow-300 rounded-xl px-4 py-2 text-sm text-yellow-800">
+                    <strong>[DEV]</strong> Code : <strong className="tracking-widest">{devCode}</strong>
+                  </div>
+                )}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">Code à 6 chiffres</label>
                   <input type="text" inputMode="numeric" pattern="[0-9]{6}" maxLength={6} value={otp}
