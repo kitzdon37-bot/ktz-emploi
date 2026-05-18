@@ -1,6 +1,5 @@
 "use client";
 
-import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 
@@ -26,8 +25,9 @@ export default function GoogleSignInButton({
 
   function handleClick() {
     setLoading(true);
-    // signIn("google") redirige vers Google — le loading reste affiché pendant la redirection
-    signIn("google", { callbackUrl });
+    // Redirection directe vers l'endpoint NextAuth Google (sans JS signIn)
+    const url = `/api/auth/signin/google?callbackUrl=${encodeURIComponent(callbackUrl)}`;
+    window.location.href = url;
   }
 
   return (
