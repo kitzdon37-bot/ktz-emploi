@@ -33,6 +33,7 @@ model User {
   recruiterNotes   RecruiterNote[]
   savedJobs        SavedJob[]
   sessions         Session[]
+  cvBuilder        CvBuilder?
 
   @@index([role])
   @@index([suspended])
@@ -412,4 +413,14 @@ model JobTemplate {
   company      Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
   @@index([companyId])
+}
+
+model CvBuilder {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  data      String   // JSON stringified CvData
+  template  String   @default("modern")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

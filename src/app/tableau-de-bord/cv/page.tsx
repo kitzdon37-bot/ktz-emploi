@@ -56,8 +56,16 @@ export default function CVPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">Mes CV vus</h1>
-      <p className="text-gray-500 mb-6">Les recruteurs qui ont consulté votre profil ou CV.</p>
+      <div className="flex items-center justify-between mb-2">
+        <h1 className="text-2xl font-bold text-gray-900">Mon CV</h1>
+        <Link
+          href="/tableau-de-bord/cv/builder"
+          className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors"
+        >
+          ✏️ Créer / Modifier mon CV
+        </Link>
+      </div>
+      <p className="text-gray-500 mb-6">Créez un CV professionnel et suivez les recruteurs qui l&apos;ont consulté.</p>
 
       {/* Bannière activation */}
       {views.length === 0 && (
