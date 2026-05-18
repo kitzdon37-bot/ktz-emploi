@@ -3,8 +3,8 @@ import Link from "next/link";
 import { Search, MapPin, Briefcase, Building2, ArrowRight, Star, Users, CheckCircle, FileText, TrendingUp } from "lucide-react";
 import JobCard from "@/components/JobCard";
 import StatsCounter from "@/components/StatsCounter";
-import SearchBar from "@/components/SearchBar";
-import { JOB_CATEGORIES, RCA_LOCATIONS } from "@/lib/utils";
+import HeroSearch from "@/components/HeroSearch";
+import { JOB_CATEGORIES } from "@/lib/utils";
 import ComingSoon from "@/components/ComingSoon";
 
 async function getHomeData() {
@@ -97,37 +97,7 @@ export default async function HomePage() {
               <span className="text-orange-400">Ici, vous postulez vous-même</span>{" "}—<br />
               et ça change tout.
             </h1>
-            <div className="relative z-50 flex flex-col sm:flex-row bg-white rounded-2xl shadow-2xl">
-              {/* Champ Quoi — composant client avec suggestions */}
-              <div className="flex-1 border-b sm:border-b-0 sm:border-r border-gray-200 rounded-tl-2xl rounded-bl-2xl overflow-visible">
-                <SearchBar />
-              </div>
-              {/* Champ Où — input libre + datalist */}
-              <form action="/emplois" method="GET" className="flex rounded-tr-2xl rounded-br-2xl overflow-hidden">
-                <div className="flex items-center gap-3 sm:w-56 px-5 py-1 border-b sm:border-b-0 sm:border-r border-gray-200">
-                  <MapPin className="h-5 w-5 text-orange-400 flex-shrink-0" />
-                  <div className="flex flex-col py-2.5 w-full">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Où ?</label>
-                    <input
-                      type="text"
-                      name="location"
-                      list="rca-locations"
-                      placeholder="Ville, région..."
-                      className="outline-none text-gray-800 placeholder-gray-400 text-sm bg-transparent mt-0.5 w-full"
-                    />
-                    <datalist id="rca-locations">
-                      {RCA_LOCATIONS.map((loc) => (
-                        <option key={loc} value={loc} />
-                      ))}
-                    </datalist>
-                  </div>
-                </div>
-                <button type="submit" className="bg-orange-500 hover:bg-orange-600 text-white px-10 py-5 font-bold text-sm transition-colors flex items-center justify-center gap-2">
-                  <Search className="h-4 w-4" />
-                  Rechercher
-                </button>
-              </form>
-            </div>
+            <HeroSearch />
             <div className="flex flex-wrap gap-2 mt-4">
                 {[
                   { label: "CDI", type: "CDI" },
