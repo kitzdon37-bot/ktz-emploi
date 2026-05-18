@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { Briefcase, Eye, EyeOff, Loader2, MessageCircle, Mail, X } from "lucide-react";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
+import AutocompleteInput from "@/components/AutocompleteInput";
 import { JOB_CATEGORIES, RCA_LOCATIONS } from "@/lib/utils";
 
 const CONTRACT_TYPES = ["CDI", "CDD", "Stage", "Alternance", "Freelance", "Bénévolat"];
@@ -114,6 +115,19 @@ function RegisterForm() {
   }
 
   const strength = getPasswordStrength(password);
+
+  async function fetchJobTitles(q: string): Promise<string[]> {
+    const res = await fetch(`/api/suggestions?q=${encodeURIComponent(q)}`);
+    if (!res.ok) return [];
+    const data = await res.json() as { label: string }[];
+    return data.map((d) => d.label);
+  }
+
+  async function fetchCompanyNames(q: string): Promise<string[]> {
+    const res = await fetch(`/api/suggestions/companies?q=${encodeURIComponent(q)}`);
+    if (!res.ok) return [];
+    return res.json() as Promise<string[]>;
+  }
 
   function toggleContract(type: string) {
     setContractTypes((prev) =>
@@ -453,12 +467,12 @@ function RegisterForm() {
               {/* Nom entreprise */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Nom de l&apos;entreprise *</label>
-                <input
-                  type="text"
+                <AutocompleteInput
                   value={companyName}
-                  onChange={(e) => setCompanyName(e.target.value)}
+                  onChange={setCompanyName}
                   required
                   placeholder="Ex : Ecobank RCA, ONG Espoir..."
+                  fetchSuggestions={fetchCompanyNames}
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition"
                 />
               </div>
@@ -522,21 +536,21 @@ function RegisterForm() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">Métier recherché</label>
-                  <input
-                    type="text"
+                  <AutocompleteInput
                     value={jobTitle}
-                    onChange={(e) => setJobTitle(e.target.value)}
+                    onChange={setJobTitle}
                     placeholder="Comptable, Développeur..."
+                    fetchSuggestions={fetchJobTitles}
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">Localité recherchée</label>
-                  <input
-                    type="text"
+                  <AutocompleteInput
                     value={location}
-                    onChange={(e) => setLocation(e.target.value)}
+                    onChange={setLocation}
                     placeholder="Bangui, Berberati..."
+                    staticSuggestions={RCA_LOCATIONS}
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition"
                   />
                 </div>
