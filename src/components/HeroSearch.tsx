@@ -6,7 +6,7 @@ import SearchBar from "@/components/SearchBar";
 import { RCA_LOCATIONS } from "@/lib/utils";
 
 export default function HeroSearch() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   return (
     <>
