@@ -34,8 +34,7 @@ interface Props {
 
 const JOBSEEKER_LINKS = [
   { href: "/tableau-de-bord", label: "Mon espace", icon: LayoutDashboard, exact: true },
-  { href: "/tableau-de-bord/cv/builder", label: "Créer mon CV", icon: FileEdit },
-  { href: "/tableau-de-bord/cv", label: "Mes CV vus", icon: Eye },
+  { href: "/tableau-de-bord/cv", label: "Mon CV", icon: FileEdit },
   { href: "/tableau-de-bord/candidatures", label: "Mes candidatures", icon: Send },
   { href: "/tableau-de-bord/alertes", label: "Mes alertes", icon: Bell },
   { href: "/salaires", label: "Salaires RCA", icon: Banknote },

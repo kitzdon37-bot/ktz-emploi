@@ -45,6 +45,7 @@ export interface CvData {
   education: CvEducation[];
   skills: CvSkill[];
   languages: CvLanguage[];
+  interests: string[];
 }
 
 export type CvTemplate = "modern" | "classic" | "creative";
@@ -63,6 +64,7 @@ export const EMPTY_CV: CvData = {
   education: [],
   skills: [],
   languages: [],
+  interests: [],
 };
 
 export const LANGUAGE_LEVELS = ["Débutant", "Intermédiaire", "Courant", "Bilingue", "Natif"];

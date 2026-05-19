@@ -20,7 +20,7 @@ export default async function CvBuilderPage() {
   };
 
   return (
-    <div className="h-[calc(100vh-4rem)] flex flex-col">
+    <div className="flex flex-col" style={{ height: "calc(100vh - 4rem)" }}>
       <CvBuilderClient initial={initial} />
     </div>
   );

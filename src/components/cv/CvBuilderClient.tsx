@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import dynamic from "next/dynamic";
-import { User, Briefcase, GraduationCap, Star, Globe, ChevronDown, ChevronUp, Plus, Trash2, Save, Eye, Edit3, Check } from "lucide-react";
+import { User, Briefcase, GraduationCap, Star, Globe, Heart, ChevronDown, ChevronUp, Plus, Trash2, Save, Eye, Edit3, Check } from "lucide-react";
 import { CvData, CvTemplate, CvExperience, CvEducation, CvSkill, CvLanguage, EMPTY_CV, LANGUAGE_LEVELS } from "@/types/cv";
 import CvPreview from "./CvPreview";
 
@@ -22,6 +22,7 @@ const SECTION_TABS = [
   { id: "education",   label: "Formation",    icon: GraduationCap },
   { id: "skills",      label: "Compétences",  icon: Star },
   { id: "languages",   label: "Langues",      icon: Globe },
+  { id: "interests",   label: "Intérêts",     icon: Heart },
 ];
 
 const inputCls = "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition";
@@ -211,9 +212,53 @@ function LanguagesSection({ data, onChange }: { data: CvData; onChange: (d: CvDa
   );
 }
 
+function InterestsSection({ data, onChange }: { data: CvData; onChange: (d: CvData) => void }) {
+  const [input, setInput] = useState("");
+
+  function add() {
+    const val = input.trim();
+    if (!val || data.interests.includes(val)) return;
+    onChange({ ...data, interests: [...data.interests, val] });
+    setInput("");
+  }
+  function remove(interest: string) {
+    onChange({ ...data, interests: data.interests.filter(i => i !== interest) });
+  }
+
+  return (
+    <div className="space-y-4">
+      <p className="text-xs text-gray-400">Ajoutez vos loisirs, sports, activités... Ex : Lecture, Football, Photographie</p>
+      <div className="flex gap-2">
+        <input
+          className={inputCls + " flex-1"}
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); add(); } }}
+          placeholder="Ajouter un centre d'intérêt..."
+        />
+        <button type="button" onClick={add} className="flex items-center gap-1.5 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition-colors">
+          <Plus className="h-4 w-4" />
+        </button>
+      </div>
+      {data.interests.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {data.interests.map((interest) => (
+            <span key={interest} className="flex items-center gap-1.5 bg-orange-50 border border-orange-200 text-orange-700 text-sm px-3 py-1.5 rounded-full">
+              {interest}
+              <button type="button" onClick={() => remove(interest)} className="text-orange-400 hover:text-orange-600">
+                <Trash2 className="h-3 w-3" />
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ── Composant principal ─────────────────────────────────────────────────────── */
 export default function CvBuilderClient({ initial }: { initial: { data: CvData | null; template: CvTemplate } }) {
-  const [cvData, setCvData] = useState<CvData>(initial.data ?? EMPTY_CV);
+  const [cvData, setCvData] = useState<CvData>({ ...EMPTY_CV, ...(initial.data ?? {}) });
   const [template, setTemplate] = useState<CvTemplate>(initial.template ?? "modern");
   const [activeTab, setActiveTab] = useState("personal");
   const [mode, setMode] = useState<"edit" | "preview">("edit");
@@ -305,6 +350,7 @@ export default function CvBuilderClient({ initial }: { initial: { data: CvData |
             {activeTab === "education"   && <EducationSection   data={cvData} onChange={handleChange} />}
             {activeTab === "skills"      && <SkillsSection      data={cvData} onChange={handleChange} />}
             {activeTab === "languages"   && <LanguagesSection   data={cvData} onChange={handleChange} />}
+            {activeTab === "interests"   && <InterestsSection   data={cvData} onChange={handleChange} />}
           </div>
         </div>
 

@@ -99,7 +99,7 @@ function ModernPreview({ data }: { data: CvData }) {
             </div>
           )}
           {data.education.length > 0 && (
-            <div>
+            <div className="mb-5">
               <h3 className="text-[10px] font-bold uppercase tracking-widest text-orange-500 mb-3">Formation</h3>
               <div className="space-y-3">
                 {data.education.map((e) => (
@@ -112,6 +112,16 @@ function ModernPreview({ data }: { data: CvData }) {
                       <p className="text-gray-400 text-[10px] whitespace-nowrap ml-2">{formatPeriod(e.startDate, e.endDate, e.current)}</p>
                     </div>
                   </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {data.interests && data.interests.length > 0 && (
+            <div>
+              <h3 className="text-[10px] font-bold uppercase tracking-widest text-orange-500 mb-2">Centres d&apos;intérêts</h3>
+              <div className="flex flex-wrap gap-1.5">
+                {data.interests.map((i) => (
+                  <span key={i} className="bg-orange-50 text-orange-600 border border-orange-200 text-[10px] px-2 py-0.5 rounded-full">{i}</span>
                 ))}
               </div>
             </div>
@@ -206,6 +216,14 @@ function ClassicPreview({ data }: { data: CvData }) {
           </div>
         )}
       </div>
+      {data.interests && data.interests.length > 0 && (
+        <div className="mt-5">
+          <h3 className="text-xs font-bold uppercase tracking-widest text-gray-900 mb-2">Centres d&apos;intérêts</h3>
+          <div className="border-t border-gray-300 pt-2">
+            <p className="text-xs text-gray-600">{data.interests.join(" · ")}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -288,7 +306,7 @@ function CreativePreview({ data }: { data: CvData }) {
           </div>
         )}
         {data.education.length > 0 && (
-          <div>
+          <div className="mb-5">
             <h3 className="text-[10px] font-bold uppercase tracking-widest text-teal-600 border-b border-teal-200 pb-1 mb-3">Formation</h3>
             <div className="space-y-3">
               {data.education.map((e) => (
@@ -299,6 +317,16 @@ function CreativePreview({ data }: { data: CvData }) {
                   </div>
                   <p className="text-teal-600 text-xs">{e.school}</p>
                 </div>
+              ))}
+            </div>
+          </div>
+        )}
+        {data.interests && data.interests.length > 0 && (
+          <div>
+            <h3 className="text-[10px] font-bold uppercase tracking-widest text-teal-600 border-b border-teal-200 pb-1 mb-2">Centres d&apos;intérêts</h3>
+            <div className="flex flex-wrap gap-1.5">
+              {data.interests.map((i) => (
+                <span key={i} className="bg-teal-50 text-teal-700 border border-teal-200 text-[10px] px-2 py-0.5 rounded-full">{i}</span>
               ))}
             </div>
           </div>
