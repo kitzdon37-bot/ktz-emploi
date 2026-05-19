@@ -172,11 +172,29 @@ export default function Navbar() {
           <Link href="/entreprises" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>Entreprises</Link>
           <Link href="/conseils" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>Conseils carrière</Link>
           <Link href="/a-propos" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>À propos</Link>
+          {(!session || (session.user as { role?: string })?.role === "EMPLOYER") && (
+            <Link href="/tarifs" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>Tarifs</Link>
+          )}
           <hr />
           {session ? (
             <>
+              {(session.user as { role?: string })?.role === "EMPLOYER" && (
+                <Link
+                  href="/tableau-de-bord/publier"
+                  className="block bg-orange-500 text-white text-center py-2.5 rounded-full font-medium"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Publier une offre
+                </Link>
+              )}
               <Link href="/tableau-de-bord" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>Mon espace</Link>
-              <button onClick={() => signOut({ callbackUrl: "/connexion" })} className="block text-orange-500 font-medium">Déconnexion</button>
+              {(session.user as { role?: string })?.role === "EMPLOYER" && (
+                <Link href="/tableau-de-bord/entreprise" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>Mon entreprise</Link>
+              )}
+              {(session.user as { role?: string })?.role === "JOBSEEKER" && (
+                <Link href="/tableau-de-bord/candidatures" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>Mes candidatures</Link>
+              )}
+              <button onClick={() => { signOut({ callbackUrl: "/connexion" }); setMenuOpen(false); }} className="block text-orange-500 font-medium">Déconnexion</button>
             </>
           ) : (
             <>
