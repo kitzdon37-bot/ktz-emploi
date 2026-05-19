@@ -90,6 +90,37 @@ function SidebarContent({ userName, userRole, initials }: Props) {
   }
 
   return (
+    <>
+    {/* ── Navigation mobile : barre horizontale défilante ─────────────── */}
+    <nav className="md:hidden w-full bg-white border-b border-gray-100 px-2 py-2 flex items-center gap-1 overflow-x-auto flex-shrink-0 sticky top-16 z-30 shadow-sm">
+      {links.map(({ href, label, icon: Icon, exact }) => {
+        const active = isActive(href, exact);
+        return (
+          <Link
+            key={href}
+            href={href}
+            onClick={() => {}}
+            className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-[11px] font-medium whitespace-nowrap flex-shrink-0 transition-colors ${
+              active
+                ? "bg-orange-50 text-orange-600"
+                : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
+            }`}
+          >
+            <Icon className={`h-4 w-4 ${active ? "text-orange-500" : ""}`} />
+            {label}
+          </Link>
+        );
+      })}
+      <button
+        onClick={() => setShowLogoutConfirm(true)}
+        className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-[11px] font-medium whitespace-nowrap flex-shrink-0 text-red-400 hover:bg-red-50 transition-colors ml-auto"
+      >
+        <LogOut className="h-4 w-4" />
+        Déco.
+      </button>
+    </nav>
+
+    {/* ── Sidebar desktop ───────────────────────────────────────────────── */}
     <aside className="hidden md:flex flex-col w-56 bg-white border-r border-gray-100 min-h-[calc(100vh-4rem)] py-6 px-3 flex-shrink-0">
       {/* User info */}
       <div className="flex items-center gap-3 px-3 mb-6">
@@ -134,36 +165,38 @@ function SidebarContent({ userName, userRole, initials }: Props) {
         </button>
       </div>
 
-      {/* Logout confirmation modal */}
-      {showLogoutConfirm && (
+    </aside>
+
+    {/* Modale déconnexion — partagée mobile + desktop */}
+    {showLogoutConfirm && (
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+        onClick={() => setShowLogoutConfirm(false)}
+      >
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
-          onClick={() => setShowLogoutConfirm(false)}
+          className="bg-white rounded-2xl shadow-xl p-6 mx-4 w-full max-w-sm"
+          onClick={(e) => e.stopPropagation()}
         >
-          <div
-            className="bg-white rounded-2xl shadow-xl p-6 mx-4 w-full max-w-sm"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <p className="text-gray-900 font-semibold text-base mb-1">Déconnexion</p>
-            <p className="text-gray-500 text-sm mb-5">Voulez-vous vraiment vous déconnecter ?</p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => signOut({ callbackUrl: "/connexion" })}
-                className="flex-1 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors"
-              >
-                Confirmer
-              </button>
-              <button
-                onClick={() => setShowLogoutConfirm(false)}
-                className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold py-2.5 rounded-xl transition-colors"
-              >
-                Annuler
-              </button>
-            </div>
+          <p className="text-gray-900 font-semibold text-base mb-1">Déconnexion</p>
+          <p className="text-gray-500 text-sm mb-5">Voulez-vous vraiment vous déconnecter ?</p>
+          <div className="flex gap-3">
+            <button
+              onClick={() => signOut({ callbackUrl: "/connexion" })}
+              className="flex-1 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors"
+            >
+              Confirmer
+            </button>
+            <button
+              onClick={() => setShowLogoutConfirm(false)}
+              className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold py-2.5 rounded-xl transition-colors"
+            >
+              Annuler
+            </button>
           </div>
         </div>
-      )}
-    </aside>
+      </div>
+    )}
+    </>
   );
 }
 

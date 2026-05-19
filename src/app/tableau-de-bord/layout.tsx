@@ -21,7 +21,7 @@ export default async function DashboardLayout({
     .toUpperCase() || "?";
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] bg-gray-50">
+    <div className="flex flex-col md:flex-row min-h-[calc(100vh-4rem)] bg-gray-50">
       <DashboardSidebar userName={name} userRole={role} initials={initials} />
       <div className="flex-1 min-w-0">{children}</div>
     </div>
