@@ -13,7 +13,7 @@ export default async function CvthequePage() {
 
   const [candidates, employer] = await Promise.all([
     prisma.jobSeekerProfile.findMany({
-      where: { cvPublic: true, cv: { not: null } },
+      where: { cvPublic: true },
       include: { user: { select: { name: true, email: true, phone: true } } },
       orderBy: { updatedAt: "desc" },
     }),
@@ -33,7 +33,7 @@ export default async function CvthequePage() {
     location: c.location,
     skills: c.skills,
     bio: c.bio,
-    cv: c.cv!,
+    cv: c.cv ?? "",
     updatedAt: c.updatedAt.toISOString(),
     experience: c.experience,
     education: c.education,

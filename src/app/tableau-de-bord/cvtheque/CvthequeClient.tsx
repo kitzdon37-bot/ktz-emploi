@@ -327,14 +327,16 @@ function ProfileModal({ candidate, onClose, recruiterName, companyName }: {
               </a>
             )}
           </div>
-          <a
-            href={candidate.cv}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 w-full bg-orange-500 text-white px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-orange-600 transition-colors"
-          >
-            <Download className="h-4 w-4" /> Télécharger CV
-          </a>
+          {candidate.cv && (
+            <a
+              href={candidate.cv}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full bg-orange-500 text-white px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-orange-600 transition-colors"
+            >
+              <Download className="h-4 w-4" /> Télécharger CV
+            </a>
+          )}
         </div>
       </div>
       {showContact && (

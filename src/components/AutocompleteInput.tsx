@@ -7,6 +7,8 @@ interface Props {
   onChange: (val: string) => void;
   placeholder?: string;
   className?: string;
+  /** Extra classes for the outer wrapper div */
+  wrapperClassName?: string;
   /** Fetch suggestions asynchronously (debounced 120ms) */
   fetchSuggestions?: (q: string) => Promise<string[]>;
   /** Static list to filter client-side */
@@ -21,6 +23,7 @@ export default function AutocompleteInput({
   onChange,
   placeholder,
   className,
+  wrapperClassName,
   fetchSuggestions,
   staticSuggestions,
   id,
@@ -100,7 +103,7 @@ export default function AutocompleteInput({
   }
 
   return (
-    <div ref={containerRef} className="relative">
+    <div ref={containerRef} className={`relative${wrapperClassName ? ` ${wrapperClassName}` : ""}`}>
       <input
         id={id}
         type="text"

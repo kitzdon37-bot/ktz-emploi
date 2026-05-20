@@ -4,7 +4,7 @@ export const PLANS = {
     price: 0,
     maxJobs: 1,
     jobDuration: 15,
-    cvtheque: false,
+    cvtheque: true,
     featured: false,
     templates: false,
     analytics: false,
@@ -14,10 +14,10 @@ export const PLANS = {
     features: [
       "1 offre active",
       "Visible 15 jours",
+      "Accès CVthèque",
       "Tableau de bord basique",
     ],
     limits: [
-      "Pas d'accès CVthèque",
       "Pas d'offres à la une",
       "Pas d'analytics",
     ],
@@ -27,7 +27,7 @@ export const PLANS = {
     price: 10000,
     maxJobs: 3,
     jobDuration: 30,
-    cvtheque: false,
+    cvtheque: true,
     featured: false,
     templates: false,
     analytics: false,
@@ -37,11 +37,11 @@ export const PLANS = {
     features: [
       "3 offres actives",
       "Visible 30 jours",
+      "Accès CVthèque",
       "Tableau de bord basique",
       "Support par email",
     ],
     limits: [
-      "Pas d'accès CVthèque",
       "Pas d'offres à la une",
       "Pas d'analytics",
     ],

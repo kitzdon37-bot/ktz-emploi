@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import { User, MapPin, Phone, Briefcase, FileText, Star, Loader2, CheckCircle, Paperclip, X, Upload, Eye, EyeOff, MessageCircle, Bell } from "lucide-react";
+import AutocompleteInput from "@/components/AutocompleteInput";
+import { SUGGESTED_JOB_TITLES, SUGGESTED_LOCATIONS } from "@/lib/suggestions";
 
 const SECTORS = [
   "Technologie", "Finance", "Santé", "Éducation", "Commerce", "BTP",
@@ -173,12 +175,12 @@ export default function ProfilPage() {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Intitulé de poste</label>
-              <input
-                type="text"
+              <AutocompleteInput
                 value={profile.title || ""}
-                onChange={(e) => update("title", e.target.value)}
+                onChange={(val) => update("title", val)}
                 placeholder="Ex: Comptable, Développeur web, Logisticien..."
                 className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                staticSuggestions={SUGGESTED_JOB_TITLES}
               />
             </div>
             <div>
@@ -220,12 +222,12 @@ export default function ProfilPage() {
               <label className="block text-sm font-medium text-gray-700 mb-1.5">
                 <MapPin className="h-3.5 w-3.5 inline mr-1" />Localisation
               </label>
-              <input
-                type="text"
+              <AutocompleteInput
                 value={profile.location || ""}
-                onChange={(e) => update("location", e.target.value)}
-                placeholder="Bangui, Berberati..."
+                onChange={(val) => update("location", val)}
+                placeholder="Bangui, Berbérati..."
                 className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                staticSuggestions={SUGGESTED_LOCATIONS}
               />
             </div>
           </div>
