@@ -53,7 +53,8 @@ async function main() {
       const template = (cvBuilder.template as CvTemplate) ?? "modern";
 
       const doc = getDoc(cvData, template);
-      const buffer = await renderToBuffer(doc as React.ReactElement);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const buffer = await renderToBuffer(doc as any);
 
       const filename = `cv_${profile.userId}_${Date.now()}.pdf`;
       const filepath = path.join(uploadDir, filename);
