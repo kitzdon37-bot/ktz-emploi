@@ -342,7 +342,7 @@ function RegisterForm() {
         )}
 
         {/* Google — seulement pour l'inscription email */}
-        {method === "email" && <GoogleSignInButton label="S'inscrire avec Google" />}
+        {method === "email" && <GoogleSignInButton label="S'inscrire avec Google" role={role as "jobseeker" | "employer"} />}
 
         {method === "email" && <div className="flex items-center gap-3 my-1">
           <hr className="flex-1 border-gray-200" />

@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { writeFile } from "fs/promises";
-import path from "path";
+import { put } from "@vercel/blob";
 
 const MAX_SIZE = 5 * 1024 * 1024; // 5 Mo
 const ALLOWED_TYPES = ["application/pdf", "application/msword",
@@ -23,12 +22,9 @@ export async function POST(req: NextRequest) {
 
   const userId = (session.user as { id?: string }).id!;
   const ext = file.name.split(".").pop();
-  const filename = `cv_${userId}_${Date.now()}.${ext}`;
-  const uploadDir = path.join(process.cwd(), "public", "uploads", "cv");
-  const filepath = path.join(uploadDir, filename);
+  const filename = `cv/cv_${userId}_${Date.now()}.${ext}`;
 
-  const buffer = Buffer.from(await file.arrayBuffer());
-  await writeFile(filepath, buffer);
+  const blob = await put(filename, file, { access: "public" });
 
-  return NextResponse.json({ url: `/uploads/cv/${filename}` });
+  return NextResponse.json({ url: blob.url });
 }

@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react";
 interface Props {
   label?: string;
   callbackUrl?: string;
+  role?: "jobseeker" | "employer";
 }
 
 const GoogleLogo = () => (
@@ -19,13 +20,18 @@ const GoogleLogo = () => (
 
 export default function GoogleSignInButton({
   label = "Continuer avec Google",
-  callbackUrl = "/",
+  callbackUrl,
+  role,
 }: Props) {
   const [loading, setLoading] = useState(false);
 
   async function handleClick() {
     setLoading(true);
     try {
+      // Construire le callbackUrl selon le rôle choisi
+      const resolvedCallback = callbackUrl
+        ?? (role ? `/api/auth/google-setup?role=${role}` : "/tableau-de-bord");
+
       // 1. Récupérer le token CSRF
       const csrfRes = await fetch("/api/auth/csrf");
       const { csrfToken } = await csrfRes.json() as { csrfToken: string };
@@ -37,7 +43,7 @@ export default function GoogleSignInButton({
           "Content-Type": "application/x-www-form-urlencoded",
           "X-Auth-Return-Redirect": "1",
         },
-        body: new URLSearchParams({ csrfToken, callbackUrl, json: "true" }).toString(),
+        body: new URLSearchParams({ csrfToken, callbackUrl: resolvedCallback, json: "true" }).toString(),
       });
 
       const data = await res.json() as { url?: string };

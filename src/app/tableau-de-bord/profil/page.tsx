@@ -33,6 +33,7 @@ export default function ProfilPage() {
   const [saved, setSaved] = useState(false);
   const [cvUploading, setCvUploading] = useState(false);
   const [cvSaved, setCvSaved] = useState(false);
+  const [cvError, setCvError] = useState("");
   const [cvPublicSaving, setCvPublicSaving] = useState(false);
   const [cvInputMode, setCvInputMode] = useState<"upload" | "url">("upload");
   const [cvUrlDraft, setCvUrlDraft] = useState("");
@@ -80,6 +81,7 @@ export default function ProfilPage() {
 
   async function handleCvUpload(file: File) {
     setCvUploading(true);
+    setCvError("");
     const formData = new FormData();
     formData.append("cv", file);
     const res = await fetch("/api/upload/cv", { method: "POST", body: formData });
@@ -94,6 +96,8 @@ export default function ProfilPage() {
       });
       setCvSaved(true);
       setTimeout(() => setCvSaved(false), 3000);
+    } else {
+      setCvError(data.error || "Erreur lors de l'upload du CV");
     }
     setCvUploading(false);
   }
@@ -285,7 +289,7 @@ export default function ProfilPage() {
           <input
             ref={cvInputRef}
             type="file"
-            accept=".pdf"
+            accept=".pdf,.doc,.docx"
             className="hidden"
             onChange={(e) => { const f = e.target.files?.[0]; if (f) handleCvUpload(f); }}
           />
@@ -388,6 +392,9 @@ export default function ProfilPage() {
             <p className="flex items-center gap-1.5 text-sm text-green-600 mt-2">
               <CheckCircle className="h-4 w-4" /> CV sauvegardé avec succès
             </p>
+          )}
+          {cvError && (
+            <p className="text-sm text-red-500 mt-2">{cvError}</p>
           )}
 
           {/* Toggle visibilité CV */}
