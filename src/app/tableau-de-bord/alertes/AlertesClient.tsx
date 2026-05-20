@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Bell, Plus, X, Briefcase, MapPin, Loader2 } from "lucide-react";
+import AutocompleteInput from "@/components/AutocompleteInput";
+import { SUGGESTED_JOB_TITLES, SUGGESTED_LOCATIONS } from "@/lib/suggestions";
 
 interface Alert {
   id: string;
@@ -125,13 +127,13 @@ export default function AlertesClient({ initialAlerts }: Props) {
                     <Briefcase className="h-3.5 w-3.5" /> Mots-clés
                   </span>
                 </label>
-                <input
-                  type="text"
+                <AutocompleteInput
                   value={keywords}
-                  onChange={(e) => setKeywords(e.target.value)}
+                  onChange={setKeywords}
                   required
                   placeholder="Comptable, CDI, ONG..."
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                  staticSuggestions={SUGGESTED_JOB_TITLES}
                 />
               </div>
               <div>
@@ -140,12 +142,12 @@ export default function AlertesClient({ initialAlerts }: Props) {
                     <MapPin className="h-3.5 w-3.5" /> Lieu
                   </span>
                 </label>
-                <input
-                  type="text"
+                <AutocompleteInput
                   value={location}
-                  onChange={(e) => setLocation(e.target.value)}
+                  onChange={setLocation}
                   placeholder="Bangui, toute la RCA..."
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                  staticSuggestions={SUGGESTED_LOCATIONS}
                 />
               </div>
             </div>

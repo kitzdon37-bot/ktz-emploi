@@ -5,6 +5,17 @@ import dynamic from "next/dynamic";
 import { User, Briefcase, GraduationCap, Star, Globe, Heart, ChevronDown, ChevronUp, Plus, Trash2, Save, Eye, Edit3, Check } from "lucide-react";
 import { CvData, CvTemplate, CvExperience, CvEducation, CvSkill, CvLanguage, EMPTY_CV, LANGUAGE_LEVELS } from "@/types/cv";
 import CvPreview from "./CvPreview";
+import AutocompleteInput from "@/components/AutocompleteInput";
+import {
+  SUGGESTED_JOB_TITLES,
+  SUGGESTED_LOCATIONS,
+  SUGGESTED_SCHOOLS,
+  SUGGESTED_DEGREES,
+  SUGGESTED_FIELDS,
+  SUGGESTED_SKILLS,
+  SUGGESTED_LANGUAGES,
+  SUGGESTED_INTERESTS,
+} from "@/lib/suggestions";
 
 const PdfDownloadButton = dynamic(() => import("./PdfDownloadButton"), { ssr: false });
 
@@ -37,13 +48,13 @@ function PersonalSection({ data, onChange }: { data: CvData; onChange: (d: CvDat
         <div><label className={labelCls}>Prénom *</label><input className={inputCls} value={data.firstName} onChange={e => set("firstName", e.target.value)} placeholder="Jean" /></div>
         <div><label className={labelCls}>Nom *</label><input className={inputCls} value={data.lastName} onChange={e => set("lastName", e.target.value)} placeholder="DUPONT" /></div>
       </div>
-      <div><label className={labelCls}>Titre / Poste visé</label><input className={inputCls} value={data.title} onChange={e => set("title", e.target.value)} placeholder="Comptable senior, Développeur web..." /></div>
+      <div><label className={labelCls}>Titre / Poste visé</label><AutocompleteInput className={inputCls} value={data.title} onChange={v => set("title", v)} placeholder="Comptable senior, Développeur web..." staticSuggestions={SUGGESTED_JOB_TITLES} /></div>
       <div className="grid grid-cols-2 gap-3">
         <div><label className={labelCls}>Email</label><input className={inputCls} type="email" value={data.email} onChange={e => set("email", e.target.value)} placeholder="jean@email.com" /></div>
         <div><label className={labelCls}>Téléphone</label><input className={inputCls} value={data.phone} onChange={e => set("phone", e.target.value)} placeholder="+236 77 00 00 00" /></div>
       </div>
       <div className="grid grid-cols-2 gap-3">
-        <div><label className={labelCls}>Localité</label><input className={inputCls} value={data.location} onChange={e => set("location", e.target.value)} placeholder="Bangui, RCA" /></div>
+        <div><label className={labelCls}>Localité</label><AutocompleteInput className={inputCls} value={data.location} onChange={v => set("location", v)} placeholder="Bangui, RCA" staticSuggestions={SUGGESTED_LOCATIONS} /></div>
         <div><label className={labelCls}>LinkedIn</label><input className={inputCls} value={data.linkedin} onChange={e => set("linkedin", e.target.value)} placeholder="linkedin.com/in/jean" /></div>
       </div>
       <div><label className={labelCls}>Site web</label><input className={inputCls} value={data.website} onChange={e => set("website", e.target.value)} placeholder="https://monsite.com" /></div>
@@ -82,10 +93,10 @@ function ExperiencesSection({ data, onChange }: { data: CvData; onChange: (d: Cv
           {open === e.id && (
             <div className="px-4 pb-4 pt-3 space-y-3">
               <div className="grid grid-cols-2 gap-3">
-                <div><label className={labelCls}>Poste *</label><input className={inputCls} value={e.position} onChange={ev => update(e.id, { position: ev.target.value })} placeholder="Développeur web" /></div>
+                <div><label className={labelCls}>Poste *</label><AutocompleteInput className={inputCls} value={e.position} onChange={v => update(e.id, { position: v })} placeholder="Développeur web" staticSuggestions={SUGGESTED_JOB_TITLES} /></div>
                 <div><label className={labelCls}>Entreprise *</label><input className={inputCls} value={e.company} onChange={ev => update(e.id, { company: ev.target.value })} placeholder="Ecobank RCA" /></div>
               </div>
-              <div><label className={labelCls}>Localité</label><input className={inputCls} value={e.location} onChange={ev => update(e.id, { location: ev.target.value })} placeholder="Bangui" /></div>
+              <div><label className={labelCls}>Localité</label><AutocompleteInput className={inputCls} value={e.location} onChange={v => update(e.id, { location: v })} placeholder="Bangui" staticSuggestions={SUGGESTED_LOCATIONS} /></div>
               <div className="grid grid-cols-2 gap-3">
                 <div><label className={labelCls}>Date début</label><input className={inputCls} type="month" value={e.startDate} onChange={ev => update(e.id, { startDate: ev.target.value })} /></div>
                 <div>
@@ -135,10 +146,10 @@ function EducationSection({ data, onChange }: { data: CvData; onChange: (d: CvDa
           </div>
           {open === e.id && (
             <div className="px-4 pb-4 pt-3 space-y-3">
-              <div><label className={labelCls}>Diplôme *</label><input className={inputCls} value={e.degree} onChange={ev => update(e.id, { degree: ev.target.value })} placeholder="Licence, Master, BTS..." /></div>
+              <div><label className={labelCls}>Diplôme *</label><AutocompleteInput className={inputCls} value={e.degree} onChange={v => update(e.id, { degree: v })} placeholder="Licence, Master, BTS..." staticSuggestions={SUGGESTED_DEGREES} /></div>
               <div className="grid grid-cols-2 gap-3">
-                <div><label className={labelCls}>Spécialité</label><input className={inputCls} value={e.field} onChange={ev => update(e.id, { field: ev.target.value })} placeholder="Informatique, Droit..." /></div>
-                <div><label className={labelCls}>Établissement *</label><input className={inputCls} value={e.school} onChange={ev => update(e.id, { school: ev.target.value })} placeholder="Université de Bangui" /></div>
+                <div><label className={labelCls}>Spécialité</label><AutocompleteInput className={inputCls} value={e.field} onChange={v => update(e.id, { field: v })} placeholder="Informatique, Droit..." staticSuggestions={SUGGESTED_FIELDS} /></div>
+                <div><label className={labelCls}>Établissement *</label><AutocompleteInput className={inputCls} value={e.school} onChange={v => update(e.id, { school: v })} placeholder="Université de Bangui" staticSuggestions={SUGGESTED_SCHOOLS} /></div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div><label className={labelCls}>Date début</label><input className={inputCls} type="month" value={e.startDate} onChange={ev => update(e.id, { startDate: ev.target.value })} /></div>
@@ -169,7 +180,7 @@ function SkillsSection({ data, onChange }: { data: CvData; onChange: (d: CvData)
     <div className="space-y-3">
       {data.skills.map((s) => (
         <div key={s.id} className="flex items-center gap-3">
-          <input className={inputCls + " flex-1"} value={s.name} onChange={e => update(s.id, { name: e.target.value })} placeholder="React, Comptabilité, Excel..." />
+          <AutocompleteInput className={inputCls} wrapperClassName="flex-1" value={s.name} onChange={v => update(s.id, { name: v })} placeholder="React, Comptabilité, Excel..." staticSuggestions={SUGGESTED_SKILLS} />
           <div className="flex gap-1">
             {[1,2,3,4,5].map(n => (
               <button key={n} type="button" onClick={() => update(s.id, { level: n })}
@@ -198,7 +209,7 @@ function LanguagesSection({ data, onChange }: { data: CvData; onChange: (d: CvDa
     <div className="space-y-3">
       {data.languages.map((l) => (
         <div key={l.id} className="flex items-center gap-3">
-          <input className={inputCls + " flex-1"} value={l.name} onChange={e => update(l.id, { name: e.target.value })} placeholder="Français, Sango, Anglais..." />
+          <AutocompleteInput className={inputCls} wrapperClassName="flex-1" value={l.name} onChange={v => update(l.id, { name: v })} placeholder="Français, Sango, Anglais..." staticSuggestions={SUGGESTED_LANGUAGES} />
           <select className={inputCls + " w-36"} value={l.level} onChange={e => update(l.id, { level: e.target.value })}>
             {LANGUAGE_LEVELS.map(lv => <option key={lv} value={lv}>{lv}</option>)}
           </select>
@@ -229,12 +240,13 @@ function InterestsSection({ data, onChange }: { data: CvData; onChange: (d: CvDa
     <div className="space-y-4">
       <p className="text-xs text-gray-400">Ajoutez vos loisirs, sports, activités... Ex : Lecture, Football, Photographie</p>
       <div className="flex gap-2">
-        <input
-          className={inputCls + " flex-1"}
+        <AutocompleteInput
+          className={inputCls}
+          wrapperClassName="flex-1"
           value={input}
-          onChange={e => setInput(e.target.value)}
-          onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); add(); } }}
+          onChange={setInput}
           placeholder="Ajouter un centre d'intérêt..."
+          staticSuggestions={SUGGESTED_INTERESTS}
         />
         <button type="button" onClick={add} className="flex items-center gap-1.5 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition-colors">
           <Plus className="h-4 w-4" />
