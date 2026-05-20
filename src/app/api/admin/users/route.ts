@@ -44,6 +44,31 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({ users: flat });
 }
 
+// DELETE — supprimer définitivement un utilisateur et toutes ses données
+export async function DELETE(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+  const currentUser = session?.user as { role?: string; id?: string };
+  if (currentUser?.role !== "ADMIN") return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
+
+  const { searchParams } = new URL(req.url);
+  const userId = searchParams.get("userId");
+  if (!userId) return NextResponse.json({ error: "userId manquant" }, { status: 400 });
+
+  if (userId === currentUser.id) {
+    return NextResponse.json({ error: "Impossible de supprimer votre propre compte" }, { status: 400 });
+  }
+
+  // Supprimer dans l'ordre pour respecter les contraintes FK
+  await prisma.jobSeekerProfile.deleteMany({ where: { userId } });
+  await prisma.company.deleteMany({ where: { userId } });
+  await prisma.account.deleteMany({ where: { userId } });
+  await prisma.session.deleteMany({ where: { userId } });
+  await prisma.otpCode.deleteMany({ where: { phone: { in: [] } } }); // sécurité
+  await prisma.user.delete({ where: { id: userId } });
+
+  return NextResponse.json({ success: true });
+}
+
 // PATCH — changer le rôle ou suspendre un utilisateur
 export async function PATCH(req: NextRequest) {
   const session = await getServerSession(authOptions);

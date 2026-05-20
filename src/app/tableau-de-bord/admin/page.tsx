@@ -723,6 +723,17 @@ function AdminDashboard() {
     });
     setSiteUsers(prev => prev.map(u => u.id === userId ? { ...u, suspended } : u));
   }
+
+  async function deleteUser(userId: string, userName: string | null) {
+    if (!confirm(`Supprimer définitivement le compte de ${userName || "cet utilisateur"} ? Cette action est irréversible.`)) return;
+    const res = await fetch(`/api/admin/users?userId=${userId}`, { method: "DELETE" });
+    if (res.ok) {
+      setSiteUsers(prev => prev.filter(u => u.id !== userId));
+    } else {
+      const data = await res.json();
+      alert(data.error || "Erreur lors de la suppression");
+    }
+  }
   async function suspendCompany(companyId: string, suspended: boolean) {
     await fetch("/api/admin/suspend", {
       method: "PATCH",
@@ -1939,6 +1950,12 @@ function AdminDashboard() {
                         }`}
                       >
                         {u.suspended ? "Réactiver" : "Suspendre"}
+                      </button>
+                      <button
+                        onClick={() => deleteUser(u.id, u.name)}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" /> Supprimer
                       </button>
                     </div>
                   </div>
