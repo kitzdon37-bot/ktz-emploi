@@ -42,29 +42,29 @@ export default function JobCard({ job }: JobCardProps) {
   return (
     <Link
       href={`/emplois/${job.slug}`}
-      className={`flex flex-col bg-white rounded-xl border transition-all hover:shadow-md hover:border-orange-200 overflow-hidden relative ${
-        job.featured ? "border-orange-200 ring-1 ring-orange-100" : "border-gray-200"
+      className={`group flex flex-col bg-white rounded-xl border zoom-hover overflow-hidden relative ${
+        job.featured ? "border-orange-200 ring-1 ring-orange-100 hover:border-orange-300" : "border-gray-200 hover:border-orange-200"
       }`}
     >
       {job.featured && (
-        <div className="absolute top-3 right-3 z-10 flex items-center gap-1 bg-yellow-50 text-yellow-700 text-xs font-medium px-2 py-0.5 rounded-full border border-yellow-200">
-          <Star className="h-3 w-3 fill-yellow-500 text-yellow-500" />
+        <div className="absolute top-3 right-3 z-10 flex items-center gap-1 bg-yellow-50 text-yellow-700 text-xs font-medium px-2 py-0.5 rounded-full border border-yellow-200 animate-bounce-in">
+          <span className="star-twinkle"><Star className="h-3 w-3 fill-yellow-500 text-yellow-500" /></span>
           À la une
         </div>
       )}
 
       {/* Zone visuelle en haut : cover image ou logo en grand */}
       {job.coverImage ? (
-        <div className="relative h-24 bg-gray-100 flex-shrink-0">
+        <div className="relative h-24 bg-gray-100 flex-shrink-0 overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={job.coverImage}
             alt={job.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
           {/* Logo en overlay bas-gauche */}
           {job.company.logo && (
-            <div className="absolute bottom-2 left-3 w-8 h-8 rounded-lg bg-white shadow border border-gray-100 flex items-center justify-center overflow-hidden">
+            <div className="absolute bottom-2 left-3 w-8 h-8 rounded-lg bg-white shadow border border-gray-100 flex items-center justify-center overflow-hidden transition-transform duration-300 group-hover:scale-110">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={job.company.logo}
@@ -75,16 +75,16 @@ export default function JobCard({ job }: JobCardProps) {
           )}
         </div>
       ) : (
-        <div className="h-28 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center border-b border-gray-100 flex-shrink-0">
+        <div className="h-28 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center border-b border-gray-100 flex-shrink-0 overflow-hidden">
           {job.company.logo ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={job.company.logo}
               alt={job.company.name}
-              className="max-h-20 max-w-[160px] object-contain"
+              className="max-h-20 max-w-[160px] object-contain transition-transform duration-300 group-hover:scale-110"
             />
           ) : (
-            <span className="text-2xl font-bold text-orange-300">{initials}</span>
+            <span className="text-2xl font-bold text-orange-300 transition-transform duration-300 group-hover:scale-110 inline-block">{initials}</span>
           )}
         </div>
       )}
@@ -98,12 +98,12 @@ export default function JobCard({ job }: JobCardProps) {
           )}
           {job.company.superRecruiter && (
             <span className="flex items-center gap-0.5 text-xs bg-yellow-50 text-yellow-700 px-1.5 py-0.5 rounded-full border border-yellow-200 font-medium">
-              <Star className="h-2.5 w-2.5 fill-yellow-500 text-yellow-500" /> Super Recruteur
+              <span className="star-twinkle"><Star className="h-2.5 w-2.5 fill-yellow-500 text-yellow-500" /></span> Super Recruteur
             </span>
           )}
         </div>
 
-        <h3 className="font-semibold text-gray-900 text-sm leading-snug mb-2 line-clamp-2 flex-1">
+        <h3 className="font-semibold text-gray-900 text-sm leading-snug mb-2 line-clamp-2 flex-1 transition-colors duration-200 group-hover:text-orange-600">
           {job.title}
         </h3>
 
