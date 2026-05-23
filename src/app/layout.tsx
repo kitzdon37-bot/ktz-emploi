@@ -13,6 +13,13 @@ export const metadata: Metadata = {
   description:
     "Trouvez votre prochain emploi en République Centrafricaine. Des milliers d'offres d'emploi à Bangui et partout en RCA.",
   keywords: "emploi centrafrique, jobs bangui, recrutement RCA, travail centrafrique",
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
