@@ -15,10 +15,14 @@ export const metadata: Metadata = {
   keywords: "emploi centrafrique, jobs bangui, recrutement RCA, travail centrafrique",
   icons: {
     icon: [
-      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon-16.png",  sizes: "16x16",  type: "image/png" },
+      { url: "/favicon-32.png",  sizes: "32x32",  type: "image/png" },
+      { url: "/favicon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/favicon-512.png", sizes: "512x512", type: "image/png" },
+      { url: "/icon.svg",        type: "image/svg+xml" },
     ],
-    shortcut: "/icon.svg",
-    apple: "/icon.svg",
+    shortcut: "/favicon-32.png",
+    apple:    { url: "/favicon-192.png", sizes: "192x192", type: "image/png" },
   },
 };
 
