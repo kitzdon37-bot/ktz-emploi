@@ -92,10 +92,12 @@ export default async function HomePage() {
               <span>1ère plateforme de recherche d&apos;emploi en Centrafrique</span>
             </div>
             <h1 className="text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-8 drop-shadow-lg">
-              Pas besoin de connaître<br />
-              quelqu&apos;un qui connaît quelqu&apos;un.<br />
-              <span className="text-orange-400">Ici, vous postulez vous-même</span>{" "}—<br />
-              et ça change tout.
+              <span className="block animate-slide-up">Pas besoin de connaître</span>
+              <span className="block animate-slide-up delay-150">quelqu&apos;un qui connaît quelqu&apos;un.</span>
+              <span className="block animate-slide-up delay-300">
+                <span className="text-orange-400">Ici, vous postulez vous-même</span>{" "}—
+              </span>
+              <span className="block animate-slide-up delay-400">et ça change tout.</span>
             </h1>
             <HeroSearch />
             <div className="flex flex-wrap gap-2 mt-4">
@@ -106,7 +108,7 @@ export default async function HomePage() {
                   { label: "IT & Tech", q: "Informatique" },
                   { label: "Santé", q: "Santé" },
                 ].map((chip) => (
-                  <Link key={chip.label} href={`/emplois?${chip.type ? `type=${chip.type}` : `q=${chip.q}`}`} className="bg-white/20 backdrop-blur-sm hover:bg-white/35 border border-white/30 text-white text-sm px-4 py-1.5 rounded-full transition-all">
+                  <Link key={chip.label} href={`/emplois?${chip.type ? `type=${chip.type}` : `q=${chip.q}`}`} className="zoom-hover bg-white/20 backdrop-blur-sm hover:bg-white/35 border border-white/30 text-white text-sm px-4 py-1.5 rounded-full">
                     {chip.label}
                   </Link>
                 ))}
@@ -168,8 +170,8 @@ export default async function HomePage() {
               const colors = ["bg-orange-100 text-orange-600","bg-blue-100 text-blue-600","bg-green-100 text-green-600","bg-purple-100 text-purple-600","bg-rose-100 text-rose-600","bg-yellow-100 text-yellow-700","bg-teal-100 text-teal-600","bg-indigo-100 text-indigo-600"];
               const color = colors[co.name.charCodeAt(0) % colors.length];
               return (
-                <Link key={co.slug} href={`/entreprises/${co.slug}`} className="bg-white rounded-2xl border border-gray-200 hover:border-orange-200 hover:shadow-md p-5 flex flex-col items-center gap-2.5 transition-all group">
-                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-bold text-base overflow-hidden ${co.logo ? "bg-gray-50 border border-gray-100" : color}`}>
+                <Link key={co.slug} href={`/entreprises/${co.slug}`} className="zoom-hover bg-white rounded-2xl border border-gray-200 hover:border-orange-200 hover:shadow-lg p-5 flex flex-col items-center gap-2.5 group">
+                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-bold text-base overflow-hidden transition-transform duration-300 group-hover:scale-110 ${co.logo ? "bg-gray-50 border border-gray-100" : color}`}>
                     {co.logo ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={co.logo} alt={co.name} className="w-full h-full object-contain p-1" />
@@ -177,7 +179,7 @@ export default async function HomePage() {
                       initials
                     )}
                   </div>
-                  <span className="text-xs font-semibold text-gray-800 text-center leading-tight group-hover:text-orange-600 line-clamp-2">{co.name}</span>
+                  <span className="text-xs font-semibold text-gray-800 text-center leading-tight group-hover:text-orange-600 line-clamp-2 transition-colors">{co.name}</span>
                   {co.sector && <span className="text-[10px] text-gray-400 text-center line-clamp-1">{co.sector}</span>}
                 </Link>
               );
@@ -199,20 +201,20 @@ export default async function HomePage() {
               { step: "02", icon: Search, title: "Explorez les offres", desc: "Parcourez des centaines d'offres d'emploi à Bangui et dans toute la RCA, filtrées selon vos critères.", color: "bg-blue-50 text-blue-500" },
               { step: "03", icon: CheckCircle, title: "Postulez en un clic", desc: "Envoyez votre candidature directement aux recruteurs et suivez l'avancement depuis votre tableau de bord.", color: "bg-green-50 text-green-500" },
             ].map(({ step, icon: Icon, title, desc, color }) => (
-              <div key={step} className="relative text-center">
+              <div key={step} className="relative text-center group cursor-default">
                 <div className="hidden md:block absolute top-10 left-[60%] w-full h-px border-t-2 border-dashed border-gray-200" />
-                <div className={`w-20 h-20 rounded-2xl ${color} flex items-center justify-center mx-auto mb-5 relative z-10`}>
-                  <Icon className="h-9 w-9" />
+                <div className={`w-20 h-20 rounded-2xl ${color} flex items-center justify-center mx-auto mb-5 relative z-10 transition-transform duration-300 group-hover:scale-110 group-hover:shadow-lg`}>
+                  <Icon className="h-9 w-9 transition-transform duration-300 group-hover:scale-110" />
                 </div>
                 <div className="text-xs font-bold text-gray-300 mb-2 tracking-widest">ÉTAPE {step}</div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2">{title}</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-2 transition-colors group-hover:text-orange-600">{title}</h3>
                 <p className="text-gray-500 text-sm leading-relaxed max-w-xs mx-auto">{desc}</p>
               </div>
             ))}
           </div>
           <div className="text-center mt-10">
-            <Link href="/inscription" className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-xl font-semibold transition-colors">
-              Commencer gratuitement <ArrowRight className="h-4 w-4" />
+            <Link href="/inscription" className="btn-press inline-flex items-center gap-2 bg-orange-500 text-white px-8 py-3 rounded-xl font-semibold">
+              Commencer gratuitement <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
         </div>
@@ -232,9 +234,9 @@ export default async function HomePage() {
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {JOB_CATEGORIES.slice(0, 8).map((cat) => (
-              <Link key={cat} href={`/emplois?category=${encodeURIComponent(cat)}`} className="group flex items-center gap-3 p-4 rounded-2xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50 transition-all bg-white">
-                <span className="text-2xl">{CATEGORY_ICONS[cat] || "📋"}</span>
-                <span className="text-sm font-medium text-gray-700 group-hover:text-orange-600 leading-tight">{cat}</span>
+              <Link key={cat} href={`/emplois?category=${encodeURIComponent(cat)}`} className="zoom-hover group flex items-center gap-3 p-4 rounded-2xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50 hover:shadow-md bg-white">
+                <span className="text-2xl transition-transform duration-300 group-hover:scale-125 inline-block">{CATEGORY_ICONS[cat] || "📋"}</span>
+                <span className="text-sm font-medium text-gray-700 group-hover:text-orange-600 leading-tight transition-colors">{cat}</span>
               </Link>
             ))}
           </div>
@@ -293,10 +295,10 @@ export default async function HomePage() {
                 ))}
               </ul>
               <div className="flex flex-col sm:flex-row gap-3">
-                <Link href="/inscription?role=employer" className="bg-orange-500 hover:bg-orange-400 text-white px-8 py-3 rounded-xl font-bold transition-colors text-center text-sm">
+                <Link href="/inscription?role=employer" className="btn-press bg-orange-500 text-white px-8 py-3 rounded-xl font-bold text-center text-sm">
                   Publier une offre gratuitement
                 </Link>
-                <Link href="/entreprises" className="border border-gray-600 hover:border-gray-400 text-gray-300 hover:text-white px-8 py-3 rounded-xl font-semibold transition-colors text-center text-sm">
+                <Link href="/entreprises" className="zoom-hover border border-gray-600 hover:border-gray-400 text-gray-300 hover:text-white px-8 py-3 rounded-xl font-semibold text-center text-sm">
                   Voir les entreprises
                 </Link>
               </div>
@@ -319,9 +321,9 @@ export default async function HomePage() {
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {TIPS.map(({ icon: Icon, tag, title, desc }) => (
-              <Link key={title} href="/conseils" className="group bg-white rounded-2xl border border-gray-200 hover:border-orange-200 hover:shadow-md p-6 transition-all">
-                <div className="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-orange-100 transition-colors">
-                  <Icon className="h-5 w-5 text-orange-500" />
+              <Link key={title} href="/conseils" className="zoom-hover group bg-white rounded-2xl border border-gray-200 hover:border-orange-200 hover:shadow-lg p-6">
+                <div className="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-orange-100 transition-all duration-300 group-hover:scale-110">
+                  <Icon className="h-5 w-5 text-orange-500 transition-transform duration-300 group-hover:scale-110" />
                 </div>
                 <span className="text-xs font-semibold text-orange-500 uppercase tracking-wide">{tag}</span>
                 <h3 className="text-base font-bold text-gray-900 mt-2 mb-2 leading-snug group-hover:text-orange-600 transition-colors">{title}</h3>
@@ -341,8 +343,8 @@ export default async function HomePage() {
           <h2 className="text-2xl lg:text-3xl font-extrabold text-white mb-3">Prêt à trouver votre prochain emploi ?</h2>
           <p className="text-orange-100 mb-8">Créez votre profil gratuitement et recevez des offres personnalisées directement dans votre boîte mail.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/inscription" className="bg-white text-orange-600 hover:bg-orange-50 px-8 py-3 rounded-xl font-bold transition-colors">Créer mon profil</Link>
-            <Link href="/emplois" className="border-2 border-white text-white hover:bg-white/10 px-8 py-3 rounded-xl font-semibold transition-colors">Parcourir les offres</Link>
+            <Link href="/inscription" className="btn-press bg-white text-orange-600 px-8 py-3 rounded-xl font-bold">Créer mon profil</Link>
+            <Link href="/emplois" className="zoom-hover border-2 border-white text-white hover:bg-white/10 px-8 py-3 rounded-xl font-semibold">Parcourir les offres</Link>
           </div>
         </div>
       </section>
