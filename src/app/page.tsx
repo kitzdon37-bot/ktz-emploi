@@ -79,19 +79,19 @@ export default async function HomePage() {
       {/* ══════════════════════════════════════
           1. HERO
       ══════════════════════════════════════ */}
-      <section className="relative" style={{ minHeight: "560px" }}>
+      <section className="relative min-h-[420px] sm:min-h-[560px]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/accueil.png" alt="" className="absolute inset-0 w-full h-full object-cover object-center" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 to-black/20" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent" />
-        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-end h-full" style={{ minHeight: "560px" }}>
-          <div className="pb-12 pt-24">
-            <div className="inline-flex items-center gap-2 bg-white/90 backdrop-blur-sm border border-white text-[#1e3a5f] text-sm font-bold px-4 py-1.5 rounded-full mb-6 shadow-md">
+        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-end h-full min-h-[420px] sm:min-h-[560px]">
+          <div className="pb-8 pt-16 sm:pb-12 sm:pt-24">
+            <div className="inline-flex items-center gap-2 bg-white/90 backdrop-blur-sm border border-white text-[#1e3a5f] text-xs sm:text-sm font-bold px-3 py-1 sm:px-4 sm:py-1.5 rounded-full mb-4 sm:mb-6 shadow-md">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="https://upload.wikimedia.org/wikipedia/commons/6/6f/Flag_of_the_Central_African_Republic.svg" alt="Drapeau RCA" className="flag-wave h-5 w-7 object-cover rounded-sm shadow-sm" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/6/6f/Flag_of_the_Central_African_Republic.svg" alt="Drapeau RCA" className="flag-wave h-4 w-6 sm:h-5 sm:w-7 object-cover rounded-sm shadow-sm" />
               <span>1ère plateforme de recherche d&apos;emploi en Centrafrique</span>
             </div>
-            <h1 className="text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-8 drop-shadow-lg">
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-5 sm:mb-8 drop-shadow-lg">
               <span className="block animate-slide-up-slow">Pas besoin de connaître</span>
               <span className="block animate-slide-up-slow delay-250">quelqu&apos;un qui connaît quelqu&apos;un.</span>
               <span className="block animate-slide-up-slow delay-500">
