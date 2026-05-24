@@ -33,6 +33,18 @@
   animation: slideUp 0.35s ease-out both;
 }
 
+/* ── Slide up lent (hero headline) ───────────────────────────────────────── */
+@keyframes slideUpSlow {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-up-slow {
+  animation: slideUpSlow 0.65s ease-out both;
+}
+.delay-250 { animation-delay: 0.25s; }
+.delay-500 { animation-delay: 0.50s; }
+.delay-750 { animation-delay: 0.75s; }
+
 /* ── Slide in depuis la gauche ───────────────────────────────────────────── */
 @keyframes slideInLeft {
   from { opacity: 0; transform: translateX(-14px); }

@@ -92,12 +92,12 @@ export default async function HomePage() {
               <span>1ère plateforme de recherche d&apos;emploi en Centrafrique</span>
             </div>
             <h1 className="text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-8 drop-shadow-lg">
-              <span className="block animate-slide-up">Pas besoin de connaître</span>
-              <span className="block animate-slide-up delay-150">quelqu&apos;un qui connaît quelqu&apos;un.</span>
-              <span className="block animate-slide-up delay-300">
+              <span className="block animate-slide-up-slow">Pas besoin de connaître</span>
+              <span className="block animate-slide-up-slow delay-250">quelqu&apos;un qui connaît quelqu&apos;un.</span>
+              <span className="block animate-slide-up-slow delay-500">
                 <span className="text-orange-400">Ici, vous postulez vous-même</span>{" "}—
               </span>
-              <span className="block animate-slide-up delay-400">et ça change tout.</span>
+              <span className="block animate-slide-up-slow delay-750">et ça change tout.</span>
             </h1>
             <HeroSearch />
             <div className="flex flex-wrap gap-2 mt-4">
