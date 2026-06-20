@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" fill="none">
+  <!-- Speech bubble 1 (orange - interviewer) -->
+  <rect x="18" y="14" width="108" height="68" rx="12" fill="#F97316"/>
+  <!-- Tail -->
+  <path d="M48 82 L43 98 L63 82" fill="#F97316"/>
+  <!-- Lines in bubble 1 -->
+  <rect x="30" y="30" width="84" height="6" rx="3" fill="white" opacity="0.9"/>
+  <rect x="30" y="42" width="68" height="5" rx="2.5" fill="white" opacity="0.7"/>
+  <rect x="30" y="53" width="75" height="5" rx="2.5" fill="white" opacity="0.6"/>
+  <rect x="30" y="64" width="52" height="5" rx="2.5" fill="white" opacity="0.45"/>
+  <!-- Speech bubble 2 (light - candidate) -->
+  <rect x="112" y="44" width="108" height="55" rx="12" fill="#FFF7ED" stroke="#FED7AA" stroke-width="2"/>
+  <!-- Tail -->
+  <path d="M168 99 L173 115 L186 99" fill="#FFF7ED"/>
+  <path d="M168 99 L173 115 L186 99" stroke="#FED7AA" stroke-width="2" stroke-linejoin="round"/>
+  <!-- Lines in bubble 2 -->
+  <rect x="124" y="58" width="84" height="5" rx="2.5" fill="#F97316" opacity="0.4"/>
+  <rect x="124" y="69" width="68" height="5" rx="2.5" fill="#F97316" opacity="0.3"/>
+  <rect x="124" y="80" width="76" height="5" rx="2.5" fill="#F97316" opacity="0.25"/>
+  <!-- Person left (interviewer) -->
+  <circle cx="58" cy="130" r="16" fill="#F97316"/>
+  <circle cx="58" cy="122" r="7" fill="#FDE68A"/>
+  <ellipse cx="58" cy="135" rx="10" ry="7" fill="#FDE68A"/>
+  <!-- Person right (candidate) -->
+  <circle cx="176" cy="138" r="16" fill="#FB923C"/>
+  <circle cx="176" cy="130" r="7" fill="#FDE68A"/>
+  <ellipse cx="176" cy="143" rx="10" ry="7" fill="#FDE68A"/>
+  <!-- Tie on interviewer -->
+  <path d="M55 134 L58 143 L61 134 L59 130 L57 130 Z" fill="#1D4ED8" opacity="0.7"/>
+  <!-- Accent dots -->
+  <circle cx="210" cy="25" r="4" fill="#FED7AA"/>
+  <circle cx="220" cy="38" r="3" fill="#FED7AA" opacity="0.6"/>
+</svg>

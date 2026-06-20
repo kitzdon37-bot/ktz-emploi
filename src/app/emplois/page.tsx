@@ -24,7 +24,11 @@ async function getJobs(params: Awaited<Props["searchParams"]>) {
   const page = parseInt(params.page || "1");
   const skip = (page - 1) * PAGE_SIZE;
 
-  const where: Record<string, unknown> = { published: true, company: { suspended: false } };
+  const where: Record<string, unknown> = {
+    published: true,
+    company: { suspended: false },
+    AND: [{ OR: [{ deadline: null }, { deadline: { gte: new Date() } }] }],
+  };
 
   if (params.q) {
     where.OR = [

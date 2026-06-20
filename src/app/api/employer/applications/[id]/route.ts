@@ -3,30 +3,15 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { sendStatusNotificationEmail } from "@/lib/email";
+import { sendWhatsApp } from "@/lib/sms";
 
-async function sendWhatsAppNotification(phone: string, candidateName: string, jobTitle: string, companyName: string, status: string) {
-  const instance = process.env.ULTRAMSG_INSTANCE;
-  const token = process.env.ULTRAMSG_TOKEN;
-  if (!instance || !token) return;
-
-  const statusLabels: Record<string, string> = {
-    PENDING: "En attente",
-    REVIEWING: "En cours d'examen",
-    INTERVIEW: "Invitation à un entretien",
-    ACCEPTED: "Candidature acceptée ✅",
-    REJECTED: "Candidature non retenue",
-  };
-
-  const label = statusLabels[status] ?? status;
-  const prenom = candidateName.split(" ")[0];
-  const body = `📋 *KTZ Emploi* — Mise à jour de votre candidature\n\nBonjour ${prenom},\n\nLe statut de votre candidature pour le poste *${jobTitle}* chez *${companyName}* a été mis à jour :\n\n👉 *${label}*\n\nConsultez vos candidatures : https://ktzemploi.com/tableau-de-bord/candidatures`;
-
-  await fetch(`https://api.ultramsg.com/${instance}/messages/chat`, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({ token, to: phone, body }),
-  }).catch(() => {}); // silencieux si UltraMsg indisponible
-}
+const STATUS_LABELS: Record<string, string> = {
+  PENDING:   "En attente",
+  REVIEWING: "En cours d'examen",
+  INTERVIEW: "Invitation à un entretien",
+  ACCEPTED:  "Candidature acceptée ✅",
+  REJECTED:  "Candidature non retenue",
+};
 
 const VALID_STATUSES = ["PENDING", "REVIEWING", "INTERVIEW", "ACCEPTED", "REJECTED"];
 
@@ -47,7 +32,14 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     where: { id },
     include: {
       job: { select: { title: true, companyId: true } },
-      user: { select: { name: true, email: true, phone: true } },
+      user: {
+        select: {
+          name: true,
+          email: true,
+          phone: true,
+          profile: { select: { phone: true, whatsappOptIn: true } },
+        },
+      },
     },
   });
 
@@ -56,7 +48,13 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
 
   const body = await req.json();
-  const { status, sendEmail, emailSubject, emailMessage } = body;
+  const { status, archived, sendEmail, sendWhatsApp: sendWhatsAppManual, emailSubject, emailMessage } = body;
+
+  // Archivage / désarchivage
+  if (typeof archived === "boolean") {
+    await prisma.application.update({ where: { id }, data: { archived } });
+    return NextResponse.json({ success: true });
+  }
 
   // Mise à jour du statut + création d'une entrée dans l'historique
   if (status) {
@@ -79,7 +77,10 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     // Notification automatique au candidat à chaque changement de statut
     const candidateName = application.user.name || application.user.email || "Candidat";
     const candidateEmail = application.user.email ?? "";
-    const candidatePhone = application.user.phone ?? null;
+    const profile = application.user.profile;
+    // Numéro WhatsApp : priorité au profil candidat, sinon compte utilisateur
+    const waPhone = profile?.phone || application.user.phone || null;
+    const waOptIn = profile?.whatsappOptIn ?? false;
 
     // Email (non bloquant)
     if (candidateEmail) {
@@ -94,19 +95,31 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       }).catch((err) => console.error("[Status notification email]", err));
     }
 
-    // WhatsApp si le candidat a un numéro (non bloquant)
-    if (candidatePhone) {
-      sendWhatsAppNotification(candidatePhone, candidateName, application.job.title, company.name, status)
+    // WhatsApp : uniquement si le candidat a activé les notifs WhatsApp
+    if (waPhone && waOptIn) {
+      const prenom = candidateName.split(" ")[0];
+      const label = STATUS_LABELS[status] ?? status;
+      const message =
+        `📋 *KTZ Emploi* — Mise à jour de candidature\n\n` +
+        `Bonjour ${prenom},\n\n` +
+        `Votre candidature pour le poste *${application.job.title}* chez *${company.name}* a été mise à jour :\n\n` +
+        `👉 *${label}*\n\n` +
+        `Consultez vos candidatures : https://ktzemploi.com/tableau-de-bord/candidatures`;
+      sendWhatsApp(waPhone, message)
         .catch((err) => console.error("[Status notification WA]", err));
     }
 
     return NextResponse.json({ success: true });
   }
 
-  // Envoi d'email personnalisé (sans changement de statut)
+  // Envoi de notification manuelle (email et/ou WhatsApp, sans changement de statut)
+  const candidateName = application.user.name || application.user.email || "Candidat";
+  const profile = application.user.profile;
+  const waPhone = profile?.phone || application.user.phone || null;
+
   if (sendEmail) {
     const result = await sendStatusNotificationEmail({
-      candidateName: application.user.name || application.user.email || "Candidat",
+      candidateName,
       candidateEmail: application.user.email ?? "",
       jobTitle: application.job.title,
       companyName: company.name,
@@ -123,5 +136,41 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     }
   }
 
+  if (sendWhatsAppManual && waPhone) {
+    const prenom = candidateName.split(" ")[0];
+    const label = STATUS_LABELS[application.status] ?? application.status;
+    const waMessage = emailMessage?.trim()
+      ? `📋 *KTZ Emploi* — Message de ${company.name}\n\nBonjour ${prenom},\n\n${emailMessage.trim()}`
+      : `📋 *KTZ Emploi* — Mise à jour de candidature\n\nBonjour ${prenom},\n\nVotre candidature pour le poste *${application.job.title}* chez *${company.name}* : *${label}*\n\nhttps://ktzemploi.com/tableau-de-bord/candidatures`;
+    sendWhatsApp(waPhone, waMessage)
+      .catch((err) => console.error("[Manual WA notification]", err));
+  }
+
+  return NextResponse.json({ success: true });
+}
+
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+
+  const session = await getServerSession(authOptions);
+  if (!session?.user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+
+  const role = (session.user as { role?: string }).role;
+  if (role !== "EMPLOYER") return NextResponse.json({ error: "Réservé aux recruteurs" }, { status: 403 });
+
+  const userId = (session.user as { id?: string }).id!;
+  const company = await prisma.company.findUnique({ where: { userId } });
+  if (!company) return NextResponse.json({ error: "Profil entreprise introuvable" }, { status: 404 });
+
+  const application = await prisma.application.findUnique({
+    where: { id },
+    include: { job: { select: { companyId: true } } },
+  });
+
+  if (!application) return NextResponse.json({ error: "Candidature introuvable" }, { status: 404 });
+  if (application.job.companyId !== company.id)
+    return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
+
+  await prisma.application.delete({ where: { id } });
   return NextResponse.json({ success: true });
 }

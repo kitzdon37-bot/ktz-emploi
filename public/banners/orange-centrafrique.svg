@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" width="1200" height="300">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF6600;stop-opacity:1" />
+      <stop offset="60%" style="stop-color:#FF8C00;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF4500;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="circle1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.15" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0.03" />
+    </linearGradient>
+    <linearGradient id="circle2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.10" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0.02" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="300" fill="url(#bg)" />
+
+  <!-- Decorative circles -->
+  <circle cx="980" cy="-60" r="260" fill="url(#circle1)" />
+  <circle cx="1100" cy="340" r="200" fill="url(#circle2)" />
+  <circle cx="50" cy="280" r="180" fill="url(#circle2)" />
+  <circle cx="200" cy="-40" r="150" fill="url(#circle1)" />
+
+  <!-- Subtle grid pattern -->
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="0.3" stroke-opacity="0.15"/>
+  </pattern>
+  <rect width="1200" height="300" fill="url(#grid)" />
+
+  <!-- Orange logo circle -->
+  <circle cx="140" cy="150" r="65" fill="white" fill-opacity="0.95" />
+  <text x="140" y="158" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="900" fill="#FF6600" letter-spacing="-1">orange</text>
+
+  <!-- Vertical separator -->
+  <line x1="235" y1="80" x2="235" y2="220" stroke="white" stroke-width="1.5" stroke-opacity="0.4" />
+
+  <!-- Company name -->
+  <text x="270" y="130" font-family="Arial, Helvetica, sans-serif" font-size="42" font-weight="800" fill="white" letter-spacing="-0.5">Orange Centrafrique</text>
+
+  <!-- Tagline -->
+  <text x="272" y="172" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="400" fill="white" fill-opacity="0.88">Connecter les Centrafricains au monde numérique</text>
+
+  <!-- Tags -->
+  <rect x="272" y="196" width="90" height="26" rx="13" fill="white" fill-opacity="0.2" />
+  <text x="317" y="213" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="600" fill="white">Télécoms</text>
+
+  <rect x="372" y="196" width="110" height="26" rx="13" fill="white" fill-opacity="0.2" />
+  <text x="427" y="213" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="600" fill="white">Bangui, RCA</text>
+
+  <rect x="492" y="196" width="94" height="26" rx="13" fill="white" fill-opacity="0.2" />
+  <text x="539" y="213" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="600" fill="white">Vérifié ✓</text>
+
+  <!-- Right side decoration: signal waves -->
+  <g transform="translate(1020, 150)" fill="none" stroke="white" stroke-opacity="0.25" stroke-width="2.5">
+    <path d="M0,0 A20,20 0 0,1 0,-40 A20,20 0 0,1 0,0" />
+    <path d="M-10,5 A45,45 0 0,1 -10,-50 A45,45 0 0,1 -10,5" />
+    <path d="M-20,10 A70,70 0 0,1 -20,-60 A70,70 0 0,1 -20,10" />
+    <path d="M-30,15 A95,95 0 0,1 -30,-70 A95,95 0 0,1 -30,15" />
+  </g>
+
+  <!-- Website -->
+  <text x="1160" y="285" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="13" fill="white" fill-opacity="0.6">www.orange.cf</text>
+</svg>

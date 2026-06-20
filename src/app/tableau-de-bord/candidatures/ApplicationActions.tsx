@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Mail, Loader2, ChevronDown, X, Send, CheckCircle } from "lucide-react";
+import { Mail, Loader2, ChevronDown, X, Send, CheckCircle, MessageCircle } from "lucide-react";
 
 const STATUSES = [
   { value: "PENDING",   label: "En attente",        color: "text-yellow-700 bg-yellow-50 border-yellow-200" },
@@ -39,9 +39,10 @@ interface Props {
   applicationId: string;
   initialStatus: string;
   candidateName: string;
+  candidateWhatsappOptIn?: boolean;
 }
 
-export default function ApplicationActions({ applicationId, initialStatus, candidateName }: Props) {
+export default function ApplicationActions({ applicationId, initialStatus, candidateName, candidateWhatsappOptIn = false }: Props) {
   const router = useRouter();
   const [status, setStatus] = useState(initialStatus);
   const [statusLoading, setStatusLoading] = useState(false);
@@ -52,6 +53,8 @@ export default function ApplicationActions({ applicationId, initialStatus, candi
   const [emailSubject, setEmailSubject] = useState("");
   const [emailMessage, setEmailMessage] = useState("");
   const [emailStatus, setEmailStatus] = useState(status);
+  const [sendEmail, setSendEmail] = useState(true);
+  const [sendWhatsApp, setSendWhatsApp] = useState(candidateWhatsappOptIn);
   const [sendLoading, setSendLoading] = useState(false);
   const [sendSuccess, setSendSuccess] = useState(false);
   const [sendError, setSendError] = useState("");
@@ -88,6 +91,8 @@ export default function ApplicationActions({ applicationId, initialStatus, candi
     setEmailStatus(status);
     setEmailSubject(template.subject);
     setEmailMessage(template.message);
+    setSendEmail(true);
+    setSendWhatsApp(candidateWhatsappOptIn);
     setSendSuccess(false);
     setSendError("");
     setModalOpen(true);
@@ -100,7 +105,11 @@ export default function ApplicationActions({ applicationId, initialStatus, candi
     setEmailSubject(template.subject);
   }
 
-  async function handleSendEmail() {
+  async function handleSendNotification() {
+    if (!sendEmail && !sendWhatsApp) {
+      setSendError("Sélectionnez au moins un canal de notification.");
+      return;
+    }
     setSendLoading(true);
     setSendError("");
     try {
@@ -109,7 +118,8 @@ export default function ApplicationActions({ applicationId, initialStatus, candi
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           status: emailStatus !== status ? emailStatus : undefined,
-          sendEmail: true,
+          sendEmail,
+          sendWhatsApp,
           emailSubject: emailSubject.trim() || undefined,
           emailMessage: emailMessage.trim() || undefined,
         }),
@@ -182,16 +192,16 @@ export default function ApplicationActions({ applicationId, initialStatus, candi
             </button>
 
             <h2 className="text-lg font-bold text-gray-900 mb-1">
-              Envoyer un email à {candidateName}
+              Notifier {candidateName}
             </h2>
             <p className="text-sm text-gray-500 mb-5">
-              Le candidat recevra un email personnalisé avec les informations ci-dessous.
+              Choisissez les canaux de notification et personnalisez le message.
             </p>
 
             {sendSuccess ? (
               <div className="flex flex-col items-center gap-3 py-8">
                 <CheckCircle className="h-12 w-12 text-green-500" />
-                <p className="text-base font-semibold text-gray-800">Email envoyé avec succès !</p>
+                <p className="text-base font-semibold text-gray-800">Notification envoyée !</p>
                 {sendError && <p className="text-xs text-yellow-600 text-center">{sendError}</p>}
                 <button
                   onClick={() => setModalOpen(false)}
@@ -202,6 +212,33 @@ export default function ApplicationActions({ applicationId, initialStatus, candi
               </div>
             ) : (
               <div className="space-y-4">
+
+                {/* Canaux de notification */}
+                <div className="flex gap-3">
+                  <label className="flex items-center gap-2 flex-1 cursor-pointer border border-gray-200 rounded-xl px-3 py-2.5 hover:border-orange-300 transition-colors">
+                    <input
+                      type="checkbox"
+                      checked={sendEmail}
+                      onChange={(e) => setSendEmail(e.target.checked)}
+                      className="w-4 h-4 accent-orange-500"
+                    />
+                    <Mail className="h-4 w-4 text-gray-400" />
+                    <span className="text-sm text-gray-700 font-medium">Email</span>
+                  </label>
+                  {candidateWhatsappOptIn && (
+                    <label className="flex items-center gap-2 flex-1 cursor-pointer border border-gray-200 rounded-xl px-3 py-2.5 hover:border-green-300 transition-colors">
+                      <input
+                        type="checkbox"
+                        checked={sendWhatsApp}
+                        onChange={(e) => setSendWhatsApp(e.target.checked)}
+                        className="w-4 h-4 accent-green-500"
+                      />
+                      <MessageCircle className="h-4 w-4 text-green-500" />
+                      <span className="text-sm text-gray-700 font-medium">WhatsApp</span>
+                    </label>
+                  )}
+                </div>
+
                 {/* Modèle / statut */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -264,8 +301,8 @@ export default function ApplicationActions({ applicationId, initialStatus, candi
                     Annuler
                   </button>
                   <button
-                    onClick={handleSendEmail}
-                    disabled={sendLoading}
+                    onClick={handleSendNotification}
+                    disabled={sendLoading || (!sendEmail && !sendWhatsApp)}
                     className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-orange-500 text-white rounded-xl text-sm font-medium hover:bg-orange-600 disabled:opacity-60"
                   >
                     {sendLoading ? (
@@ -273,7 +310,7 @@ export default function ApplicationActions({ applicationId, initialStatus, candi
                     ) : (
                       <Send className="h-4 w-4" />
                     )}
-                    {sendLoading ? "Envoi…" : "Envoyer l'email"}
+                    {sendLoading ? "Envoi…" : "Envoyer"}
                   </button>
                 </div>
               </div>

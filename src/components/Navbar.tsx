@@ -27,8 +27,8 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
 
           {/* Logo seul à gauche */}
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <div className="bg-orange-500 p-1.5 rounded-lg">
+          <Link href="/" className="flex items-center gap-2 shrink-0 group">
+            <div className="bg-orange-500 p-1.5 rounded-lg transition-transform duration-200 group-hover:scale-110 group-hover:rotate-3">
               <Briefcase className="h-5 w-5 text-white" />
             </div>
             <span className="font-bold text-xl text-gray-900">KTZ<span className="text-orange-500"> Emploi</span></span>
@@ -36,20 +36,20 @@ export default function Navbar() {
 
           {/* Liens + auth — tout à droite */}
           <div className="hidden md:flex items-center gap-6">
-            <Link href="/emplois" className="text-gray-600 hover:text-orange-500 font-medium transition-colors text-sm">
+            <Link href="/emplois" className="link-underline text-gray-600 hover:text-orange-500 font-medium transition-colors text-sm">
               Offres d&apos;emploi
             </Link>
-            <Link href="/entreprises" className="text-gray-600 hover:text-orange-500 font-medium transition-colors text-sm">
+            <Link href="/entreprises" className="link-underline text-gray-600 hover:text-orange-500 font-medium transition-colors text-sm">
               Entreprises
             </Link>
-            <Link href="/conseils" className="text-gray-600 hover:text-orange-500 font-medium transition-colors text-sm">
+            <Link href="/conseils" className="link-underline text-gray-600 hover:text-orange-500 font-medium transition-colors text-sm">
               Conseils carrière
             </Link>
-            <Link href="/a-propos" className="text-gray-600 hover:text-orange-500 font-medium transition-colors text-sm">
+            <Link href="/a-propos" className="link-underline text-gray-600 hover:text-orange-500 font-medium transition-colors text-sm">
               À propos
             </Link>
             {(!session || (session.user as { role?: string })?.role === "EMPLOYER") && (
-              <Link href="/tarifs" className="text-gray-600 hover:text-orange-500 font-medium transition-colors text-sm">
+              <Link href="/tarifs" className="link-underline text-gray-600 hover:text-orange-500 font-medium transition-colors text-sm">
                 Tarifs
               </Link>
             )}
@@ -62,7 +62,7 @@ export default function Navbar() {
                 {(session.user as { role?: string })?.role === "EMPLOYER" && (
                   <Link
                     href="/tableau-de-bord/publier"
-                    className="bg-orange-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-orange-600 transition-colors"
+                    className="btn-press bg-orange-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-orange-600 transition-colors"
                   >
                     Publier une offre
                   </Link>
@@ -82,7 +82,7 @@ export default function Navbar() {
                   </button>
 
                   {userMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50 animate-scale-in origin-top-right">
                       <Link
                         href="/tableau-de-bord"
                         className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50"
@@ -135,7 +135,7 @@ export default function Navbar() {
                 </button>
 
                 {userMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-44 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
+                  <div className="absolute right-0 mt-2 w-44 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50 animate-scale-in origin-top-right">
                     <Link
                       href="/connexion"
                       className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 font-medium"
@@ -167,7 +167,7 @@ export default function Navbar() {
 
       {/* Menu mobile */}
       {menuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-3">
+        <div className="md:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-3 animate-slide-up">
           <Link href="/emplois" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>Offres d&apos;emploi</Link>
           <Link href="/entreprises" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>Entreprises</Link>
           <Link href="/conseils" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>Conseils carrière</Link>

@@ -59,3 +59,24 @@ dev.db-journal
 *.log
 
 .vercel
+.env*.local
+
+# Fichiers sensibles / credentials
+vercel-env.txt
+SHA1_DEBUG.txt
+
+# Documents personnels
+Titre_de_sejour*
+
+# Fichiers media lourds
+reel_analyse.mp4
+frames/
+video1_images/
+
+# Screenshots automation Fuze
+fuze_*.png
+fuze_after_*.png
+
+# Données de tiers
+CV_Serge_*
+PROFIL_ET_LM_Serge_*

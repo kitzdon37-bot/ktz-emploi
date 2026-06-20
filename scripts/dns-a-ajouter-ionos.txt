@@ -1,0 +1,33 @@
+DNS RECORDS À AJOUTER DANS IONOS POUR ktzemploi.com
+=====================================================
+
+Aller sur : https://my.ionos.fr/domains
+→ Cliquer sur ktzemploi.com → DNS → Ajouter un enregistrement
+
+
+ENREGISTREMENT 1 — DKIM (TXT)
+------------------------------
+Type    : TXT
+Hôte    : resend._domainkey
+Valeur  : p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDRAEu85WW6wTbeWO2WkGVr3sBYoUA6+z0XpWmqa1aM9R38zZyGUrQmAXYpKtZ+BhXd4gbxr1JCPxuheNN/ZS74j1LpMjMKtlcUOPIVrk4B6ORYt9snoi0vzd8I5b8JT5PuxL4+z+3g2YVaaOaTQ7dl2eTfTgP0Pih1OKDvDQI80QIDAQAB
+
+
+ENREGISTREMENT 2 — MX
+------------------------------
+Type      : MX
+Hôte      : send
+Valeur    : feedback-smtp.us-east-1.amazonses.com
+Priorité  : 10
+
+
+ENREGISTREMENT 3 — SPF (TXT)
+------------------------------
+Type    : TXT
+Hôte    : send
+Valeur  : v=spf1 include:amazonses.com ~all
+
+
+=====================================================
+Après avoir ajouté les 3 enregistrements, revenir
+ici pour que la vérification du domaine soit activée.
+=====================================================

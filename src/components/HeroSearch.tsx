@@ -21,7 +21,7 @@ export default function HeroSearch() {
             <Search className="h-6 w-6 text-white" />
           </button>
         ) : (
-          <div className="relative z-50 bg-white rounded-2xl shadow-2xl animate-fadeIn">
+          <div className="cursor-fix relative z-50 bg-white rounded-2xl shadow-2xl animate-fadeIn">
             {/* Bouton fermer */}
             <button
               onClick={() => setOpen(false)}
@@ -38,10 +38,10 @@ export default function HeroSearch() {
 
             {/* Champ Où + bouton */}
             <form action="/emplois" method="GET" className="flex">
-              <div className="flex items-center gap-3 flex-1 px-5 py-1">
-                <MapPin className="h-5 w-5 text-orange-400 flex-shrink-0" />
+              <div className="flex items-center gap-3 flex-1 px-5 py-1 cursor-default">
+                <MapPin className="h-5 w-5 text-orange-400 flex-shrink-0 pointer-events-none select-none" />
                 <div className="flex flex-col py-2.5 w-full">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Où ?</label>
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider pointer-events-none select-none">Où ?</label>
                   <input
                     type="text"
                     name="location"
@@ -69,17 +69,17 @@ export default function HeroSearch() {
 
       {/* ── Desktop : barre complète ───────────────────────────────────── */}
       <div className="hidden sm:block relative z-50">
-        <div className="flex flex-row bg-white rounded-2xl shadow-2xl">
+        <div className="cursor-fix flex flex-row bg-white rounded-2xl shadow-2xl">
           {/* Champ Quoi */}
           <div className="flex-1 border-r border-gray-200 overflow-visible">
             <SearchBar />
           </div>
           {/* Champ Où + bouton */}
           <form action="/emplois" method="GET" className="flex rounded-tr-2xl rounded-br-2xl overflow-hidden">
-            <div className="flex items-center gap-3 w-56 px-5 py-1 border-r border-gray-200">
-              <MapPin className="h-5 w-5 text-orange-400 flex-shrink-0" />
+            <div className="flex items-center gap-3 w-56 px-5 py-1 border-r border-gray-200 cursor-default">
+              <MapPin className="h-5 w-5 text-orange-400 flex-shrink-0 pointer-events-none select-none" />
               <div className="flex flex-col py-2.5 w-full">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Où ?</label>
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider pointer-events-none select-none">Où ?</label>
                 <input
                   type="text"
                   name="location"

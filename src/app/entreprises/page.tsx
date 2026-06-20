@@ -119,7 +119,7 @@ export default async function EntreprisesPage({ searchParams }: Props) {
         </select>
         <button
           type="submit"
-          className="px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-sm font-medium transition-colors"
+          className="btn-press px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-sm font-medium transition-colors"
         >
           Filtrer
         </button>
@@ -149,7 +149,7 @@ export default async function EntreprisesPage({ searchParams }: Props) {
               <Link
                 key={company.id}
                 href={`/entreprises/${company.slug}`}
-                className="bg-white rounded-2xl border border-gray-200 hover:shadow-lg hover:border-orange-200 transition-all overflow-hidden group"
+                className="zoom-hover bg-white rounded-2xl border border-gray-200 hover:shadow-lg hover:border-orange-200 transition-all overflow-hidden group"
               >
                 {/* Mini-bannière colorée */}
                 <div className={`relative h-24 bg-gradient-to-r ${sectorColor} overflow-hidden`}>
@@ -157,9 +157,9 @@ export default async function EntreprisesPage({ searchParams }: Props) {
                   <div className="absolute -top-4 -right-4 w-20 h-20 rounded-full bg-white/10" />
                   <div className="absolute -bottom-3 left-8 w-12 h-12 rounded-full bg-white/10" />
                   {/* Icône secteur */}
-                  <div className="absolute top-3 right-4 text-2xl opacity-60">{sectorIcon}</div>
+                  <div className="absolute top-3 right-4 text-2xl opacity-60 transition-transform duration-300 group-hover:scale-125">{sectorIcon}</div>
                   {/* Logo flottant */}
-                  <div className="absolute -bottom-7 left-4 w-20 h-20 rounded-xl bg-white shadow-md border-2 border-white flex items-center justify-center font-bold text-orange-600 text-lg overflow-hidden z-10">
+                  <div className="absolute -bottom-7 left-4 w-20 h-20 rounded-xl bg-white shadow-md border-2 border-white flex items-center justify-center font-bold text-orange-600 text-lg overflow-hidden z-10 transition-transform duration-300 group-hover:scale-110">
                     {company.logo ? (
                       <CompanyLogo src={company.logo} alt={company.name} initials={initials} className="rounded-xl" />
                     ) : (
@@ -249,11 +249,11 @@ export default async function EntreprisesPage({ searchParams }: Props) {
                     return (
                       <div
                         key={e.nom}
-                        className="bg-white border border-gray-200 rounded-2xl p-6 hover:border-orange-300 hover:shadow-lg transition-all flex flex-col gap-4"
+                        className="zoom-hover group bg-white border border-gray-200 rounded-2xl p-6 hover:border-orange-300 hover:shadow-lg transition-all flex flex-col gap-4"
                       >
                         {/* Avatar + nom */}
                         <div className="flex items-center gap-4">
-                          <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-extrabold text-xl flex-shrink-0 shadow-sm ${colorClass}`}>
+                          <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-extrabold text-xl flex-shrink-0 shadow-sm transition-transform duration-300 group-hover:scale-110 ${colorClass}`}>
                             {initiales}
                           </div>
                           <div className="flex-1 min-w-0">

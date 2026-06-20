@@ -1,0 +1,358 @@
+╔══════════════════════════════════════════════════════════════════╗
+║     DOSSIER DE CANDIDATURE — UNICEF VENTURE FUND 2026           ║
+║     Cohorte : Climate & Health / Youth Employment Tech          ║
+║     Deadline : 17 mai 2026                                      ║
+║     Lien candidature : https://www.unicefventurefund.org/apply  ║
+╚══════════════════════════════════════════════════════════════════╝
+
+IMPORTANT : Colle chaque réponse dans le formulaire en ligne à :
+https://www.unicefventurefund.org/apply-funding
+
+────────────────────────────────────────────────────────────────────
+SECTION 1 — INFORMATIONS SUR LA STARTUP
+────────────────────────────────────────────────────────────────────
+
+Nom de la startup / company name :
+  KTZ Emploi
+
+Nom légal complet :
+  KTZ Emploi (en cours d'enregistrement officiel en RCA)
+
+Pays d'enregistrement (UNICEF programme country) :
+  République Centrafricaine (Central African Republic)
+  → La RCA est bien un pays programme UNICEF ✓
+
+Site web :
+  https://ktzemploi.com
+
+Application mobile :
+  Disponible sur Android (Google Play Store — en cours de publication)
+
+Réseaux sociaux :
+  Email : kitzdon37@gmail.com
+
+Stade de développement :
+  Prototype fonctionnel avec premiers pilotes (Prototype with pilot results)
+
+Technologie :
+  Open Source — Stack : Next.js (MIT License), React Native / Expo (MIT),
+  Prisma ORM (Apache 2.0), SQLite. Le code source sera publié sous
+  licence MIT sur GitHub dès la finalisation du premier audit.
+
+────────────────────────────────────────────────────────────────────
+SECTION 2 — FONDATEUR / ÉQUIPE
+────────────────────────────────────────────────────────────────────
+
+Fondateur principal :
+  Donald Chrysostome KITEZE NGOUYOMBO
+
+Âge : 29 ans
+Nationalité : Centrafricaine
+Résidence : Nice, France
+Email : kitzdon37@gmail.com
+Téléphone : +33 6 25 34 51 75
+
+Formation :
+  Ingénieur en Microélectronique, Télécommunications et Réseaux
+  Diplômé de l'Université Côte d'Azur / IUT de Nice
+
+Rôle : Fondateur, développeur full-stack, chef de projet
+
+Autres rôles :
+  Président — Association Avenir Pour Tous (A.P.T), fondée en France,
+  dédiée à la formation et à l'insertion des jeunes Centrafricains
+
+Expérience pertinente :
+  - Développement complet du site web KTZ Emploi (Next.js, Prisma, SQLite)
+  - Développement de l'application mobile Android (Expo, React Native)
+  - Connaissance approfondie du marché de l'emploi en RCA et de ses défis
+
+Équipe actuelle :
+  - 1 fondateur/développeur full-stack (Donald KITEZE)
+  - Recrutement en cours de 2 développeurs locaux à Bangui pour l'agence physique
+  - Partenariats en discussion avec IECD Bangui et l'ACFPE
+
+────────────────────────────────────────────────────────────────────
+SECTION 3 — PROBLÈME ADRESSÉ
+────────────────────────────────────────────────────────────────────
+
+(Formulaire : "What problem are you solving?")
+
+La République Centrafricaine (RCA) fait face à un taux de chômage
+des jeunes supérieur à 60%, dans un marché de l'emploi encore
+100% informel et non digitalisé.
+
+Les jeunes Centrafricains, en particulier les plus vulnérables,
+n'ont aucun accès structuré aux offres d'emploi :
+- Pas de plateforme nationale de recrutement en ligne
+- Offres dispersées sur les réseaux sociaux ou par bouche à oreille
+- Aucune CVthèque organisée pour les employeurs
+- Les jeunes des zones secondaires (hors Bangui) sont totalement exclus
+  du marché formel
+
+Pour les enfants et adolescents proches de l'entrée dans la vie
+active (16-25 ans), cette situation conduit à :
+- Pauvreté intergénérationnelle persistante
+- Exode rural et urbain non maîtrisé
+- Vulnérabilité accrue aux recrutements armés et à l'exploitation
+
+────────────────────────────────────────────────────────────────────
+SECTION 4 — SOLUTION
+────────────────────────────────────────────────────────────────────
+
+(Formulaire : "What is your solution?")
+
+KTZ Emploi est la première plateforme digitale d'emploi de la
+République Centrafricaine, articulée autour de trois piliers :
+
+PILIER 1 — PLATEFORME NUMÉRIQUE (site web + app Android)
+  - Mise en relation directe entre employeurs et candidats en RCA
+  - Publication d'offres d'emploi en temps réel
+  - CVthèque locale consultable par les recruteurs
+  - Gestion des candidatures en ligne
+  - Conçue pour fonctionner avec une faible bande passante
+  - Application Android légère, accessible depuis n'importe quel
+    smartphone d'entrée de gamme
+
+PILIER 2 — AGENCE DE RECRUTEMENT PHYSIQUE À BANGUI
+  - Accompagnement personnalisé des candidats
+  - Sélection et présélection de candidats pour les entreprises
+  - Pont entre la plateforme digitale et les réalités terrain
+
+PILIER 3 — CENTRE DE FORMATION PROFESSIONNELLE
+  - Formations certifiantes adaptées aux besoins du marché centrafricain
+  - Informatique, gestion, entrepreneuriat, métiers techniques
+  - Renforcement de l'employabilité des jeunes de 16 à 30 ans
+
+IMPACT CLIMATIQUE ET SANITAIRE (alignement cohorte UNICEF) :
+  - Le projet agro-industriel associé (huile d'arachide, aviculture)
+    crée des emplois dans les zones rurales et renforce la sécurité
+    alimentaire — deux leviers directs de résilience climatique
+  - Un jeune en emploi est moins vulnérable aux chocs climatiques
+    (migration forcée, insécurité alimentaire, malnutrition)
+  - L'Association Avenir Pour Tous inclut des modules sur
+    l'agriculture durable et les pratiques environnementales
+
+────────────────────────────────────────────────────────────────────
+SECTION 5 — TECHNOLOGIE & OPEN SOURCE
+────────────────────────────────────────────────────────────────────
+
+(Formulaire : "What technology are you using? Is it open source?")
+
+Stack technique complète :
+  Frontend web    : Next.js 15 (React) — Licence MIT
+  Mobile Android  : Expo SDK 54 / React Native — Licence MIT
+  ORM / Database  : Prisma + SQLite — Licence Apache 2.0
+  Auth            : NextAuth.js — Licence ISC
+  UI Mobile       : React Native Paper — Licence MIT
+  State           : Zustand — Licence MIT
+  API             : TanStack Query v5 — Licence MIT
+
+Engagement open source :
+  Le code source de KTZ Emploi sera publié sous licence MIT
+  sur GitHub dans les 3 mois suivant l'octroi du financement.
+  Un API publique de données sur le marché de l'emploi centrafricain
+  sera mise à disposition pour la recherche et les politiques publiques.
+
+Données en temps réel :
+  La plateforme génère en temps réel :
+  - Nombre d'offres d'emploi actives par secteur et localité
+  - Taux de candidatures par profil et par offre
+  - Statistiques d'employabilité par compétence
+  Ces données seront exposées publiquement via une API REST
+  et un tableau de bord open data.
+
+────────────────────────────────────────────────────────────────────
+SECTION 6 — BÉNÉFICIAIRES & IMPACT
+────────────────────────────────────────────────────────────────────
+
+(Formulaire : "Who are your target beneficiaries? How does it impact children?")
+
+Bénéficiaires directs :
+  - Jeunes Centrafricains de 18 à 35 ans en recherche d'emploi
+  - Adolescents de 16 à 18 ans en fin de formation professionnelle
+  - Employeurs locaux (ONG, entreprises, institutions) cherchant
+    des talents centrafricains qualifiés
+
+Impact sur les enfants et les jeunes :
+  1. Réduction de la pauvreté familiale : un parent en emploi = des
+     enfants mieux nourris, scolarisés et protégés
+  2. Alternative aux recrutements armés : un jeune avec un accès à
+     l'emploi formel est moins vulnérable au recrutement par les
+     groupes armés, fléau majeur en RCA
+  3. Sécurité alimentaire : les projets agricoles associés
+     (aviculture, huile d'arachide) renforcent la disponibilité
+     alimentaire locale pour les familles centrafricaines
+  4. Modèle de résilience : KTZ Emploi forme la jeunesse aux
+     compétences numériques, renforçant leur capacité d'adaptation
+     face aux chocs climatiques et économiques
+
+Bénéficiaires estimés (an 1) :
+  - 5 000 candidats inscrits sur la plateforme
+  - 200 entreprises et organisations recrutantes
+  - 500 jeunes formés via le centre de formation
+  - 50 emplois directs créés en zones rurales (projets agro)
+
+────────────────────────────────────────────────────────────────────
+SECTION 7 — TRACTION & RÉSULTATS PILOTES
+────────────────────────────────────────────────────────────────────
+
+(Formulaire : "What results have you achieved so far?")
+
+Réalisations à ce jour :
+  ✓ Plateforme web fonctionnelle et déployée (https://ktzemploi.com)
+  ✓ Application mobile Android développée et testée
+  ✓ Système d'authentification, gestion des candidatures, CVthèque
+    opérationnels
+  ✓ Routes API mobiles complètes (login JWT, offres, candidatures,
+    favoris, profil)
+  ✓ Discussions en cours avec l'IECD Bangui (partenariat recrutement)
+  ✓ Contact établi avec l'ACFPE (Agence Centrafricaine pour la
+    Formation Professionnelle et l'Emploi)
+  ✓ Association Avenir Pour Tous (A.P.T) fondée en France
+  ✓ Financement initial sur fonds propres (économies personnelles)
+
+Prochaines étapes (avec financement UNICEF) :
+  - Publication de l'app sur Google Play Store
+  - Recrutement de 2 agents locaux à Bangui
+  - Ouverture de l'agence physique à Bangui
+  - Lancement du centre de formation (6 premiers modules)
+  - Mise en open source du code sur GitHub
+  - Publication de l'API open data
+
+────────────────────────────────────────────────────────────────────
+SECTION 8 — UTILISATION DU FINANCEMENT
+────────────────────────────────────────────────────────────────────
+
+(Formulaire : "How will you use the funding?")
+
+Budget prévisionnel (100 000 USD) :
+
+  Développement technique & infrastructure     : 20 000 USD
+    - Hébergement serveur (24 mois)
+    - Publication Google Play Store
+    - API open data + tableau de bord public
+    - Mise en open source + documentation
+
+  Ouverture agence physique Bangui             : 25 000 USD
+    - Location locaux (12 mois)
+    - Équipements (ordinateurs, imprimantes)
+    - Mobilier et signalétique
+
+  Recrutement & salaires équipe locale         : 20 000 USD
+    - 2 agents recrutement Bangui (12 mois)
+    - 1 formateur centre de formation (6 mois)
+
+  Centre de formation professionnelle          : 15 000 USD
+    - Développement de 6 modules certifiants
+    - Matériel pédagogique
+    - Première promotion (50 apprenants)
+
+  Marketing & acquisition utilisateurs         : 10 000 USD
+    - Campagne SMS et réseaux sociaux en RCA
+    - Partenariats entreprises recrutantes
+    - Communication institutionnelle
+
+  Projets agro-industriels (lancement)         : 10 000 USD
+    - Démarrage production huile d'arachide
+    - Lancement élevage poulets de chair
+
+────────────────────────────────────────────────────────────────────
+SECTION 9 — POURQUOI L'UNICEF ?
+────────────────────────────────────────────────────────────────────
+
+(Formulaire : "Why do you want to work with UNICEF?")
+
+L'UNICEF est présent en République Centrafricaine et partage nos
+valeurs fondamentales : protéger les enfants et les jeunes,
+renforcer leur résilience et leur offrir un futur digne.
+
+KTZ Emploi a besoin de l'UNICEF pour :
+
+1. La légitimité institutionnelle : un soutien UNICEF ouvre les
+   portes des partenaires locaux (gouvernement, ONG, entreprises)
+   et renforce la confiance des utilisateurs en RCA
+
+2. Le réseau et le mentorat : accéder à l'écosystème UNICEF
+   d'innovation pour améliorer l'impact mesurable de la plateforme
+
+3. L'accès aux données : collaborer avec le bureau UNICEF RCA
+   pour mieux cibler les populations les plus vulnérables
+
+4. La mise à l'échelle : bénéficier de l'expertise UNICEF pour
+   étendre KTZ Emploi à d'autres pays d'Afrique centrale (Tchad,
+   Congo, Cameroun) à moyen terme
+
+────────────────────────────────────────────────────────────────────
+SECTION 10 — FINANCEMENT EXISTANT
+────────────────────────────────────────────────────────────────────
+
+(Formulaire : "Have you received any funding so far?")
+
+Financement actuel :
+  - Fonds propres du fondateur (économies personnelles et revenus
+    d'activité professionnelle en France) : environ 3 000 à 5 000 EUR
+    investis dans le développement de la plateforme et de l'app
+
+Autres candidatures en cours :
+  - FUZE / Digital Africa (AFD) — pre-seed 20 000 à 100 000 EUR
+  - GIZ Bureau Yaoundé — assistance technique
+  - PNUD Centrafrique — partenariat YouthConnekt
+  - Proparco / Choose Africa — financement startup
+  - OIT / ILO — assistance technique observatoire emploi RCA
+
+────────────────────────────────────────────────────────────────────
+SECTION 11 — ENGAGEMENT OPEN SOURCE
+────────────────────────────────────────────────────────────────────
+
+(Formulaire : "Open Source commitment")
+
+KTZ Emploi s'engage à :
+
+  ✓ Publier l'intégralité du code source sous licence MIT sur
+    GitHub dans les 90 jours suivant l'octroi du financement
+
+  ✓ Maintenir un dépôt GitHub public avec documentation complète
+    (README, API docs, guide de déploiement)
+
+  ✓ Exposer une API REST publique permettant l'accès aux données
+    agrégées et anonymisées du marché de l'emploi en RCA
+
+  ✓ Publier un tableau de bord open data en temps réel sur les
+    offres d'emploi, secteurs et compétences en RCA
+
+  ✓ Autoriser la réutilisation et l'adaptation de la plateforme
+    par d'autres pays africains (fork libre sous MIT)
+
+════════════════════════════════════════════════════════════════════
+NOTE IMPORTANTE — COHORTE RECOMMANDÉE
+════════════════════════════════════════════════════════════════════
+
+La cohorte ACTUELLEMENT OUVERTE est "Climate & Health" (deadline
+17 mai 2026). KTZ Emploi peut être positionné sur l'angle :
+"Résilience climatique via l'emploi des jeunes et la sécurité
+alimentaire" (projets agro + formation).
+
+COHORTES ALTERNATIVES à surveiller (meilleur alignement) :
+  - Cohorte "Digital Inclusion / Youth Employment" (dès ouverture)
+  - Cohorte "FemTech / Social Impact" (si ouverte)
+  - Cohorte "Open Source Frontier Tech" (généraliste)
+
+→ Abonne-toi aux alertes UNICEF Venture Fund sur :
+  https://www.unicefventurefund.org/
+  pour ne pas manquer la prochaine cohorte mieux adaptée.
+
+════════════════════════════════════════════════════════════════════
+CONTACT POUR SOUMETTRE
+════════════════════════════════════════════════════════════════════
+
+Lien de candidature officiel :
+  https://www.unicefventurefund.org/apply-funding
+
+Email de contact UNICEF Innovation :
+  innovation@unicef.org
+
+Deadline cohorte Climate & Health 2026 :
+  17 MAI 2026 (dans 5 jours — URGENT)
+
+════════════════════════════════════════════════════════════════════

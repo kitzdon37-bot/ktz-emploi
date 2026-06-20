@@ -116,11 +116,11 @@ export default function SearchBar() {
   }, []);
 
   return (
-    <div ref={containerRef} className="relative flex-1">
-      <form onSubmit={handleSubmit} className="flex items-center gap-3 px-5 py-1 h-full">
-        <Search className="h-5 w-5 text-orange-400 flex-shrink-0" />
+    <div ref={containerRef} className="cursor-fix relative flex-1">
+      <form onSubmit={handleSubmit} className="flex items-center gap-3 px-5 py-1 h-full cursor-default">
+        <Search className={`h-5 w-5 flex-shrink-0 pointer-events-none select-none transition-opacity duration-200 ${query ? "text-orange-400 opacity-100" : "opacity-0"}`} />
         <div className="flex flex-col py-2.5 w-full">
-          <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Quoi ?</label>
+          <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider pointer-events-none select-none">Quoi ?</label>
           <input
             ref={inputRef}
             type="text"
@@ -130,7 +130,7 @@ export default function SearchBar() {
             onFocus={handleFocus}
             placeholder="Métier, entreprise, compétence..."
             autoComplete="off"
-            className="outline-none text-gray-800 placeholder-gray-400 text-sm bg-transparent mt-0.5 w-full"
+            className="outline-none text-gray-800 placeholder-gray-400 text-sm bg-transparent mt-0.5 w-full cursor-text"
           />
         </div>
       </form>

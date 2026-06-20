@@ -20,8 +20,8 @@ interface Props {
 }
 
 async function getJob(slug: string) {
-  const job = await prisma.job.findUnique({
-    where: { slug, published: true },
+  const job = await prisma.job.findFirst({
+    where: { slug, published: true, OR: [{ deadline: null }, { deadline: { gte: new Date() } }] },
     include: {
       company: true,
       _count: { select: { applications: true } },
@@ -82,6 +82,7 @@ export default async function JobDetailPage({ params }: Props) {
       published: true,
       category: job.category,
       id: { not: job.id },
+      OR: [{ deadline: null }, { deadline: { gte: new Date() } }],
     },
     include: { company: { select: { name: true, logo: true, verified: true, superRecruiter: true } } },
     take: 3,

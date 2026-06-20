@@ -212,6 +212,7 @@ model Application {
   coverLetter      String?
   cvUrl            String?
   status           String                     @default("PENDING")
+  archived         Boolean                    @default(false)
   createdAt        DateTime                   @default(now())
   updatedAt        DateTime                   @updatedAt
   remindersSent    Int                        @default(0)
@@ -423,4 +424,38 @@ model CvBuilder {
   template  String   @default("modern")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model SurveyResponse {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  // Étape 1 — Entreprise
+  companyName    String?
+  sector         String?
+  companySize    String?
+  city           String?
+  respondentRole String?
+
+  // Étape 2 — Recrutement
+  recruitmentMethods      String? // JSON array
+  postsPerYear            String?
+  recruitmentDifficulties String? // JSON array
+  recruitmentDuration     String?
+
+  // Étape 3 — KTZ Emploi
+  knowsKtzEmploi   String?
+  usedJobPlatform  Boolean?
+  platformUsed     String?
+  interestedInKtz  String?
+  desiredFeatures  String? // JSON array
+  budgetRange      String?
+
+  // Étape 4 — Contact (optionnel)
+  contactName     String?
+  contactEmail    String?
+  contactWhatsapp String?
+  wantsContact    Boolean?
+
+  @@index([createdAt])
 }

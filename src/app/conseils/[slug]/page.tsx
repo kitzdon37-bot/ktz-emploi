@@ -1,9 +1,17 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft, Clock, Calendar, User, BookOpen } from "lucide-react";
 import { articles, getArticleBySlug } from "@/lib/articles";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+
+const ILLUSTRATION_MAP: Record<string, string> = {
+  "CV & Candidature":   "/illustrations/cv-candidature.svg",
+  "Entretien":          "/illustrations/entretien.svg",
+  "Marché de l'emploi": "/illustrations/marche-emploi.svg",
+  "Carrière":           "/illustrations/carriere.svg",
+};
 
 export async function generateStaticParams() {
   return articles.map((article) => ({ slug: article.slug }));
@@ -22,41 +30,58 @@ export default async function ArticlePage({ params }: Props) {
   }
 
   const related = articles.filter((a) => a.id !== article.id && a.category === article.category).slice(0, 2);
+  const illustration = ILLUSTRATION_MAP[article.category] ?? "/illustrations/cv-candidature.svg";
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero banner */}
       <div className={`bg-gradient-to-br ${article.coverColor} py-16`}>
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Link
-            href="/conseils"
-            className="inline-flex items-center gap-2 text-white/80 hover:text-white text-sm mb-6 transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Retour aux conseils
-          </Link>
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-8">
+            {/* Text content */}
+            <div className="flex-1 max-w-2xl">
+              <Link
+                href="/conseils"
+                className="inline-flex items-center gap-2 text-white/80 hover:text-white text-sm mb-6 transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Retour aux conseils
+              </Link>
 
-          <span className="inline-block bg-white/20 text-white text-xs font-medium px-3 py-1 rounded-full mb-4">
-            {article.category}
-          </span>
+              <span className="inline-block bg-white/20 text-white text-xs font-medium px-3 py-1 rounded-full mb-4">
+                {article.category}
+              </span>
 
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight mb-6">
-            {article.title}
-          </h1>
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight mb-6">
+                {article.title}
+              </h1>
 
-          <div className="flex flex-wrap items-center gap-4 text-white/80 text-sm">
-            <span className="flex items-center gap-1.5">
-              <User className="h-4 w-4" />
-              {article.author} — {article.authorRole}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Calendar className="h-4 w-4" />
-              {article.date}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Clock className="h-4 w-4" />
-              {article.readTime} de lecture
-            </span>
+              <div className="flex flex-wrap items-center gap-4 text-white/80 text-sm">
+                <span className="flex items-center gap-1.5">
+                  <User className="h-4 w-4" />
+                  {article.author} — {article.authorRole}
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Calendar className="h-4 w-4" />
+                  {article.date}
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Clock className="h-4 w-4" />
+                  {article.readTime} de lecture
+                </span>
+              </div>
+            </div>
+
+            {/* Illustration */}
+            <div className="hidden lg:flex items-end justify-center w-56 flex-shrink-0 -mb-6">
+              <Image
+                src={illustration}
+                alt=""
+                width={215}
+                height={155}
+                className="object-contain drop-shadow-lg"
+              />
+            </div>
           </div>
         </div>
       </div>

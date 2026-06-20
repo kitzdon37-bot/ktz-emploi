@@ -78,9 +78,9 @@ export default async function DashboardPage() {
           </div>
           <Link
             href="/tableau-de-bord/publier"
-            className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2.5 rounded-xl font-medium transition-colors"
+            className="btn-press flex items-center gap-2 bg-orange-500 text-white px-4 py-2.5 rounded-xl font-medium"
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="h-4 w-4 transition-transform duration-200 group-hover:rotate-90" />
             Nouvelle offre
           </Link>
         </div>
@@ -93,8 +93,8 @@ export default async function DashboardPage() {
             { label: "Vues totales", value: totalViews, icon: Eye, color: "text-purple-600 bg-purple-50" },
             { label: "Taux réponse", value: totalApplications > 0 ? `${Math.round((recentApps.filter(a => a.status !== "PENDING").length / totalApplications) * 100)}%` : "0%", icon: TrendingUp, color: "text-orange-600 bg-orange-50" },
           ].map(({ label, value, icon: Icon, color }) => (
-            <div key={label} className="bg-white rounded-2xl border border-gray-200 p-5">
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${color}`}>
+            <div key={label} className="zoom-hover group bg-white rounded-2xl border border-gray-200 p-5 cursor-default">
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 transition-transform duration-300 group-hover:scale-110 ${color}`}>
                 <Icon className="h-5 w-5" />
               </div>
               <div className="text-2xl font-bold text-gray-900">{value}</div>
@@ -104,7 +104,7 @@ export default async function DashboardPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white rounded-2xl border border-gray-200 p-5">
+          <div className="zoom-hover bg-white rounded-2xl border border-gray-200 p-5">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-semibold text-gray-900">Mes offres</h2>
               <Link href="/tableau-de-bord/offres" className="text-sm text-orange-500 hover:underline">Voir tout</Link>
@@ -112,7 +112,7 @@ export default async function DashboardPage() {
             {jobs.length > 0 ? (
               <div className="space-y-3">
                 {jobs.map((job) => (
-                  <div key={job.id} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
+                  <div key={job.id} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0 transition-all duration-200 hover:bg-orange-50 hover:px-2 rounded-lg -mx-0">
                     <div className="flex-1 min-w-0">
                       <Link href={`/emplois/${job.slug}`} className="text-sm font-medium text-gray-800 hover:text-orange-500 truncate block">
                         {job.title}
@@ -139,7 +139,7 @@ export default async function DashboardPage() {
             )}
           </div>
 
-          <div className="bg-white rounded-2xl border border-gray-200 p-5">
+          <div className="zoom-hover bg-white rounded-2xl border border-gray-200 p-5">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-semibold text-gray-900">Dernières candidatures</h2>
               <Link href="/tableau-de-bord/candidatures" className="text-sm text-orange-500 hover:underline">Voir tout</Link>
@@ -252,7 +252,7 @@ export default async function DashboardPage() {
         </div>
         <Link
           href="/emplois"
-          className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-colors flex-shrink-0 flex items-center gap-1.5"
+          className="btn-press bg-orange-500 text-white px-5 py-2.5 rounded-xl text-sm font-medium flex-shrink-0 flex items-center gap-1.5"
         >
           <Search className="h-4 w-4" />
           Rechercher
@@ -267,8 +267,8 @@ export default async function DashboardPage() {
           { label: "Acceptées", value: statusCounts["ACCEPTED"] || 0, icon: TrendingUp, color: "text-green-600 bg-green-50" },
           { label: "En attente", value: statusCounts["PENDING"] || 0, icon: Clock, color: "text-orange-500 bg-orange-50" },
         ].map(({ label, value, icon: Icon, color }) => (
-          <div key={label} className="bg-white rounded-2xl border border-gray-200 p-4">
-            <div className={`w-9 h-9 rounded-xl flex items-center justify-center mb-2.5 ${color}`}>
+          <div key={label} className="zoom-hover group bg-white rounded-2xl border border-gray-200 p-4 cursor-default">
+            <div className={`w-9 h-9 rounded-xl flex items-center justify-center mb-2.5 transition-transform duration-300 group-hover:scale-110 ${color}`}>
               <Icon className="h-4 w-4" />
             </div>
             <div className="text-2xl font-bold text-gray-900">{value}</div>
@@ -278,7 +278,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Offres favorites */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-5 mb-6">
+      <div className="zoom-hover bg-white rounded-2xl border border-gray-200 p-5 mb-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-semibold text-gray-900 flex items-center gap-2">
             <Heart className="h-4 w-4 text-orange-500" />
@@ -324,8 +324,8 @@ export default async function DashboardPage() {
         <p className="text-sm text-gray-500 mb-4">Basé sur votre profil</p>
         <div className="space-y-3">
           {recommendedJobs.length > 0 ? recommendedJobs.map((job) => (
-            <div key={job.id} className="bg-white rounded-2xl border border-gray-200 p-5 flex items-start gap-4 hover:border-orange-200 hover:shadow-sm transition-all">
-              <div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center font-bold text-orange-600 text-sm flex-shrink-0 border border-orange-100">
+            <div key={job.id} className="zoom-hover group bg-white rounded-2xl border border-gray-200 p-5 flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center font-bold text-orange-600 text-sm flex-shrink-0 border border-orange-100 transition-transform duration-300 group-hover:scale-110">
                 {job.company.logo ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={job.company.logo} alt={job.company.name} className="w-full h-full object-contain rounded-xl" />
@@ -349,7 +349,7 @@ export default async function DashboardPage() {
                 <span className="text-xs text-gray-400">{timeAgo(job.createdAt)}</span>
                 <Link
                   href={`/emplois/${job.slug}`}
-                  className="bg-orange-500 hover:bg-orange-600 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition-colors"
+                  className="btn-press bg-orange-500 text-white text-xs px-3 py-1.5 rounded-lg font-medium"
                 >
                   Voir l&apos;offre
                 </Link>
@@ -375,7 +375,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Mes candidatures récentes */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-5">
+      <div className="zoom-hover bg-white rounded-2xl border border-gray-200 p-5">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-semibold text-gray-900 flex items-center gap-2">
             <Send className="h-4 w-4 text-blue-500" />
@@ -425,7 +425,7 @@ export default async function DashboardPage() {
             <h3 className="font-semibold text-blue-900 mb-1">Complétez votre profil</h3>
             <p className="text-blue-700 text-sm">Les candidats avec un profil complet ont 3x plus de chances d&apos;être contactés.</p>
           </div>
-          <Link href="/tableau-de-bord/profil" className="flex-shrink-0 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-1.5">
+          <Link href="/tableau-de-bord/profil" className="btn-press flex-shrink-0 bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-1.5">
             Mon profil <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>

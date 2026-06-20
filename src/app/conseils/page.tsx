@@ -1,19 +1,27 @@
 import Link from "next/link";
-import { BookOpen, TrendingUp, FileText, MessageSquare, Star, ArrowRight } from "lucide-react";
+import Image from "next/image";
+import { BookOpen, ArrowRight } from "lucide-react";
 import { articles } from "@/lib/articles";
 
-const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
-  "CV & Candidature": FileText,
-  "Entretien": MessageSquare,
-  "Marché de l'emploi": TrendingUp,
-  "Carrière": Star,
+const CARD_BG_MAP: Record<string, string> = {
+  "CV & Candidature": "bg-blue-50",
+  "Entretien":        "bg-orange-50",
+  "Marché de l'emploi": "bg-purple-50",
+  "Carrière":         "bg-yellow-50",
 };
 
-const COLOR_MAP: Record<string, string> = {
-  "CV & Candidature": "bg-blue-50 text-blue-600",
-  "Entretien": "bg-orange-50 text-orange-500",
-  "Marché de l'emploi": "bg-purple-50 text-purple-600",
-  "Carrière": "bg-yellow-50 text-yellow-600",
+const ILLUSTRATION_MAP: Record<string, string> = {
+  "CV & Candidature":   "/illustrations/cv-candidature.svg",
+  "Entretien":          "/illustrations/entretien.svg",
+  "Marché de l'emploi": "/illustrations/marche-emploi.svg",
+  "Carrière":           "/illustrations/carriere.svg",
+};
+
+const BADGE_MAP: Record<string, string> = {
+  "CV & Candidature":   "bg-blue-100 text-blue-700",
+  "Entretien":          "bg-orange-100 text-orange-600",
+  "Marché de l'emploi": "bg-purple-100 text-purple-700",
+  "Carrière":           "bg-yellow-100 text-yellow-700",
 };
 
 const CATEGORIES = ["Tout", "CV & Candidature", "Entretien", "Carrière", "Marché de l'emploi"];
@@ -50,47 +58,69 @@ export default function ConseilsPage() {
       {/* Featured article */}
       <div className="bg-gradient-to-br from-orange-500 to-orange-400 rounded-2xl p-8 mb-8 text-white relative overflow-hidden">
         <div className="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
-        <div className="relative">
-          <span className="bg-white/20 text-white text-xs font-medium px-3 py-1 rounded-full mb-4 inline-block">
-            Article phare
-          </span>
-          <h2 className="text-2xl font-bold mb-3">Guide complet pour trouver un emploi à Bangui</h2>
-          <p className="text-yellow-50 mb-5 max-w-xl">
-            De la préparation de votre CV à la négociation de votre salaire, tout ce que vous devez savoir pour réussir votre recherche d&apos;emploi dans la capitale centrafricaine.
-          </p>
-          <Link
-            href={`/conseils/${articles[0].slug}`}
-            className="inline-flex items-center gap-2 bg-white text-orange-600 font-semibold px-5 py-2.5 rounded-xl hover:bg-orange-50 transition-colors"
-          >
-            Lire l&apos;article <ArrowRight className="h-4 w-4" />
-          </Link>
+        <div className="relative flex items-center gap-6">
+          <div className="flex-1">
+            <span className="bg-white/20 text-white text-xs font-medium px-3 py-1 rounded-full mb-4 inline-block">
+              Article phare
+            </span>
+            <h2 className="text-2xl font-bold mb-3">Guide complet pour trouver un emploi à Bangui</h2>
+            <p className="text-yellow-50 mb-5 max-w-xl">
+              De la préparation de votre CV à la négociation de votre salaire, tout ce que vous devez savoir pour réussir votre recherche d&apos;emploi dans la capitale centrafricaine.
+            </p>
+            <Link
+              href={`/conseils/${articles[0].slug}`}
+              className="inline-flex items-center gap-2 bg-white text-orange-600 font-semibold px-5 py-2.5 rounded-xl hover:bg-orange-50 transition-colors"
+            >
+              Lire l&apos;article <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+          <div className="hidden md:flex items-center justify-center w-56 flex-shrink-0">
+            <Image
+              src="/illustrations/conseils-hero.svg"
+              alt=""
+              width={220}
+              height={165}
+              className="object-contain drop-shadow-md"
+            />
+          </div>
         </div>
       </div>
 
       {/* Articles grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {articles.map((article) => {
-          const Icon = ICON_MAP[article.category] ?? FileText;
-          const color = COLOR_MAP[article.category] ?? "bg-gray-50 text-gray-600";
+          const cardBg = CARD_BG_MAP[article.category] ?? "bg-gray-50";
+          const badge  = BADGE_MAP[article.category]  ?? "bg-gray-100 text-gray-600";
+          const illus  = ILLUSTRATION_MAP[article.category] ?? "/illustrations/cv-candidature.svg";
           return (
             <Link
               key={article.id}
               href={`/conseils/${article.slug}`}
-              className="block bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-md hover:border-orange-100 transition-all"
+              className="block bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-md hover:border-orange-100 transition-all group"
             >
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-4 ${color}`}>
-                <Icon className="h-5 w-5" />
+              {/* Illustration header */}
+              <div className={`relative h-44 flex items-center justify-center overflow-hidden ${cardBg}`}>
+                <Image
+                  src={illus}
+                  alt=""
+                  width={210}
+                  height={140}
+                  className="object-contain transition-transform duration-300 group-hover:scale-105"
+                />
               </div>
-              <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2.5 py-0.5 rounded-full">
-                {article.category}
-              </span>
-              <h3 className="font-bold text-gray-900 mt-3 mb-2 leading-snug">{article.title}</h3>
-              <p className="text-sm text-gray-600 line-clamp-3 mb-4">{article.excerpt}</p>
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-gray-400">⏱ {article.readTime} de lecture</span>
-                <span className="text-orange-500 hover:text-orange-600 text-sm font-medium flex items-center gap-1">
-                  Lire <ArrowRight className="h-3.5 w-3.5" />
+              {/* Card body */}
+              <div className="p-6">
+                <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${badge}`}>
+                  {article.category}
                 </span>
+                <h3 className="font-bold text-gray-900 mt-3 mb-2 leading-snug">{article.title}</h3>
+                <p className="text-sm text-gray-600 line-clamp-3 mb-4">{article.excerpt}</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-gray-400">⏱ {article.readTime} de lecture</span>
+                  <span className="text-orange-500 hover:text-orange-600 text-sm font-medium flex items-center gap-1">
+                    Lire <ArrowRight className="h-3.5 w-3.5" />
+                  </span>
+                </div>
               </div>
             </Link>
           );

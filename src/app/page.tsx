@@ -10,13 +10,13 @@ import ComingSoon from "@/components/ComingSoon";
 async function getHomeData() {
   const [featuredJobs, recentJobs, topCompanies, totalJobs, totalCompanies, totalUsers] = await Promise.all([
     prisma.job.findMany({
-      where: { published: true, featured: true, company: { suspended: false } },
+      where: { published: true, featured: true, company: { suspended: false }, OR: [{ deadline: null }, { deadline: { gte: new Date() } }] },
       include: { company: { select: { name: true, logo: true, verified: true, superRecruiter: true } } },
       orderBy: { createdAt: "desc" },
       take: 8,
     }),
     prisma.job.findMany({
-      where: { published: true, company: { suspended: false } },
+      where: { published: true, company: { suspended: false }, OR: [{ deadline: null }, { deadline: { gte: new Date() } }] },
       include: { company: { select: { name: true, logo: true, verified: true, superRecruiter: true } } },
       orderBy: { createdAt: "desc" },
       take: 12,
@@ -26,7 +26,7 @@ async function getHomeData() {
       orderBy: [{ logo: "desc" }, { createdAt: "desc" }],
       take: 20,
     }),
-    prisma.job.count({ where: { published: true } }),
+    prisma.job.count({ where: { published: true, OR: [{ deadline: null }, { deadline: { gte: new Date() } }] } }),
     prisma.company.count(),
     prisma.user.count({ where: { role: "JOBSEEKER" } }),
   ]);

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" fill="none">
+  <!-- Background stars -->
+  <path d="M30 22 L32.5 15 L35 22 L42 22 L36.5 26 L39 34 L32.5 30 L26 34 L28.5 26 L23 22 Z" fill="#FCD34D"/>
+  <path d="M198 14 L200 8 L202 14 L208 14 L203.5 17.5 L205.5 24 L200 20.5 L194.5 24 L196.5 17.5 L192 14 Z" fill="#FDE68A"/>
+  <circle cx="60"  cy="42" r="3"   fill="#FCD34D" opacity="0.7"/>
+  <circle cx="175" cy="48" r="3.5" fill="#FCD34D" opacity="0.5"/>
+  <circle cx="220" cy="30" r="2.5" fill="#FCD34D" opacity="0.6"/>
+  <!-- Smoke cloud at base -->
+  <ellipse cx="120" cy="150" rx="44" ry="10" fill="#E5E7EB"/>
+  <ellipse cx="95"  cy="145" rx="30" ry="9"  fill="#F3F4F6"/>
+  <ellipse cx="145" cy="145" rx="30" ry="9"  fill="#F3F4F6"/>
+  <!-- Rocket body -->
+  <rect x="106" y="62" width="28" height="72" rx="14" fill="#F59E0B"/>
+  <!-- Nose cone -->
+  <path d="M106 77 Q120 32 134 77 Z" fill="#D97706"/>
+  <!-- Window porthole -->
+  <circle cx="120" cy="87" r="9"  fill="#1D4ED8"/>
+  <circle cx="120" cy="87" r="6"  fill="#3B82F6"/>
+  <circle cx="118" cy="85" r="2"  fill="white" opacity="0.7"/>
+  <!-- Fins -->
+  <path d="M106 112 L82 142 L106 132 Z"  fill="#D97706"/>
+  <path d="M134 112 L158 142 L134 132 Z" fill="#D97706"/>
+  <!-- Flames -->
+  <path d="M108 134 Q120 165 132 134 Q125 154 120 160 Q115 154 108 134 Z" fill="#F97316"/>
+  <path d="M111 134 Q120 157 129 134 Q124 149 120 154 Q116 149 111 134 Z" fill="#FCD34D"/>
+  <!-- Small flag -->
+  <line x1="120" y1="57" x2="120" y2="72" stroke="#92400E" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M120 57 L132 61 L120 65 Z" fill="#EF4444"/>
+</svg>

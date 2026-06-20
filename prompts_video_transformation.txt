@@ -1,0 +1,206 @@
+================================================================
+GUIDE COMPLET - PROMPTS VIDEO TRANSFORMATION
+"He had nothing. He built everything."
+Format : YouTube Shorts 9:16 | Duree : 35 secondes
+================================================================
+
+
+----------------------------------------------------------------
+ETAPE 1 - CREER LE PERSONNAGE DE REFERENCE (Midjourney)
+----------------------------------------------------------------
+
+Genere UNE image du personnage seul en premier.
+Sauvegarde l'URL de cette image.
+Tu l'utiliseras avec --cref dans toutes les scenes suivantes.
+
+PROMPT PERSONNAGE :
+-------------------
+hyperrealistic portrait photo, young Black African man 25 years old,
+short hair, strong jawline, wearing a plain yellow t-shirt,
+neutral expression, looking slightly to the side,
+studio lighting, white background, sharp focus,
+Canon EOS R5, 85mm lens, photorealistic --ar 2:3 --v 6.1
+
+
+----------------------------------------------------------------
+ETAPE 2 - GENERER LES 5 SCENES (Midjourney)
+----------------------------------------------------------------
+
+IMPORTANT : Remplace [URL_PERSONNAGE] par l'URL de ton image personnage.
+Ajoute --cref [URL_PERSONNAGE] --cw 80 a la fin de chaque prompt.
+
+
+SCENE 1 - LA MISERE (0 a 8s) - Resignation
+--------------------------------------------
+hyperrealistic cinematic photo, narrow rectangular studio room
+viewed from entrance doorway wide angle, young Black man 25yo
+wearing yellow t-shirt sitting slouched on a destroyed torn couch,
+holding a plastic water bottle, watching a small old CRT television
+on a broken wooden stand, extreme poverty, walls covered in dark
+stains and mold, concrete cracked floor, single bare light bulb
+hanging from ceiling on exposed wire, yellow plastic jerrycans
+on floor, old cooking pots, dirty mattress on left, clutter
+everywhere, door visible at far end center, small barred window
+on right wall letting in dim light, dark moody atmosphere,
+cinematic color grading, 35mm film grain, Canon EOS --ar 9:16 --v 6.1
+--cref [URL_PERSONNAGE] --cw 80
+
+
+SCENE 2 - LA DECISION (8 a 14s) - Determination
+-------------------------------------------------
+hyperrealistic cinematic photo, same narrow rectangular studio room
+exact same angle from entrance doorway, same young Black man 25yo
+wearing yellow t-shirt now standing in the middle of the room,
+body turned facing the dirty walls, chin up, determined expression,
+fists slightly clenched, looking at the state of the room with
+resolve, same poverty room same clutter same bare light bulb,
+same door at far end center, same barred window on right,
+dramatic side lighting from window, cinematic 35mm --ar 9:16 --v 6.1
+--cref [URL_PERSONNAGE] --cw 80
+
+
+SCENE 3 - LA RENOVATION (14 a 22s) - Effort
+---------------------------------------------
+hyperrealistic cinematic photo, same narrow rectangular studio room
+exact same angle from entrance, room completely emptied and stripped
+for renovation, rough bare damaged plaster walls being repaired,
+brand new grey ceramic floor tiles freshly installed on floor,
+same young Black man shirtless wearing only dark work pants,
+crouching down on floor working hard with a trowel on the base
+of the wall, sweat on skin, construction tools scattered on floor
+nearby hammer chisel sandpaper, heavy dust particles floating in
+natural daylight, door at far end center same position, barred
+window on right same position, gritty atmosphere, cinematic natural
+light --ar 9:16 --v 6.1 --cref [URL_PERSONNAGE] --cw 80
+
+
+SCENE 4 - L'INSTALLATION (22 a 28s) - Progression
+---------------------------------------------------
+hyperrealistic cinematic photo, same narrow rectangular studio room
+exact same angle from entrance, renovation near complete, walls now
+smooth and painted warm beige white, same grey ceramic floor tiles,
+same young Black man 25yo back in yellow t-shirt, standing facing
+the left wall with arms raised, mounting a large flat screen TV
+onto the wall, wooden TV unit cabinet below, new ceiling with
+smooth white paint, modern round LED ceiling light installed,
+door at far end with new wooden frame, window on right with new
+white blinds, warm interior light beginning to fill space,
+cinematic photography --ar 9:16 --v 6.1 --cref [URL_PERSONNAGE] --cw 80
+
+
+SCENE 5 - LA NOUVELLE VIE (28 a 35s) - Satisfaction
+-----------------------------------------------------
+hyperrealistic cinematic photo, same narrow rectangular studio room
+exact same angle from entrance doorway, fully completed renovated
+modern minimalist studio apartment, smooth white ceiling with round
+LED ceiling light glowing warm, walls painted warm beige white,
+same grey ceramic floor tiles throughout, wooden TV unit left side
+with large flat screen TV mounted on wall above, grey fabric
+two-seat sofa center room, comfortable bed with white linen visible
+left foreground, floating wooden shelves on back wall with books
+green plants and small jars, black and white architecture prints
+framed on walls, small round white side table with books,
+same young Black man 25yo wearing yellow t-shirt sitting relaxed
+sideways on sofa feet up, holding ceramic coffee mug with both hands,
+calm satisfied expression looking slightly off camera, wooden framed
+door at far end center leading to bathroom with curtain, window
+with white slatted blinds on right wall, warm cozy golden ambient
+lighting, cinematic photography shallow depth of field
+--ar 9:16 --v 6.1 --cref [URL_PERSONNAGE] --cw 80
+
+
+----------------------------------------------------------------
+ETAPE 3 - ANIMER CHAQUE SCENE (Kling AI - klingai.com)
+----------------------------------------------------------------
+
+Aller sur : klingai.com -> Image to Video
+
+SCENE 1 :
+  Duree    : 8 secondes
+  Motion   : 4
+  Prompt   : Man slowly lifts water bottle to take a sip, eyes fixed
+             on old television, slight body sway, bare bulb swings
+             gently, cinematic handheld slight camera movement
+
+SCENE 2 :
+  Duree    : 6 secondes
+  Motion   : 3
+  Prompt   : Man slowly turns his head scanning the dirty walls of
+             the room, jaw tightens with determination, slow inhale,
+             cinematic slow motion, dramatic side light from window
+
+SCENE 3 :
+  Duree    : 8 secondes
+  Motion   : 5
+  Prompt   : Man works hard scraping and smoothing the wall with
+             trowel, elbow moves rhythmically, dust particles float
+             in sunlight beam from window, gritty physical effort,
+             cinematic
+
+SCENE 4 :
+  Duree    : 6 secondes
+  Motion   : 3
+  Prompt   : Man carefully positions flat screen TV on wall mount,
+             arms extended upward adjusting, steps back slightly to
+             check alignment, warm light fills room, cinematic
+
+SCENE 5 :
+  Duree    : 7 secondes
+  Motion   : 2
+  Prompt   : Man takes a slow sip from ceramic coffee mug, exhales
+             with deep satisfaction, slowly looks around his
+             renovated apartment with a quiet smile, golden hour
+             light, cinematic slow motion
+
+
+----------------------------------------------------------------
+ETAPE 4 - MONTAGE CAPCUT
+----------------------------------------------------------------
+
+1. Nouveau projet -> format 9:16
+2. Importer les 5 clips dans l'ordre (scene 1 -> 5)
+3. Transitions : AUCUNE (cut sec entre chaque clip)
+4. Musique : chercher dans CapCut :
+             "Jonathan Paulsen - Long Road"
+             OU "Emotional piano transformation cinematic"
+             -> Volume 80%, commence des le debut
+5. Texte scene 1 (bas de l'ecran, police bold blanche) :
+             "He had nothing."
+6. Texte scene 5 (bas de l'ecran, police bold blanche) :
+             "He built everything."
+7. Legende discrete en haut a gauche :
+             "AI concept | #shorts"
+8. Export : 1080x1920, 30fps, qualite maximale
+
+
+----------------------------------------------------------------
+ETAPE 5 - UPLOAD YOUTUBE SHORTS
+----------------------------------------------------------------
+
+TITRE :
+He had NOTHING. He built EVERYTHING. #shorts #transformation #glowup
+
+DESCRIPTION :
+From nothing to a modern studio apartment.
+AI-generated concept video.
+#AIArt #BeforeAndAfter #Shorts #Renovation #GlowUp #Transformation
+
+TAGS :
+transformation, before and after, renovation, glow up, shorts,
+AI art, abandoned, studio apartment, motivation, success
+
+
+----------------------------------------------------------------
+RECAPITULATIF OUTILS ET COUTS
+----------------------------------------------------------------
+
+Midjourney  -> 6 images (1 personnage + 5 scenes)  -> $10/mois
+Kling AI    -> 5 clips animes                       -> $10/mois
+CapCut PC   -> Montage + musique + texte            -> Gratuit
+------------------------------------------------
+TOTAL                                               -> $20/mois
+
+
+================================================================
+FIN DU GUIDE
+================================================================

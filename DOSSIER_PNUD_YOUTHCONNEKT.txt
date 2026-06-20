@@ -1,0 +1,299 @@
+╔══════════════════════════════════════════════════════════════════╗
+║     DOSSIER DE CANDIDATURE — PNUD / YOUTHCONNEKT RCA            ║
+║     Programme : Entrepreneuriat & Innovation Jeunes             ║
+║     Contact   : registry.cf@undp.org                           ║
+║                 info@youthconnektafrica.org                     ║
+║     Tél YCA   : +250 791 054 382                               ║
+╚══════════════════════════════════════════════════════════════════╝
+
+────────────────────────────────────────────────────────────────────
+SECTION 1 — IDENTITÉ DU PORTEUR DE PROJET
+────────────────────────────────────────────────────────────────────
+
+Nom complet          : KITEZE NGOUYOMBO Donald Chrysostome
+Date de naissance    : (29 ans)
+Nationalité          : Centrafricaine
+Résidence actuelle   : Nice, France
+Email                : kitzdon37@gmail.com
+Téléphone            : +33 6 25 34 51 75
+Site web du projet   : https://ktzemploi.com
+
+Formation académique :
+  Ingénieur en Microélectronique, Télécommunications et Réseaux
+  Université Côte d'Azur / IUT de Nice — France
+
+Statut actuel :
+  Fondateur de KTZ Emploi
+  Président de l'Association Avenir Pour Tous (A.P.T) — France
+  Membre de la diaspora centrafricaine investie dans le
+  développement économique de la RCA
+
+────────────────────────────────────────────────────────────────────
+SECTION 2 — PRÉSENTATION DU PROJET
+────────────────────────────────────────────────────────────────────
+
+Nom du projet        : KTZ Emploi
+Secteur              : Numérique / Emploi / Formation professionnelle
+Pays d'intervention  : République Centrafricaine
+Ville principale     : Bangui (avec extension prévue en provinces)
+Stade                : Prototype fonctionnel — phase de lancement
+
+Résumé en une phrase :
+  KTZ Emploi est la première plateforme digitale de recrutement
+  de la République Centrafricaine, combinant un site web, une
+  application mobile Android, une agence physique à Bangui et
+  un centre de formation professionnelle.
+
+────────────────────────────────────────────────────────────────────
+SECTION 3 — PROBLÈME IDENTIFIÉ
+────────────────────────────────────────────────────────────────────
+
+La République Centrafricaine (RCA) est l'un des pays les moins
+avancés du monde, avec un taux de chômage des jeunes dépassant
+les 60 %. Le marché de l'emploi y est encore 100 % informel :
+
+• Aucune plateforme nationale de recrutement en ligne n'existe
+• Les offres d'emploi circulent uniquement par bouche à oreille
+  ou via des groupes WhatsApp non structurés
+• Les entreprises et ONG présentes en RCA peinent à trouver
+  des profils locaux qualifiés
+• Les jeunes diplômés n'ont aucun outil pour valoriser leurs
+  compétences auprès des employeurs formels
+• Les zones secondaires hors Bangui sont totalement exclues
+  du marché de l'emploi formel
+
+Ce vide numérique prive chaque année des milliers de jeunes
+Centrafricains d'opportunités d'insertion professionnelle,
+perpétuant la pauvreté et la vulnérabilité sociale.
+
+────────────────────────────────────────────────────────────────────
+SECTION 4 — SOLUTION PROPOSÉE
+────────────────────────────────────────────────────────────────────
+
+KTZ Emploi propose un écosystème complet articulé autour de
+trois piliers complémentaires :
+
+PILIER 1 — PLATEFORME NUMÉRIQUE
+  Site web   : https://ktzemploi.com
+  App mobile : Android (en cours de publication sur Google Play)
+
+  Fonctionnalités :
+  • Publication et gestion d'offres d'emploi en ligne
+  • CVthèque des candidats centrafricains
+  • Système de candidature et de suivi en ligne
+  • Filtres avancés (secteur, localité, type de contrat,
+    niveau d'expérience, télétravail)
+  • Interface légère optimisée pour faible bande passante
+  • Notifications push via l'application mobile
+
+PILIER 2 — AGENCE DE RECRUTEMENT PHYSIQUE À BANGUI
+  • Accompagnement personnalisé des chercheurs d'emploi
+  • Présélection et mise en relation avec les employeurs
+  • Pont entre le numérique et les réalités terrain centrafricaines
+  • Accueil physique pour les candidats sans accès à Internet
+
+PILIER 3 — CENTRE DE FORMATION PROFESSIONNELLE
+  • Formations certifiantes en informatique, gestion,
+    entrepreneuriat, métiers techniques et langues
+  • Modules adaptés aux besoins réels des employeurs en RCA
+  • Renforcement de l'employabilité des jeunes 16-35 ans
+  • Partenariat prévu avec l'ACFPE et l'Université de Bangui
+
+────────────────────────────────────────────────────────────────────
+SECTION 5 — ALIGNEMENT AVEC YOUTHCONNEKT RCA
+────────────────────────────────────────────────────────────────────
+
+KTZ Emploi s'aligne directement avec les 4 axes stratégiques
+de YouthConnekt RCA et du PNUD :
+
+AXE 1 — EMPLOYABILITÉ
+  KTZ Emploi est un outil concret d'accès à l'emploi pour les
+  jeunes Centrafricains. La plateforme numérique + l'agence
+  physique constituent un parcours complet d'insertion :
+  formation → candidature → emploi.
+
+AXE 2 — ENTREPRENEURIAT
+  Le projet est lui-même une startup entrepreneuriale fondée par
+  un jeune de la diaspora centrafricaine. Le centre de formation
+  inclut un module dédié à l'entrepreneuriat et à la création
+  d'entreprise en RCA.
+
+AXE 3 — INNOVATION NUMÉRIQUE
+  Première plateforme digitale d'emploi en RCA, KTZ Emploi
+  innove dans un marché encore 100 % informel. L'application
+  mobile Android est pensée pour les contraintes locales
+  (faible connectivité, smartphones d'entrée de gamme).
+
+AXE 4 — AUTONOMISATION ÉCONOMIQUE
+  Mes projets agro-industriels (production d'huile d'arachide,
+  élevage de poulets de chair) créent des emplois directs
+  en zones rurales, renforçant l'autonomie économique des
+  communautés locales centrafricaines.
+
+────────────────────────────────────────────────────────────────────
+SECTION 6 — IMPACT ATTENDU
+────────────────────────────────────────────────────────────────────
+
+IMPACT À COURT TERME (12 mois) :
+  • 5 000 jeunes Centrafricains inscrits sur la plateforme
+  • 200 entreprises, ONG et institutions recrutantes actives
+  • 500 jeunes formés via le centre de formation professionnelle
+  • 50 emplois directs créés (agence Bangui + projets agro)
+  • 1 000 mises en relation candidats/employeurs facilitées
+
+IMPACT À MOYEN TERME (3 ans) :
+  • 30 000 utilisateurs actifs sur la plateforme
+  • Extension dans 5 villes secondaires de RCA
+  • 2 000 jeunes formés et certifiés
+  • Données open data sur le marché de l'emploi en RCA
+    disponibles pour les politiques publiques
+  • Modèle réplicable dans d'autres pays d'Afrique centrale
+
+IMPACT SYSTÉMIQUE :
+  • Premières données fiables sur le marché du travail en RCA
+  • Réduction de l'informel dans le secteur de l'emploi
+  • Renforcement de l'écosystème numérique centrafricain
+  • Modèle de référence pour la diaspora africaine investissant
+    dans le développement de leur pays d'origine
+
+────────────────────────────────────────────────────────────────────
+SECTION 7 — ÉTAT D'AVANCEMENT
+────────────────────────────────────────────────────────────────────
+
+RÉALISÉ À CE JOUR :
+
+  ✓ Plateforme web complète développée et déployée
+    (https://ktzemploi.com)
+  ✓ Application mobile Android développée et testée
+    (Expo SDK 54, React Native Paper, TanStack Query)
+  ✓ Backend complet : API REST, authentification JWT,
+    gestion des candidatures, CVthèque, offres d'emploi,
+    favoris, statistiques
+  ✓ Association Avenir Pour Tous (A.P.T) fondée en France
+  ✓ Discussions avec l'IECD Bangui (partenariat recrutement)
+  ✓ Contact établi avec l'ACFPE (partenariat institutionnel)
+  ✓ Courriers envoyés à 12 partenaires institutionnels
+    (PNUD, OIT, FAO, OIM, Proparco, GIZ, Orange RCA, etc.)
+
+EN COURS :
+  → Publication application sur Google Play Store
+  → Enregistrement légal de l'entreprise en RCA
+  → Négociation partenariat IECD Bangui (Mme Pauline)
+  → Recherche de locaux pour l'agence physique à Bangui
+
+────────────────────────────────────────────────────────────────────
+SECTION 8 — PLAN D'ACTION AVEC SOUTIEN PNUD
+────────────────────────────────────────────────────────────────────
+
+MOIS 1-3 — LANCEMENT OPÉRATIONNEL
+  • Intégration dans l'écosystème YouthConnekt RCA
+  • Publication officielle de l'app Android sur Google Play
+  • Ouverture de l'agence physique à Bangui
+  • Campagne de communication auprès des jeunes centrafricains
+  • Enregistrement légal de KTZ Emploi en RCA
+
+MOIS 4-6 — CROISSANCE ET FORMATION
+  • Lancement du centre de formation (6 premiers modules)
+  • Première promotion de 50 apprenants
+  • Partenariat actif avec l'ACFPE et l'Université de Bangui
+  • Déploiement dans 2 villes secondaires (Berberati, Bossangoa)
+
+MOIS 7-12 — CONSOLIDATION ET IMPACT
+  • 5 000 utilisateurs actifs sur la plateforme
+  • Publication des données open data emploi RCA
+  • Démarrage des projets agro-industriels
+  • Bilan d'impact et rapport pour les partenaires
+
+────────────────────────────────────────────────────────────────────
+SECTION 9 — BUDGET ET FINANCEMENT DEMANDÉ
+────────────────────────────────────────────────────────────────────
+
+FINANCEMENT EXISTANT :
+  Fonds propres investis : ~3 000 à 5 000 EUR
+  (développement plateforme + app mobile)
+
+FINANCEMENT DEMANDÉ AU PNUD / YOUTHCONNEKT :
+  Subvention ou accompagnement estimé : 30 000 à 50 000 USD
+
+  Ventilation :
+  Infrastructure & hébergement (24 mois)     :  5 000 USD
+  Ouverture agence physique Bangui           : 15 000 USD
+    (loyer, équipements, mobilier)
+  Équipe locale (2 agents, 12 mois)         : 12 000 USD
+  Centre de formation (1ère promotion)      :  8 000 USD
+  Communication & acquisition utilisateurs  :  5 000 USD
+  Projets agro-industriels (amorçage)       :  5 000 USD
+                                              ──────────
+  TOTAL                                     : 50 000 USD
+
+AUTRES FINANCEMENTS EN COURS :
+  • FUZE / Digital Africa (AFD) — 20 000 à 100 000 EUR
+  • GIZ Bureau Yaoundé — assistance technique
+  • Proparco / Choose Africa — financement startup
+  • OIT — assistance technique observatoire emploi
+
+────────────────────────────────────────────────────────────────────
+SECTION 10 — CE QUE NOUS DEMANDONS AU PNUD
+────────────────────────────────────────────────────────────────────
+
+  1. Intégration officielle dans le programme YouthConnekt RCA
+     comme startup partenaire dans la catégorie "Innovation
+     Numérique & Emploi"
+
+  2. Subvention d'amorçage pour financer l'ouverture de
+     l'agence physique à Bangui et le lancement du centre
+     de formation (30 000 à 50 000 USD)
+
+  3. Accès au réseau YouthConnekt RCA pour promouvoir
+     KTZ Emploi auprès des jeunes bénéficiaires et des
+     partenaires institutionnels
+
+  4. Appui à la communication et à la visibilité du projet
+     auprès des acteurs institutionnels en RCA
+
+  5. Mentorat et accompagnement par les experts PNUD en
+     entrepreneuriat numérique et développement économique
+
+────────────────────────────────────────────────────────────────────
+SECTION 11 — DOCUMENTS JOINTS
+────────────────────────────────────────────────────────────────────
+
+  • Pièce d'identité du fondateur
+  • Présentation de l'Association Avenir Pour Tous (A.P.T)
+  • Lien plateforme web : https://ktzemploi.com
+  • Captures d'écran application mobile Android
+
+────────────────────────────────────────────────────────────────────
+CONTACTS POUR SOUMETTRE CE DOSSIER
+────────────────────────────────────────────────────────────────────
+
+PNUD Centrafrique (bureau Bangui) :
+  Email   : registry.cf@undp.org
+  Adresse : Avenue de l'Indépendance, BP 872, Bangui, RCA
+
+YouthConnekt Africa (siège) :
+  Email   : info@youthconnektafrica.org
+  Tél     : +250 791 054 382
+  Web     : https://youthconnektafrica.org
+
+MINUSCA (partenaire YouthConnekt RCA) :
+  Email   : minusca-procurement@un.org
+  Web     : https://minusca.unmissions.org
+
+════════════════════════════════════════════════════════════════════
+POURQUOI CE PROJET EST ADAPTÉ AU PNUD / YOUTHCONNEKT RCA
+════════════════════════════════════════════════════════════════════
+
+Contrairement à l'UNICEF Venture Fund (cohorte Climate & Health
+mal alignée), KTZ Emploi est un FIT PARFAIT avec PNUD/YouthConnekt :
+
+  ✓ Jeune Centrafricain de la diaspora (29 ans) — profil cible
+  ✓ Projet à fort impact sur l'emploi des jeunes en RCA
+  ✓ Innovation numérique dans un marché non digitalisé
+  ✓ Complémentarité directe avec les programmes PNUD en RCA
+  ✓ Intervention dans les mêmes villes que YouthConnekt RCA
+    (Bangui, Berberati, Bossangoa)
+  ✓ Projets agro-industriels alignés avec l'axe transformation
+    agricole de YouthConnekt RCA
+  ✓ Association fondée en France — lien diaspora-développement
+════════════════════════════════════════════════════════════════════

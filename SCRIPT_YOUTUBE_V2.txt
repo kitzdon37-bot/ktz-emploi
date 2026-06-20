@@ -1,0 +1,357 @@
+SCRIPT YOUTUBE — Présentation complète de KTZ Emploi
+Durée estimée : 10 à 12 minutes
+Ton : Chaleureux, professionnel, direct
+Public cible : Chercheurs d'emploi et recruteurs centrafricains
+
+=======================================================================
+INTRO — SE PRÉSENTER [0:00 à 1:00]
+=======================================================================
+[Face caméra. Fond neutre ou bureau professionnel. Sourire.]
+
+"Bonjour à tous et bienvenue sur cette vidéo.
+
+Je m'appelle KITEZE NGOUYOMBO Donald Chrysostome, je suis développeur web et mobile,
+et je suis basé ici en Centrafrique.
+
+Depuis plusieurs années, je travaille sur des projets technologiques pour répondre
+aux besoins concrets de notre pays. Et parmi ces projets, il y en a un qui me tient
+particulièrement à cœur.
+
+Parce que ce problème, je l'ai vu partout autour de moi :
+des jeunes diplômés qui cherchent du travail pendant des mois, des années,
+sans savoir où postuler. Des recruteurs qui galèrent à trouver des profils qualifiés.
+Et tout ça, souvent, par manque d'un outil simple et adapté à notre réalité.
+
+Alors j'ai décidé de le construire moi-même.
+
+Aujourd'hui, je te présente KTZ Emploi — la première plateforme de recherche d'emploi
+100% dédiée à la République Centrafricaine."
+
+[Transition vers l'écran du site — page d'accueil en plein écran]
+
+
+=======================================================================
+SECTION 1 — LA PAGE D'ACCUEIL [1:00 à 2:30]
+=======================================================================
+[Montrer ktzemploi.com — scroll lent de haut en bas]
+
+"Voilà le site. ktzemploi.com.
+
+Dès la page d'accueil, le ton est donné :
+'N°1 de l'emploi en Centrafrique'.
+Ce n'est pas qu'un slogan — c'est notre mission."
+
+[Zoomer sur la barre de recherche]
+
+"La barre de recherche est au centre de tout.
+Tu tapes un poste, un mot-clé, un secteur...
+Et les résultats s'affichent immédiatement.
+Pas besoin de naviguer partout — tu cherches, tu trouves."
+
+[Scroller vers les stats]
+
+"En dessous, tu vois les chiffres en temps réel :
+le nombre d'offres actives, le nombre d'entreprises inscrites, le nombre de candidats.
+Ces chiffres sont mis à jour automatiquement."
+
+[Scroller vers les catégories]
+
+"Les catégories te permettent de naviguer par secteur :
+Technologie, Humanitaire et ONG, Banque et Finance, Santé, Éducation,
+BTP, Agriculture, Commerce, Télécommunications, Transport.
+En un clic, tu filtres toutes les offres d'un secteur donné."
+
+[Scroller vers les offres à la une]
+
+"Et ici, les offres à la une — les postes mis en avant par les recruteurs.
+Ce sont les opportunités du moment, à ne pas rater."
+
+[Scroller vers les entreprises]
+
+"Plus bas, les entreprises qui recrutent actuellement en RCA.
+Chacune a son profil, ses offres, ses informations."
+
+
+=======================================================================
+SECTION 2 — LA PAGE DES OFFRES [2:30 à 4:00]
+=======================================================================
+[Naviguer vers /emplois]
+
+"Passons maintenant à la page centrale du site : les offres d'emploi."
+
+[Montrer la liste des offres avec les filtres]
+
+"Toutes les offres disponibles sont ici, classées par date de publication.
+Et à gauche — ou en haut sur mobile — tu as les filtres."
+
+[Cliquer sur les filtres un par un en les commentant]
+
+"Tu peux filtrer par :
+— Mot-clé : un poste précis, une compétence, un nom d'entreprise
+— Type de contrat : CDI, CDD, Stage, Alternance, Freelance
+— Secteur d'activité : Humanitaire, Finance, Santé, IT, et bien d'autres
+— Localité : Bangui ou les provinces
+— Niveau d'expérience : Junior, Intermédiaire, Senior
+— Télétravail : pour les postes à distance"
+
+[Faire une recherche "Humanitaire" — montrer les résultats]
+
+"Par exemple, je filtre par secteur 'Humanitaire'.
+Toutes les offres des ONG et agences de l'ONU qui opèrent en RCA apparaissent immédiatement :
+UNICEF, UNDP, MSF, IRC, FAO, IOM, NRC, Solidarités International...
+Ce sont des organisations qui recrutent régulièrement et qui publient leurs offres ici."
+
+[Cliquer sur une offre pour l'ouvrir]
+
+"Je clique sur une offre pour voir le détail."
+
+
+=======================================================================
+SECTION 3 — LE DÉTAIL D'UNE OFFRE [4:00 à 5:00]
+=======================================================================
+[Montrer la page d'une offre complète — scroller lentement]
+
+"Sur chaque fiche offre, tu trouves tout ce dont tu as besoin :
+
+— Le titre du poste et l'entreprise qui recrute
+— La description complète du poste : missions, responsabilités
+— Les prérequis : diplôme, expérience, compétences demandées
+— Le type de contrat et la localisation
+— Le salaire, quand il est mentionné
+— La date limite de candidature — très important, ne la rate pas
+— Et les avantages proposés par l'employeur"
+
+[Zoomer sur le bouton Postuler]
+
+"Et pour postuler... tu cliques sur ce bouton.
+Tu rédiges ta lettre de motivation directement sur la plateforme.
+Ton CV est déjà enregistré dans ton profil.
+En moins d'une minute, ta candidature est envoyée.
+C'est tout."
+
+[Montrer le bouton Sauvegarder]
+
+"Tu peux aussi sauvegarder une offre pour y revenir plus tard.
+Elle sera dans ta liste de favoris dans ton espace personnel."
+
+
+=======================================================================
+SECTION 4 — LES ENTREPRISES [5:00 à 5:45]
+=======================================================================
+[Naviguer vers /entreprises]
+
+"La page entreprises, c'est l'annuaire complet des organisations qui recrutent en RCA.
+
+Tu vois leurs logos, leur secteur d'activité.
+Tu peux chercher par nom ou filtrer par secteur."
+
+[Cliquer sur une fiche entreprise]
+
+"En cliquant sur une entreprise, tu accèdes à son profil :
+qui ils sont, ce qu'ils font, leurs coordonnées,
+et surtout — toutes leurs offres d'emploi actives.
+
+Si tu cibles une organisation en particulier,
+c'est ici que tu surveilles ses recrutements."
+
+
+=======================================================================
+SECTION 5 — S'INSCRIRE GRATUITEMENT [5:45 à 6:45]
+=======================================================================
+[Naviguer vers /inscription]
+
+"Maintenant, comment s'inscrire ?
+
+C'est gratuit. Pour les candidats, ça le restera toujours.
+
+Tu as deux options :"
+
+[Montrer le bouton Email]
+
+"Avec ton adresse email classique — tu remplis un formulaire simple,
+tu confirmes ton email, et c'est fait."
+
+[Montrer l'option WhatsApp]
+
+"Ou avec ton numéro WhatsApp — on t'envoie un code par WhatsApp,
+tu le saisis, et ton compte est créé.
+Pas besoin d'adresse email. Pas besoin de mot de passe compliqué.
+Si tu as WhatsApp, tu peux t'inscrire."
+
+[Montrer le formulaire de profil]
+
+"Après l'inscription, tu complètes ton profil :
+ton nom, ton secteur cible, ton niveau d'expérience, tes compétences.
+Plus ton profil est complet, plus tu es visible auprès des recruteurs."
+
+
+=======================================================================
+SECTION 6 — LE TABLEAU DE BORD CANDIDAT [6:45 à 8:00]
+=======================================================================
+[Se connecter et aller sur /tableau-de-bord]
+
+"Une fois connecté, tu arrives sur ton tableau de bord personnel.
+C'est ton espace à toi."
+
+[Montrer la vue d'ensemble — candidatures]
+
+"Tu vois en un coup d'œil toutes tes candidatures :
+combien sont en attente, combien sont en cours d'examen,
+combien ont abouti à un entretien, combien ont été acceptées.
+Tu suis l'avancement de chaque dossier en temps réel.
+Fini d'envoyer des emails pour savoir où tu en es."
+
+[Naviguer vers la section CV]
+
+"Dans la section CV, tu peux uploader ton document.
+Et si tu actives le CV public, les recruteurs peuvent te trouver directement,
+même si tu n'as postulé à rien encore. C'est du recrutement inversé."
+
+[Naviguer vers les alertes]
+
+"La section Alertes emploi te permet de définir des critères :
+un secteur, un type de contrat, une localité.
+Dès qu'une nouvelle offre correspond à tes critères,
+tu reçois une notification.
+Tu es toujours le premier à être informé."
+
+[Naviguer vers le profil]
+
+"Et dans ton profil, tu gères tout :
+tes informations personnelles, tes compétences, ton expérience.
+Une barre de complétion te montre où tu en es
+et ce qu'il te reste à renseigner pour maximiser tes chances."
+
+
+=======================================================================
+SECTION 7 — L'ESPACE RECRUTEUR [8:00 à 9:15]
+=======================================================================
+[Se connecter avec un compte recruteur]
+
+"KTZ Emploi n'est pas que pour les candidats.
+Les recruteurs ont leur propre espace, avec des outils pensés pour eux."
+
+[Montrer la page de publication d'offre]
+
+"Publier une offre, c'est simple et rapide.
+Tu renseignes :
+le titre du poste, la description, les prérequis,
+le type de contrat, la localisation, la date limite, le salaire.
+Et en moins de 5 minutes, l'offre est en ligne,
+visible par tous les candidats inscrits."
+
+[Montrer le pipeline Kanban]
+
+"Le pipeline de recrutement, c'est mon outil préféré.
+C'est un tableau visuel où tu gères toutes tes candidatures.
+À gauche : les candidatures reçues.
+Tu les fais glisser vers 'En cours d'examen', puis 'Entretien',
+puis 'Accepté' ou 'Refusé'.
+Toute l'équipe de recrutement voit le même tableau, en temps réel."
+
+[Montrer la CVthèque]
+
+"La CVthèque, c'est l'accès direct aux profils des candidats qui cherchent activement.
+Tu filtres par compétences, par niveau d'expérience, par secteur.
+Et tu contactes les profils qui t'intéressent sans attendre qu'ils postulent.
+C'est du recrutement proactif — exactement ce dont les RH ont besoin."
+
+[Montrer les analytics]
+
+"Et pour finir : les statistiques de tes offres.
+Combien de vues, combien de candidatures reçues, le taux de conversion.
+Pour optimiser tes annonces et recruter plus efficacement."
+
+
+=======================================================================
+SECTION 8 — POURQUOI KTZ EMPLOI [9:15 à 10:15]
+=======================================================================
+[Face caméra. Ton sincère.]
+
+"Je veux te dire en quelques mots pourquoi j'ai construit ce projet.
+
+En Centrafrique, trouver un emploi passe souvent par le réseau.
+Tu connais quelqu'un, qui connaît quelqu'un, qui te recommande.
+Ce système laisse énormément de talents sur le bord de la route.
+
+KTZ Emploi, c'est l'outil qui change ça.
+Peu importe que tu sois à Bangui ou dans une ville de province.
+Peu importe que tu aies un grand réseau ou pas.
+Si tu as les compétences et l'envie, tu peux postuler.
+Et les recruteurs peuvent te trouver.
+
+C'est gratuit pour les candidats. Et ça le restera.
+
+Côté recruteurs, nous avons des offres adaptées — simples et accessibles —
+pour que même les PME centrafricaines puissent recruter professionnellement.
+
+Et ce n'est que le début. Dans les prochains mois, on ouvre une agence physique à Bangui —
+pour accompagner les candidats en présentiel : CV, entretiens, orientation.
+La plateforme numérique et l'accompagnement humain, ensemble."
+
+
+=======================================================================
+OUTRO — APPEL À L'ACTION [10:15 à 10:45]
+=======================================================================
+[Logo KTZ Emploi en plein écran. Musique montante.]
+
+"Si tu cherches un emploi en Centrafrique :
+Va sur ktzemploi.com, crée ton profil gratuitement, et commence à postuler.
+C'est simple. C'est rapide. Et ça peut changer ta vie.
+
+Si tu es recruteur :
+Publie ta première offre aujourd'hui et accède à des centaines de candidats qualifiés.
+
+Le lien est dans la description.
+
+Si cette vidéo t'a été utile, laisse un pouce bleu — ça m'aide énormément.
+Abonne-toi pour suivre l'évolution de la plateforme.
+Et partage cette vidéo autour de toi — à un ami, un collègue, un proche qui cherche du travail.
+
+Merci d'avoir regardé. On se retrouve très bientôt."
+
+[Écran de fin YouTube : bouton S'abonner + lien vers ktzemploi.com]
+
+
+=======================================================================
+NOTES DE TOURNAGE
+=======================================================================
+
+SCENES A ENREGISTRER (dans l'ordre)
+--------------------------------------
+1.  Face caméra                          - Intro personnelle
+2.  ktzemploi.com page d'accueil         - Scroll lent haut en bas
+3.  Barre de recherche                   - Taper un mot-clé, voir les résultats
+4.  /emplois                             - Activer les filtres un par un
+5.  /emplois filtré "Humanitaire"        - Montrer les offres ONG
+6.  Fiche d'une offre                    - Scroller + zoomer sur Postuler
+7.  /entreprises                         - Grille + clic sur une fiche
+8.  /inscription                         - Montrer les 2 méthodes (email / WhatsApp)
+9.  /tableau-de-bord candidat            - Candidatures + CV + alertes + profil
+10. Dashboard recruteur                  - Publier offre + pipeline + CVthèque + stats
+11. Face caméra                          - Conclusion sincère
+12. Logo + lien ktzemploi.com            - Outro
+
+CONSEILS DE MONTAGE
+--------------------------------------
+- Ajouter des sous-titres sur toutes les parties en voix off
+- Mettre en surbrillance les clics (curseur animé ou cercle rouge)
+- Ajouter des zooms doux sur les éléments importants
+- Textes à l'écran pour résumer chaque point clé
+- Transitions en fondu enchaîné entre les sections
+- Musique douce et instrumentale pendant la navigation
+- Musique plus dynamique sur l'intro et l'outro
+
+DUREE PAR SECTION
+--------------------------------------
+Intro personnelle          1 min 00
+Page d'accueil             1 min 30
+Page des offres            1 min 30
+Détail d'une offre         1 min 00
+Entreprises                   45 sec
+Inscription                1 min 00
+Dashboard candidat         1 min 15
+Espace recruteur           1 min 15
+Pourquoi KTZ Emploi        1 min 00
+Outro                         30 sec
+TOTAL                     10 min 45
