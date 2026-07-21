@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
         take: 100,
       }),
       prisma.newsletterCampaign.findMany({
-        orderBy: { createdAt: "desc" },
+        orderBy: { sentAt: "desc" },
         take: 10,
       }),
     ]);

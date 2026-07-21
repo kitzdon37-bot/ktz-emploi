@@ -1,8 +1,8 @@
-// Notifications : SMS (Africa's Talking) + WhatsApp (UltraMsg | Meta | Green API)
+// Notifications : SMS (Africa's Talking) + WhatsApp (sans Meta)
 // Choisir le provider WhatsApp via WA_PROVIDER dans .env :
-//   WA_PROVIDER=ultramsg  → UltraMsg (WhatsApp Web, 3 jours gratuit puis 2.99$/mois)
-//   WA_PROVIDER=meta      → WhatsApp Cloud API (Meta officiel, gratuit 1000/mois)
-//   WA_PROVIDER=greenapi  → Green API (WhatsApp Web, 200/mois gratuit)
+//   WA_PROVIDER=wasenderapi → WasenderAPI  (WhatsApp Web, illimité, 6$/mois)   ← DÉFAUT / MOINS CHER
+//   WA_PROVIDER=greenapi    → Green API    (WhatsApp Web, plan dev GRATUIT limité, ~8$/mois illimité)
+//   WA_PROVIDER=ultramsg    → UltraMsg     (WhatsApp Web, illimité, 39$/mois)
 
 export async function sendSMS(to: string, message: string): Promise<boolean> {
   const apiKey = process.env.AT_API_KEY;
@@ -50,15 +50,15 @@ export async function sendSMS(to: string, message: string): Promise<boolean> {
 }
 
 export async function sendWhatsApp(to: string, message: string): Promise<boolean> {
-  const provider = process.env.WA_PROVIDER || "ultramsg";
+  const provider = process.env.WA_PROVIDER || "wasenderapi";
 
-  if (provider === "ultramsg") return sendWhatsAppUltraMsg(to, message);
-  if (provider === "greenapi") return sendWhatsAppGreenAPI(to, message);
-  return sendWhatsAppMeta(to, message);
+  if (provider === "ultramsg")    return sendWhatsAppUltraMsg(to, message);
+  if (provider === "wasenderapi") return sendWhatsAppWasender(to, message);
+  return sendWhatsAppGreenAPI(to, message);
 }
 
 // ── Provider 1 : UltraMsg ────────────────────────────────────────────────────
-// 3 jours gratuit → 2.99$/mois · setup en 5 min (scan QR)
+// 39$/mois · illimité · setup : scan QR sur ultramsg.com
 // Variables : ULTRAMSG_INSTANCE, ULTRAMSG_TOKEN
 async function sendWhatsAppUltraMsg(to: string, message: string): Promise<boolean> {
   const instanceId = process.env.ULTRAMSG_INSTANCE;
@@ -78,9 +78,9 @@ async function sendWhatsAppUltraMsg(to: string, message: string): Promise<boolea
   try {
     const body = new URLSearchParams({
       token,
-      to: phone,       // format E.164 : +23677000000
+      to: phone,
       body: message,
-      priority: "10",  // priorité d'envoi UltraMsg (1-10)
+      priority: "10",
     });
 
     const res = await fetch(
@@ -101,7 +101,6 @@ async function sendWhatsAppUltraMsg(to: string, message: string): Promise<boolea
     }
 
     const data = JSON.parse(raw);
-    // UltraMsg retourne { sent: "true", id: "...", message: {...} }
     const sent = data?.sent === "true" || data?.sent === true;
     if (!sent) console.error("[WhatsApp/UltraMsg] Échec:", data);
     return sent;
@@ -111,57 +110,8 @@ async function sendWhatsAppUltraMsg(to: string, message: string): Promise<boolea
   }
 }
 
-// ── Provider 2 : WhatsApp Cloud API (Meta) ───────────────────────────────────
-// Gratuit jusqu'à 1000 conversations/mois
-// Variables : WA_PHONE_NUMBER_ID, WA_ACCESS_TOKEN
-async function sendWhatsAppMeta(to: string, message: string): Promise<boolean> {
-  const phoneNumberId = process.env.WA_PHONE_NUMBER_ID;
-  const accessToken = process.env.WA_ACCESS_TOKEN;
-
-  if (!phoneNumberId || !accessToken) {
-    console.error("[WhatsApp/Meta] WA_PHONE_NUMBER_ID ou WA_ACCESS_TOKEN manquant");
-    return false;
-  }
-
-  const phone = normalizePhone(to);
-  if (!phone) {
-    console.error("[WhatsApp/Meta] Numéro invalide:", to);
-    return false;
-  }
-
-  try {
-    const res = await fetch(
-      `https://graph.facebook.com/v19.0/${phoneNumberId}/messages`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          messaging_product: "whatsapp",
-          to: phone.replace("+", ""),
-          type: "text",
-          text: { body: message },
-        }),
-      }
-    );
-
-    if (!res.ok) {
-      console.error("[WhatsApp/Meta] Erreur:", res.status, await res.text());
-      return false;
-    }
-
-    const data = await res.json();
-    return !!data?.messages?.[0]?.id;
-  } catch (err) {
-    console.error("[WhatsApp/Meta] Exception:", err);
-    return false;
-  }
-}
-
-// ── Provider 3 : Green API ───────────────────────────────────────────────────
-// Gratuit jusqu'à 200 messages/mois
+// ── Provider 2 : Green API ───────────────────────────────────────────────────
+// Plan dev GRATUIT (limité) · illimité ~8$/mois · setup : scan QR sur green-api.com
 // Variables : GREEN_API_INSTANCE, GREEN_API_TOKEN
 async function sendWhatsAppGreenAPI(to: string, message: string): Promise<boolean> {
   const instanceId = process.env.GREEN_API_INSTANCE;
@@ -197,6 +147,60 @@ async function sendWhatsAppGreenAPI(to: string, message: string): Promise<boolea
     return !!data?.idMessage;
   } catch (err) {
     console.error("[WhatsApp/GreenAPI] Exception:", err);
+    return false;
+  }
+}
+
+// ── Provider 3 : WasenderAPI ─────────────────────────────────────────────────
+// 6$/mois · illimité · setup : créer compte sur wasenderapi.com → scanner QR
+// Variables : WASENDER_API_KEY
+async function sendWhatsAppWasender(to: string, message: string): Promise<boolean> {
+  const apiKey = process.env.WASENDER_API_KEY;
+
+  if (!apiKey) {
+    console.error("[WhatsApp/WasenderAPI] WASENDER_API_KEY manquant");
+    return false;
+  }
+
+  const phone = normalizePhone(to);
+  if (!phone) {
+    console.error("[WhatsApp/WasenderAPI] Numéro invalide:", to);
+    return false;
+  }
+
+  try {
+    const res = await fetch("https://www.wasenderapi.com/api/send-message", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type":  "application/json",
+        "Accept":        "application/json",
+      },
+      body: JSON.stringify({ to: phone, text: message }),
+    });
+
+    const raw = await res.text();
+    console.log("[WhatsApp/WasenderAPI] status:", res.status, "réponse:", raw);
+
+    const data = JSON.parse(raw);
+
+    // Rate limit free trial : 1 msg/min
+    if (res.status === 429 || data?.retry_after) {
+      console.error("[WhatsApp/WasenderAPI] Rate limit atteint — retry dans", data?.retry_after, "s");
+      return false;
+    }
+
+    if (!res.ok) {
+      console.error("[WhatsApp/WasenderAPI] Erreur HTTP:", res.status, raw);
+      return false;
+    }
+
+    // WasenderAPI retourne { success: true } ou { message: "..." } selon version
+    const ok = data?.success === true || data?.status === "success" || !!data?.id;
+    if (!ok) console.error("[WhatsApp/WasenderAPI] Échec:", data);
+    return ok;
+  } catch (err) {
+    console.error("[WhatsApp/WasenderAPI] Exception:", err);
     return false;
   }
 }

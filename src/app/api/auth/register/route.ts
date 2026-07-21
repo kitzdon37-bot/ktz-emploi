@@ -17,10 +17,6 @@ async function sendWelcomeWhatsApp({
   role: "JOBSEEKER" | "EMPLOYER";
   companyName?: string | null;
 }) {
-  const instance = process.env.ULTRAMSG_INSTANCE;
-  const token = process.env.ULTRAMSG_TOKEN;
-  if (!instance || !token) return;
-
   const prenom = name.split(" ")[0];
   const baseUrl = process.env.NEXTAUTH_URL || "https://ktzemploi.com";
 
@@ -43,11 +39,8 @@ async function sendWelcomeWhatsApp({
         `👉 Voir les offres : ${baseUrl}/emplois\n\n` +
         `_KTZ Emploi — La 1ère plateforme de recrutement de RCA_ 🇨🇫`;
 
-  await fetch(`https://api.ultramsg.com/${instance}/messages/chat`, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({ token, to: phone, body: message }).toString(),
-  });
+  const { sendWhatsApp } = await import("@/lib/sms");
+  await sendWhatsApp(phone, message);
 }
 
 export async function POST(req: NextRequest) {
@@ -67,13 +60,16 @@ export async function POST(req: NextRequest) {
     if (phoneVerified && phone && !email) {
       if (!name) return NextResponse.json({ error: "Le prénom est requis" }, { status: 400 });
 
-      const existingPhone = await prisma.user.findUnique({ where: { phone } });
+      const { normalizePhone } = await import("@/lib/sms");
+      const normalizedPhone = normalizePhone(phone) ?? phone;
+
+      const existingPhone = await prisma.user.findUnique({ where: { phone: normalizedPhone } });
       if (existingPhone) {
         return NextResponse.json({ error: "Ce numéro est déjà utilisé" }, { status: 409 });
       }
 
       const user = await prisma.user.create({
-        data: { name, phone, role: userRole },
+        data: { name, phone: normalizedPhone, role: userRole },
       });
 
       if (userRole === "JOBSEEKER") {
@@ -83,7 +79,7 @@ export async function POST(req: NextRequest) {
             title: jobTitle || null,
             location: location || null,
             skills: contractTypes || null,
-            phone,
+            phone: normalizedPhone,
             whatsappOptIn: true,
             isDisabled: !!isDisabled,
           },
@@ -109,7 +105,7 @@ export async function POST(req: NextRequest) {
       });
 
       // Message WhatsApp de bienvenue (non bloquant)
-      sendWelcomeWhatsApp({ phone, name, role: userRole, companyName: companyName || null })
+      sendWelcomeWhatsApp({ phone: normalizedPhone, name, role: userRole, companyName: companyName || null })
         .catch((err) => console.error("[Welcome WA]", err));
 
       return NextResponse.json({ success: true, userId: user.id });

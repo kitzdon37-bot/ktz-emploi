@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
         content: content.trim(),
         category: category?.trim() || "Conseils",
         published,
-        authorId: tokenUser.userId,
+        authorId: tokenUser.id,
       },
       include: { author: { select: { name: true } } },
     });

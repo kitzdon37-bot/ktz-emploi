@@ -43,15 +43,16 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.phone || !credentials?.otpToken) return null;
-        // Vérifier le token signé en DB (table OtpCode avec champ "verified")
+        const { normalizePhone } = await import("@/lib/sms");
+        const phone = normalizePhone(credentials.phone) ?? credentials.phone;
         const otp = await prisma.otpCode.findFirst({
-          where: { phone: credentials.phone, code: credentials.otpToken },
+          where: { phone, code: credentials.otpToken },
           orderBy: { createdAt: "desc" },
         });
         if (!otp || otp.expires < new Date()) return null;
         await prisma.otpCode.delete({ where: { id: otp.id } });
 
-        const user = await prisma.user.findUnique({ where: { phone: credentials.phone } });
+        const user = await prisma.user.findUnique({ where: { phone } });
         if (!user) return null;
         if (user.suspended) throw new Error("AccountSuspended");
         return { id: user.id, email: user.email ?? user.phone ?? "", name: user.name, role: user.role };

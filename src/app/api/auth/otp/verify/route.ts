@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { normalizePhone } from "@/lib/sms";
 
 export async function POST(req: NextRequest) {
-  const { phone, code } = await req.json();
-  if (!phone || !code) return NextResponse.json({ error: "Données manquantes" }, { status: 400 });
+  const { phone: rawPhone, code } = await req.json();
+  if (!rawPhone || !code) return NextResponse.json({ error: "Données manquantes" }, { status: 400 });
+
+  const phone = normalizePhone(rawPhone) ?? rawPhone;
 
   const otp = await prisma.otpCode.findFirst({
     where: { phone, code },

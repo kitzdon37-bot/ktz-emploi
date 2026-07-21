@@ -70,7 +70,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     // Un seul avis par utilisateur par entreprise
     const existing = await prisma.companyReview.findFirst({
-      where: { companyId: id, userId: tokenUser.userId },
+      where: { companyId: id, userId: tokenUser.id },
     });
     if (existing) {
       return withCors(NextResponse.json({ error: "Vous avez déjà laissé un avis pour cette entreprise" }, { status: 409 }), req);
@@ -79,7 +79,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const review = await prisma.companyReview.create({
       data: {
         companyId: id,
-        userId: tokenUser.userId,
+        userId: tokenUser.id,
         rating: Math.round(rating),
         pros: pros?.trim() || null,
         cons: cons?.trim() || null,

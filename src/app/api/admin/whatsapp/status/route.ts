@@ -8,7 +8,30 @@ export async function GET() {
     return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
   }
 
-  const provider = process.env.WA_PROVIDER || "ultramsg";
+  const provider = process.env.WA_PROVIDER || "wasenderapi";
+
+  // ── WasenderAPI ──
+  if (provider === "wasenderapi") {
+    const apiKey = process.env.WASENDER_API_KEY;
+
+    if (!apiKey) {
+      return NextResponse.json({ configured: false, state: "not_configured", provider });
+    }
+
+    try {
+      const res = await fetch("https://www.wasenderapi.com/api/whatsapp-sessions", {
+        headers: { Authorization: `Bearer ${apiKey}` },
+        cache: "no-store",
+      });
+      const data = await res.json();
+      const sessions = data?.data ?? [];
+      const connected = data?.success === true && sessions.length > 0;
+      return NextResponse.json({ configured: true, state: connected ? "authorized" : "notAuthorized", provider, sessions });
+    } catch (err) {
+      console.error("[WasenderAPI status error]", err);
+      return NextResponse.json({ configured: true, state: "error", provider });
+    }
+  }
 
   // ── UltraMsg ──
   if (provider === "ultramsg") {
@@ -24,24 +47,12 @@ export async function GET() {
         `https://api.ultramsg.com/${instanceId}/instance/status?token=${token}`,
         { cache: "no-store" }
       );
-
-      const raw = await res.text();
-      console.log("[UltraMsg status raw]", raw);
-
-      if (!res.ok) {
-        return NextResponse.json({ configured: true, state: "error", provider, raw });
-      }
-
-      const data = JSON.parse(raw);
-      // UltraMsg retourne { status: { accountStatus: { status: "authenticated", substatus: "connected" } } }
-      const accountStatus = data?.status?.accountStatus?.status ?? data?.instanceStatus ?? "";
+      const data = await res.json();
+      const accountStatus = data?.status?.accountStatus?.status ?? "";
       const substatus = data?.status?.accountStatus?.substatus ?? "";
-      const connected = accountStatus === "authenticated" || substatus === "connected" || accountStatus.toLowerCase() === "connected";
-      const state = connected ? "authorized" : "notAuthorized";
-
-      return NextResponse.json({ configured: true, state, provider, raw: `${accountStatus}/${substatus}` });
-    } catch (err) {
-      console.error("[UltraMsg status error]", err);
+      const connected = accountStatus === "authenticated" || substatus === "connected";
+      return NextResponse.json({ configured: true, state: connected ? "authorized" : "notAuthorized", provider });
+    } catch {
       return NextResponse.json({ configured: true, state: "error", provider });
     }
   }
@@ -67,20 +78,5 @@ export async function GET() {
     }
   }
 
-  // ── Meta ──
-  const phoneNumberId = process.env.WA_PHONE_NUMBER_ID;
-  const accessToken = process.env.WA_ACCESS_TOKEN;
-
-  if (!phoneNumberId || !accessToken) {
-    return NextResponse.json({ configured: false, state: "not_configured", provider });
-  }
-
-  try {
-    const res = await fetch(
-      `https://graph.facebook.com/v19.0/${phoneNumberId}?access_token=${accessToken}`
-    );
-    return NextResponse.json({ configured: true, state: res.ok ? "authorized" : "error", provider });
-  } catch {
-    return NextResponse.json({ configured: true, state: "error", provider });
-  }
+  return NextResponse.json({ configured: false, state: "unknown_provider", provider });
 }

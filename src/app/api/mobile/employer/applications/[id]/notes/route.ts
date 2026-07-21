@@ -19,7 +19,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
     // Vérifier que la candidature appartient bien à une offre de ce recruteur
     const application = await prisma.application.findFirst({
-      where: { id, job: { company: { userId: tokenUser.userId } } },
+      where: { id, job: { company: { userId: tokenUser.id } } },
       select: { id: true },
     });
     if (!application) {
@@ -27,7 +27,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     }
 
     const notes = await prisma.recruiterNote.findMany({
-      where: { applicationId: id, recruiterId: tokenUser.userId },
+      where: { applicationId: id, recruiterId: tokenUser.id },
       orderBy: { createdAt: "asc" },
     });
 
@@ -55,7 +55,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     // Vérifier que la candidature appartient à ce recruteur
     const application = await prisma.application.findFirst({
-      where: { id, job: { company: { userId: tokenUser.userId } } },
+      where: { id, job: { company: { userId: tokenUser.id } } },
       select: { id: true },
     });
     if (!application) {
@@ -65,7 +65,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const note = await prisma.recruiterNote.create({
       data: {
         applicationId: id,
-        recruiterId: tokenUser.userId,
+        recruiterId: tokenUser.id,
         content: content.trim(),
       },
     });
@@ -91,7 +91,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     }
 
     await prisma.recruiterNote.deleteMany({
-      where: { id: noteId, recruiterId: tokenUser.userId },
+      where: { id: noteId, recruiterId: tokenUser.id },
     });
 
     return withCors(NextResponse.json({ success: true }), req);

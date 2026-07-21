@@ -8,9 +8,19 @@ export async function GET() {
     return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
   }
 
-  const provider = process.env.WA_PROVIDER || "ultramsg";
+  const provider = process.env.WA_PROVIDER || "wasenderapi";
 
-  // ── UltraMsg ──
+  // ── WasenderAPI : QR géré sur le dashboard wasenderapi.com ──────────────────
+  if (provider === "wasenderapi") {
+    return NextResponse.json({
+      provider,
+      qr: null,
+      dashboardUrl: "https://wasenderapi.com/dashboard",
+      message: "Connectez votre WhatsApp directement sur le dashboard WasenderAPI",
+    });
+  }
+
+  // ── UltraMsg ──────────────────────────────────────────────────────────────────
   if (provider === "ultramsg") {
     const instanceId = process.env.ULTRAMSG_INSTANCE;
     const token = process.env.ULTRAMSG_TOKEN;
@@ -24,33 +34,20 @@ export async function GET() {
         `https://api.ultramsg.com/${instanceId}/instance/qr?token=${token}`,
         { cache: "no-store" }
       );
-
       const raw = await res.text();
-      console.log("[UltraMsg QR raw]", raw.substring(0, 100));
-
-      if (!res.ok) {
-        return NextResponse.json({ error: `UltraMsg erreur ${res.status}`, raw }, { status: 502 });
-      }
-
+      if (!res.ok) return NextResponse.json({ error: `UltraMsg erreur ${res.status}` }, { status: 502 });
       const data = JSON.parse(raw);
-
-      // UltraMsg retourne { qrCode: "data:image/png;base64,iVBOR..." }
-      // On extrait uniquement la partie base64
       let qr: string | null = null;
       if (data?.qrCode) {
-        qr = data.qrCode.includes("base64,")
-          ? data.qrCode.split("base64,")[1]
-          : data.qrCode;
+        qr = data.qrCode.includes("base64,") ? data.qrCode.split("base64,")[1] : data.qrCode;
       }
-
       return NextResponse.json({ qr, provider, message: data?.message });
-    } catch (err) {
-      console.error("[UltraMsg QR error]", err);
+    } catch {
       return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
     }
   }
 
-  // ── Green API ──
+  // ── Green API ─────────────────────────────────────────────────────────────────
   if (provider === "greenapi") {
     const instanceId = process.env.GREEN_API_INSTANCE;
     const apiToken = process.env.GREEN_API_TOKEN;
@@ -60,9 +57,7 @@ export async function GET() {
     }
 
     try {
-      const res = await fetch(
-        `https://api.green-api.com/waInstance${instanceId}/qr/${apiToken}`
-      );
+      const res = await fetch(`https://api.green-api.com/waInstance${instanceId}/qr/${apiToken}`);
       if (!res.ok) return NextResponse.json({ error: "Impossible de récupérer le QR" }, { status: 502 });
       const data = await res.json();
       return NextResponse.json({ qr: data.message, provider });
@@ -71,5 +66,5 @@ export async function GET() {
     }
   }
 
-  return NextResponse.json({ error: "QR non disponible pour Meta" }, { status: 400 });
+  return NextResponse.json({ error: "Provider inconnu" }, { status: 400 });
 }
