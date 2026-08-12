@@ -10,7 +10,7 @@ interface Candidate {
   id: string;
   userId: string;
   name: string | null;
-  email: string;
+  email: string | null;
   phone?: string | null;
   title: string | null;
   location: string | null;
@@ -57,15 +57,17 @@ const AVATAR_COLORS = [
   { bg: "bg-teal-100", text: "text-teal-600", border: "border-teal-200" },
 ];
 
-function getAvatarColor(str: string) {
+function getAvatarColor(str: string | null) {
+  if (!str) return AVATAR_COLORS[0];
   let hash = 0;
   for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
   return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
 }
 
-function getInitials(name: string | null, email: string) {
+function getInitials(name: string | null, email: string | null) {
   if (name) return name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase();
-  return email.slice(0, 2).toUpperCase();
+  if (email) return email.slice(0, 2).toUpperCase();
+  return "??";
 }
 
 function parseSkills(skills: string | null, limit?: number): string[] {
@@ -91,7 +93,7 @@ function ContactModal({
   candidateName,
   onClose,
 }: {
-  candidateEmail: string;
+  candidateEmail: string | null;
   candidateName: string | null;
   onClose: () => void;
 }) {
@@ -364,7 +366,7 @@ export default function CvthequeClient({
   const [locationFilter, setLocationFilter] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [selected, setSelected] = useState<Candidate | null>(null);
-  const [contactTarget, setContactTarget] = useState<{ email: string; name: string | null } | null>(null);
+  const [contactTarget, setContactTarget] = useState<{ email: string | null; name: string | null } | null>(null);
 
   // Extraire les localisations uniques
   const locations = useMemo(() => {

@@ -15,7 +15,8 @@ import { JOB_CATEGORIES, JOB_TYPES, RCA_LOCATIONS, APPLICATION_STATUSES } from "
 interface Candidate {
   id: string;
   name: string | null;
-  email: string;
+  email: string | null;
+  phone?: string | null;
   createdAt: string;
   profile: {
     title: string | null;
@@ -54,7 +55,8 @@ interface AdminCompany {
 interface SiteUser {
   id: string;
   name: string | null;
-  email: string;
+  email: string | null;
+  phone?: string | null;
   role: string;
   suspended?: boolean;
   createdAt: string;
@@ -650,7 +652,7 @@ function AdminDashboard() {
   const [dmMessage, setDmMessage] = useState("");
   const [dmSending, setDmSending] = useState(false);
   const [dmHistory, setDmHistory] = useState<DirectMessage[]>([]);
-  const [dmSearchResults, setDmSearchResults] = useState<{ id: string; name: string | null; email: string; phone: string | null }[]>([]);
+  const [dmSearchResults, setDmSearchResults] = useState<{ id: string; name: string | null; email: string | null; phone: string | null }[]>([]);
   const [dmSearching, setDmSearching] = useState(false);
 
   async function searchCandidates(q: string) {
@@ -830,13 +832,14 @@ function AdminDashboard() {
   useEffect(() => {
     fetch("/api/admin/candidates")
       .then((r) => r.json())
-      .then((data) => { setCandidates(data.candidates ?? []); setLoading(false); });
+      .then((data) => { setCandidates(data.candidates ?? []); setLoading(false); })
+      .catch(() => setLoading(false));
   }, []);
 
   const filtered = candidates.filter((c) =>
     !search ||
     c.name?.toLowerCase().includes(search.toLowerCase()) ||
-    c.email.toLowerCase().includes(search.toLowerCase()) ||
+    (c.email ?? "").toLowerCase().includes(search.toLowerCase()) ||
     c.profile?.title?.toLowerCase().includes(search.toLowerCase()) ||
     c.profile?.location?.toLowerCase().includes(search.toLowerCase())
   );
@@ -1683,7 +1686,7 @@ function AdminDashboard() {
 
                 {/* Avatar */}
                 <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center font-bold text-orange-600 text-sm flex-shrink-0">
-                  {(c.name ?? c.email).slice(0, 2).toUpperCase()}
+                  {(c.name ?? c.email ?? "??").slice(0, 2).toUpperCase()}
                 </div>
 
                 {/* Info candidat */}
@@ -1900,7 +1903,7 @@ function AdminDashboard() {
                 .filter((u) =>
                   !userSearch ||
                   u.name?.toLowerCase().includes(userSearch.toLowerCase()) ||
-                  u.email.toLowerCase().includes(userSearch.toLowerCase())
+                  (u.email ?? "").toLowerCase().includes(userSearch.toLowerCase())
                 )
                 .map((u) => (
                   <div key={u.id} className={`bg-white rounded-2xl border p-4 ${selectedUsers.has(u.id) ? "border-orange-300 ring-1 ring-orange-100" : "border-gray-200"}`}>
@@ -1913,7 +1916,7 @@ function AdminDashboard() {
                         className="rounded text-orange-500 flex-shrink-0"
                       />
                       <div className="w-9 h-9 rounded-full bg-orange-100 flex items-center justify-center font-bold text-orange-600 text-sm flex-shrink-0">
-                        {(u.name ?? u.email).slice(0, 2).toUpperCase()}
+                        {(u.name ?? u.email ?? "??").slice(0, 2).toUpperCase()}
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-gray-900 truncate text-sm">{u.name ?? "—"}</p>
@@ -1964,7 +1967,7 @@ function AdminDashboard() {
               {siteUsers.filter((u) =>
                 !userSearch ||
                 u.name?.toLowerCase().includes(userSearch.toLowerCase()) ||
-                u.email.toLowerCase().includes(userSearch.toLowerCase())
+                (u.email ?? "").toLowerCase().includes(userSearch.toLowerCase())
               ).length === 0 && (
                 <div className="text-center py-16 bg-white rounded-2xl border border-gray-200">
                   <Users className="h-10 w-10 mx-auto mb-3 text-gray-200" />
@@ -2800,14 +2803,14 @@ WA_PROVIDER="greenapi"`}
                       key={u.id}
                       onClick={() => {
                         setDmPhone(u.phone ?? "");
-                        setDmName(u.name ?? u.email);
-                        setDmSearch(u.name ?? u.email);
+                        setDmName(u.name ?? u.email ?? "");
+                        setDmSearch(u.name ?? u.email ?? "");
                         setDmSearchResults([]);
                       }}
                       className="w-full flex items-center gap-3 px-4 py-3 hover:bg-orange-50 transition-colors text-left border-b border-gray-100 last:border-0"
                     >
                       <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-xs flex-shrink-0">
-                        {(u.name ?? u.email)[0].toUpperCase()}
+                        {(u.name ?? u.email ?? "?")[0].toUpperCase()}
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-gray-900 truncate">{u.name ?? "—"}</p>
