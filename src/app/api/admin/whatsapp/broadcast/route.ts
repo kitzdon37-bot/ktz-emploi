@@ -38,7 +38,6 @@ export async function POST(req: NextRequest) {
           role: "EMPLOYER",
           suspended: false,
           phone: { not: null },
-          jobSeekerProfile: null, // pas de profil candidat
         },
         select: { phone: true },
       })
