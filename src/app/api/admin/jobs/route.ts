@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { sendJobNotifications } from "@/lib/notifications";
+import { waitUntil } from "@vercel/functions";
 
 // Laisser 300s pour les envois WhatsApp en arrière-plan
 export const maxDuration = 300;
@@ -50,16 +51,19 @@ export async function PATCH(req: NextRequest) {
         include: { company: { select: { name: true } } },
       });
 
-      // Notifier tous les candidats à chaque approbation
-      sendJobNotifications(job).catch(err =>
-        console.error("[Notifications] Erreur envoi:", err)
+      // Garder la fonction Vercel active jusqu'à la fin des envois WhatsApp
+      waitUntil(
+        sendJobNotifications(job)
+          .then(r => console.log(`[Notifications] "${job.title}" — WA: ${r.whatsappSent}✓ ${r.whatsappFailed}✗ | Email: ${r.emailSent}✓ ${r.emailFailed}✗`))
+          .catch(err => console.error("[Notifications] Erreur envoi:", err))
       );
-      // Déclencher le matching des alertes emploi
-      fetch(`${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/api/alerts/notify`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jobId: job.id }),
-      }).catch(err => console.error("[Alerts] Erreur:", err));
+      waitUntil(
+        fetch(`${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/api/alerts/notify`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ jobId: job.id }),
+        }).catch(err => console.error("[Alerts] Erreur:", err))
+      );
 
       return NextResponse.json({ success: true, message: "Offre publiée" });
     }
