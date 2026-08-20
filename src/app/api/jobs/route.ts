@@ -7,6 +7,9 @@ import { getPlanLimits } from "@/lib/plans";
 import { logActivity } from "@/lib/activity";
 import { sendJobNotifications } from "@/lib/notifications";
 
+// Laisser 300s pour les envois WhatsApp en arrière-plan
+export const maxDuration = 300;
+
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });

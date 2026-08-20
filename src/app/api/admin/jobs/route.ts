@@ -4,6 +4,9 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { sendJobNotifications } from "@/lib/notifications";
 
+// Laisser 300s pour les envois WhatsApp en arrière-plan
+export const maxDuration = 300;
+
 // GET — offres en attente (?pending=true) OU toutes les offres (?all=true)
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
