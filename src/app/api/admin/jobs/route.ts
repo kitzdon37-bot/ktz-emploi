@@ -47,13 +47,16 @@ export async function PATCH(req: NextRequest) {
         include: { company: { select: { name: true } } },
       });
 
-      // Notifications automatiques si le recruteur l'a demandé
-      if (job.notifyOnApproval) {
-        // Fire-and-forget : on n'attend pas la fin pour répondre
-        sendJobNotifications(job).catch(err =>
-          console.error("[Notifications] Erreur envoi:", err)
-        );
-      }
+      // Notifier tous les candidats à chaque approbation
+      sendJobNotifications(job).catch(err =>
+        console.error("[Notifications] Erreur envoi:", err)
+      );
+      // Déclencher le matching des alertes emploi
+      fetch(`${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/api/alerts/notify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jobId: job.id }),
+      }).catch(err => console.error("[Alerts] Erreur:", err));
 
       return NextResponse.json({ success: true, message: "Offre publiée" });
     }

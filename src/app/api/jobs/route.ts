@@ -32,9 +32,9 @@ export async function POST(req: NextRequest) {
   const planStatus = company.subscription?.status ?? "ACTIVE";
   const limits = getPlanLimits(planStatus === "ACTIVE" ? planKey : "FREE");
   const activeJobs = await prisma.job.count({ where: { companyId: company.id, published: true } });
-  if (activeJobs >= limits.maxJobs) {
+  if (isFinite(limits.maxJobs) && activeJobs >= limits.maxJobs) {
     return NextResponse.json({
-      error: `Limite atteinte : votre plan ${limits.name} autorise ${limits.maxJobs === 999 ? "offres illimitées" : `${limits.maxJobs} offre(s) active(s)`}. Passez à un plan supérieur sur /tableau-de-bord/abonnement`,
+      error: `Limite atteinte : votre plan ${limits.name} autorise ${limits.maxJobs} offre(s) active(s). Passez à un plan supérieur sur /tableau-de-bord/abonnement`,
       upgradeRequired: true,
     }, { status: 403 });
   }
@@ -87,12 +87,16 @@ export async function POST(req: NextRequest) {
       metadata: { jobId: job.id, slug: job.slug, companyName: company.name, category, location },
     });
 
-    // Notifications immédiates si le recruteur l'a demandé
-    if (notifyOnApproval) {
-      sendJobNotifications(job).catch(err =>
-        console.error("[Notifications] Erreur:", err)
-      );
-    }
+    // Notifier tous les candidats dès la publication
+    sendJobNotifications(job).catch(err =>
+      console.error("[Notifications] Erreur:", err)
+    );
+    // Déclencher le matching des alertes emploi
+    fetch(`${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/api/alerts/notify`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ jobId: job.id }),
+    }).catch(err => console.error("[Alerts] Erreur:", err));
 
     return NextResponse.json({ success: true, id: job.id, slug: job.slug });
   } catch (err) {

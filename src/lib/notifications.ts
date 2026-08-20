@@ -62,32 +62,40 @@ export async function sendJobNotifications(job: Job): Promise<{
   const jobUrl = `${siteUrl}/emplois/${job.slug}`;
   const { waTemplate, emailSubject, emailBody } = await getTemplates();
 
-  const candidates = await prisma.jobSeekerProfile.findMany({
-    where: { user: { role: "JOBSEEKER", suspended: false } },
+  // Requête depuis User pour inclure TOUS les candidats, même sans profil JobSeeker
+  const candidates = await prisma.user.findMany({
+    where: { role: "JOBSEEKER", suspended: false },
     select: {
-      phone: true,
-      whatsappOptIn: true,
-      notifCategories: true,
-      user: { select: { email: true, name: true } },
+      email: true,
+      name: true,
+      profile: {
+        select: {
+          phone: true,
+          whatsappOptIn: true,
+          notifCategories: true,
+        },
+      },
     },
   });
 
   let whatsappSent = 0, whatsappFailed = 0, emailSent = 0, emailFailed = 0;
 
   for (const candidate of candidates) {
-    // Filtre par secteur si configuré
-    if (candidate.notifCategories) {
+    const profile = candidate.profile;
+
+    // Filtre par secteur si le candidat a configuré des catégories (préférence, pas blocage dur)
+    if (profile?.notifCategories) {
       try {
-        const cats: string[] = JSON.parse(candidate.notifCategories);
+        const cats: string[] = JSON.parse(profile.notifCategories);
         if (cats.length > 0 && !cats.includes(job.category)) continue;
       } catch { /* JSON invalide → on envoie */ }
     }
 
     // Variables de substitution personnalisées par candidat
-    const firstName = candidate.user.name?.split(" ")[0] ?? "vous";
+    const firstName = candidate.name?.split(" ")[0] ?? "vous";
     const vars = {
       prenom: firstName,
-      nom: candidate.user.name ?? "",
+      nom: candidate.name ?? "",
       offre: job.title,
       entreprise: job.company.name,
       ville: job.location,
@@ -96,10 +104,12 @@ export async function sendJobNotifications(job: Job): Promise<{
     };
 
     // ── WhatsApp ──
-    if (candidate.phone && candidate.whatsappOptIn) {
+    if (profile?.phone && profile?.whatsappOptIn) {
       const message = applyTemplate(waTemplate, vars);
-      const ok = await sendWhatsApp(candidate.phone, message);
+      const ok = await sendWhatsApp(profile.phone, message);
       ok ? whatsappSent++ : whatsappFailed++;
+      // Délai entre envois WhatsApp : 1s sans Account Protection, 6s avec
+      await new Promise(r => setTimeout(r, Number(process.env.WA_SEND_DELAY_MS ?? 6000)));
     }
 
     // ── Email ──
@@ -108,8 +118,8 @@ export async function sendJobNotifications(job: Job): Promise<{
     const emailHtml = textToEmailHtml(bodyText, jobUrl, job.title);
 
     try {
-      if (!candidate.user.email) { emailFailed++; continue; }
-      await sendEmail({ to: candidate.user.email, subject, html: emailHtml });
+      if (!candidate.email) { emailFailed++; continue; }
+      await sendEmail({ to: candidate.email, subject, html: emailHtml });
       emailSent++;
     } catch {
       emailFailed++;

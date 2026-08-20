@@ -153,8 +153,8 @@ async function sendWhatsAppGreenAPI(to: string, message: string): Promise<boolea
 
 // ── Provider 3 : WasenderAPI ─────────────────────────────────────────────────
 // 6$/mois · illimité · setup : créer compte sur wasenderapi.com → scanner QR
-// Variables : WASENDER_API_KEY
-async function sendWhatsAppWasender(to: string, message: string): Promise<boolean> {
+// Variables : WASENDER_API_KEY, WASENDER_PHONE (numéro WhatsApp expéditeur)
+async function sendWhatsAppWasender(to: string, message: string, retries = 3): Promise<boolean> {
   const apiKey = process.env.WASENDER_API_KEY;
 
   if (!apiKey) {
@@ -180,14 +180,19 @@ async function sendWhatsAppWasender(to: string, message: string): Promise<boolea
     });
 
     const raw = await res.text();
-    console.log("[WhatsApp/WasenderAPI] status:", res.status, "réponse:", raw);
 
-    const data = JSON.parse(raw);
+    let data: Record<string, unknown> = {};
+    try { data = JSON.parse(raw); } catch { /* raw non-JSON */ }
 
-    // Rate limit free trial : 1 msg/min
+    // Rate limit : 1 msg/5s avec Account Protection activé
     if (res.status === 429 || data?.retry_after) {
-      console.error("[WhatsApp/WasenderAPI] Rate limit atteint — retry dans", data?.retry_after, "s");
-      return false;
+      if (retries <= 0) {
+        console.error("[WhatsApp/WasenderAPI] Rate limit persistant — abandon après 3 essais");
+        return false;
+      }
+      console.warn(`[WhatsApp/WasenderAPI] Rate limit — attente 10s (${retries} essais restants)`);
+      await new Promise(r => setTimeout(r, 10000));
+      return sendWhatsAppWasender(to, message, retries - 1);
     }
 
     if (!res.ok) {
@@ -195,7 +200,6 @@ async function sendWhatsAppWasender(to: string, message: string): Promise<boolea
       return false;
     }
 
-    // WasenderAPI retourne { success: true } ou { message: "..." } selon version
     const ok = data?.success === true || data?.status === "success" || !!data?.id;
     if (!ok) console.error("[WhatsApp/WasenderAPI] Échec:", data);
     return ok;
