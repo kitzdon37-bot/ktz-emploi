@@ -5,8 +5,6 @@ import { prisma } from "@/lib/prisma";
 import { slugify } from "@/lib/utils";
 import { getPlanLimits } from "@/lib/plans";
 import { logActivity } from "@/lib/activity";
-import { sendJobNotifications } from "@/lib/notifications";
-
 // Laisser 300s pour les envois WhatsApp en arrière-plan
 export const maxDuration = 300;
 
@@ -46,7 +44,6 @@ export async function POST(req: NextRequest) {
     const {
       title, type, category, location, remote, description,
       requirements, benefits, experienceLevel, salaryMin, salaryMax, deadline, coverImage,
-      notifyOnApproval,
     } = await req.json();
 
     if (!title || !type || !category || !location || !description) {
@@ -74,8 +71,8 @@ export async function POST(req: NextRequest) {
         salaryMax: salaryMax || null,
         deadline: deadline ? new Date(deadline) : null,
         coverImage: coverImage || null,
-        published: true,
-        notifyOnApproval: !!notifyOnApproval,
+        published: false,
+        notifyOnApproval: true,
       },
       include: { company: { select: { name: true } } },
     });
@@ -86,20 +83,9 @@ export async function POST(req: NextRequest) {
       userEmail: dbUser?.email ?? undefined,
       userName: dbUser?.name ?? undefined,
       type: "JOB_PUBLISHED",
-      label: `Offre publiée : ${title}`,
+      label: `Offre soumise (en attente) : ${title}`,
       metadata: { jobId: job.id, slug: job.slug, companyName: company.name, category, location },
     });
-
-    // Notifier tous les candidats dès la publication
-    sendJobNotifications(job).catch(err =>
-      console.error("[Notifications] Erreur:", err)
-    );
-    // Déclencher le matching des alertes emploi
-    fetch(`${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/api/alerts/notify`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ jobId: job.id }),
-    }).catch(err => console.error("[Alerts] Erreur:", err));
 
     return NextResponse.json({ success: true, id: job.id, slug: job.slug });
   } catch (err) {
