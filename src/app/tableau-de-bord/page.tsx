@@ -85,6 +85,25 @@ export default async function DashboardPage() {
           </Link>
         </div>
 
+        {/* Promo banner */}
+        <div className="mb-6 bg-gradient-to-r from-orange-500 to-orange-400 rounded-2xl px-5 py-4 flex items-center gap-4 shadow-sm">
+          <div className="text-2xl">🎉</div>
+          <div className="flex-1">
+            <p className="text-white font-semibold text-sm sm:text-base">
+              Offre spéciale — Publication gratuite jusqu&apos;à fin septembre !
+            </p>
+            <p className="text-orange-100 text-xs sm:text-sm mt-0.5">
+              Publiez vos offres d&apos;emploi gratuitement sur KTZ Emploi et touchez des milliers de candidats en RCA.
+            </p>
+          </div>
+          <Link
+            href="/tableau-de-bord/publier"
+            className="flex-shrink-0 bg-white text-orange-500 font-semibold text-xs sm:text-sm px-4 py-2 rounded-xl hover:bg-orange-50 transition-colors"
+          >
+            Publier une offre
+          </Link>
+        </div>
+
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {[
