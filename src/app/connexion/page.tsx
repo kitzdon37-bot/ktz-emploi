@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Briefcase, Eye, EyeOff, Loader2, MessageCircle, Mail } from "lucide-react";
+import { Briefcase, Eye, EyeOff, Loader2, MessageCircle, Mail, X } from "lucide-react";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
 
 function LoginForm() {
@@ -28,6 +28,12 @@ function LoginForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [devCode, setDevCode] = useState("");
+  const [showEmployerPromo, setShowEmployerPromo] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowEmployerPromo(true), 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   async function handleEmailSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -114,6 +120,51 @@ function LoginForm() {
 
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-white flex items-start justify-center px-4 pt-10 pb-16">
+
+      {/* Employer promo popup */}
+      {showEmployerPromo && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 relative animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <button
+              onClick={() => setShowEmployerPromo(false)}
+              className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X className="h-5 w-5" />
+            </button>
+
+            <div className="flex items-center justify-center w-14 h-14 rounded-full bg-orange-100 mx-auto mb-4">
+              <Briefcase className="h-7 w-7 text-orange-500" />
+            </div>
+
+            <h2 className="text-center text-gray-900 font-bold text-lg mb-2">
+              🎉 Vous êtes recruteur ?
+            </h2>
+            <p className="text-center text-gray-500 text-sm leading-relaxed mb-5">
+              Publiez vos offres d&apos;emploi{" "}
+              <strong className="text-gray-800">gratuitement</strong> sur KTZ Emploi
+              et touchez des milliers de candidats qualifiés en RCA.
+              <br /><br />
+              Offre valable jusqu&apos;au <strong className="text-orange-500">30 septembre 2026</strong>.
+            </p>
+
+            <div className="flex flex-col gap-2">
+              <Link
+                href="/inscription?role=employer"
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-xl text-sm transition-colors text-center"
+              >
+                Créer un compte recruteur
+              </Link>
+              <button
+                onClick={() => setShowEmployerPromo(false)}
+                className="w-full text-gray-500 hover:text-gray-700 text-sm py-2 transition-colors"
+              >
+                Je me connecte à mon compte existant
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="w-full max-w-[420px]">
 
         {/* Logo */}

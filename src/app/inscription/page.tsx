@@ -63,6 +63,7 @@ function RegisterForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showWaPopup, setShowWaPopup] = useState(false);
+  const [showEmployerPromo, setShowEmployerPromo] = useState(false);
 
   useEffect(() => {
     if (role !== "jobseeker" || method !== "email") return;
@@ -205,6 +206,42 @@ function RegisterForm() {
 
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-white flex items-start justify-center px-4 pt-10 pb-16">
+
+      {/* Employer promo popup */}
+      {showEmployerPromo && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 relative animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <button
+              onClick={() => setShowEmployerPromo(false)}
+              className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X className="h-5 w-5" />
+            </button>
+
+            <div className="flex items-center justify-center w-14 h-14 rounded-full bg-orange-100 mx-auto mb-4">
+              <Briefcase className="h-7 w-7 text-orange-500" />
+            </div>
+
+            <h2 className="text-center text-gray-900 font-bold text-lg mb-2">
+              🎉 Publication gratuite jusqu&apos;à fin septembre !
+            </h2>
+            <p className="text-center text-gray-500 text-sm leading-relaxed mb-5">
+              Publiez vos offres d&apos;emploi{" "}
+              <strong className="text-gray-800">gratuitement</strong> sur KTZ Emploi
+              et touchez des milliers de candidats qualifiés en RCA.
+              <br /><br />
+              Offre valable jusqu&apos;au <strong className="text-orange-500">30 septembre 2026</strong>.
+            </p>
+
+            <button
+              onClick={() => setShowEmployerPromo(false)}
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-xl text-sm transition-colors"
+            >
+              Super, je m&apos;inscris !
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* WhatsApp info popup */}
       {showWaPopup && (
@@ -365,7 +402,7 @@ function RegisterForm() {
           </button>
           <button
             type="button"
-            onClick={() => setRole("employer")}
+            onClick={() => { setRole("employer"); setShowEmployerPromo(true); }}
             className={`py-2.5 rounded-xl border-2 text-sm font-medium transition-all ${
               role === "employer"
                 ? "border-orange-400 bg-orange-50 text-orange-600"
