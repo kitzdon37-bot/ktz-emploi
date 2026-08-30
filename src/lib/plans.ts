@@ -2,7 +2,7 @@ export const PLANS = {
   FREE: {
     name: "Gratuit",
     price: 0,
-    maxJobs: 1,
+    maxJobs: Infinity,
     jobDuration: 15,
     cvtheque: true,
     featured: false,
@@ -25,7 +25,7 @@ export const PLANS = {
   MICRO: {
     name: "Micro",
     price: 10000,
-    maxJobs: 3,
+    maxJobs: Infinity,
     jobDuration: 30,
     cvtheque: true,
     featured: false,
@@ -49,7 +49,7 @@ export const PLANS = {
   STARTER: {
     name: "Starter",
     price: 70000,
-    maxJobs: 10,
+    maxJobs: Infinity,
     jobDuration: 30,
     cvtheque: true,
     featured: false,
@@ -72,7 +72,7 @@ export const PLANS = {
   PRO: {
     name: "Pro",
     price: 100000,
-    maxJobs: 999,
+    maxJobs: Infinity,
     jobDuration: 60,
     cvtheque: true,
     featured: true,

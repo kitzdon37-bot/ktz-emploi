@@ -13,12 +13,14 @@ async function main() {
   const existing = await prisma.user.findUnique({ where: { email: ADMIN_EMAIL } });
 
   if (existing) {
-    // Mettre à jour le rôle si le compte existe
+    // Mettre à jour le rôle et réinitialiser le mot de passe
+    const hashed = await bcrypt.hash(ADMIN_PASSWORD, 12);
     await prisma.user.update({
       where: { email: ADMIN_EMAIL },
-      data: { role: "ADMIN" },
+      data: { role: "ADMIN", password: hashed },
     });
-    console.log(`✅ Rôle ADMIN mis à jour pour : ${ADMIN_EMAIL}`);
+    console.log(`✅ Rôle ADMIN et mot de passe réinitialisés pour : ${ADMIN_EMAIL}`);
+    console.log(`   Mot de passe : ${ADMIN_PASSWORD}`);
     return;
   }
 
