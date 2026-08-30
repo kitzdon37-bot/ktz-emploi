@@ -8,6 +8,8 @@ import NewsletterPopup from "@/components/NewsletterPopup";
 import VisitTracker from "@/components/VisitTracker";
 import { Analytics } from "@vercel/analytics/next";
 import InactivityTimer from "@/components/InactivityTimer";
+import WhatsAppButton from "@/components/WhatsAppButton";
+import FeedbackPopup from "@/components/FeedbackPopup";
 
 export const metadata: Metadata = {
   title: "KTZ Emploi — Offres d'emploi en République Centrafricaine",
@@ -39,8 +41,10 @@ export default function RootLayout({
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />
-          {process.env.NODE_ENV !== "production" && <ChatWidget />}
+          <ChatWidget />
+          <WhatsAppButton />
           <NewsletterPopup />
+          <FeedbackPopup />
           <VisitTracker />
           <InactivityTimer />
           <Analytics />
