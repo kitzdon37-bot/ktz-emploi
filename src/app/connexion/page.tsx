@@ -1,16 +1,16 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
-import { signIn } from "next-auth/react";
+import { useState, Suspense } from "react";
+import { signIn, getSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Briefcase, Eye, EyeOff, Loader2, MessageCircle, Mail, X } from "lucide-react";
+import { Briefcase, Eye, EyeOff, Loader2, MessageCircle, Mail, X, FileText } from "lucide-react";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const callbackUrl = searchParams.get("callbackUrl") || "/tableau-de-bord";
 
   const [method, setMethod] = useState<"email" | "whatsapp">("email");
 
@@ -28,12 +28,15 @@ function LoginForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [devCode, setDevCode] = useState("");
-  const [showEmployerPromo, setShowEmployerPromo] = useState(false);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setShowEmployerPromo(true), 2000);
-    return () => clearTimeout(timer);
-  }, []);
+  // Popup affiché après connexion selon le rôle
+  const [showPromo, setShowPromo] = useState<"EMPLOYER" | "JOBSEEKER" | null>(null);
+
+  function dismissPromo() {
+    setShowPromo(null);
+    router.push(callbackUrl);
+    router.refresh();
+  }
 
   async function handleEmailSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -50,8 +53,15 @@ function LoginForm() {
         setError("Email ou mot de passe incorrect.");
         return;
       }
-      router.push(callbackUrl);
-      router.refresh();
+      // Connexion réussie → récupérer le rôle et afficher le bon message
+      const session = await getSession();
+      const role = (session?.user as { role?: string })?.role;
+      if (role === "EMPLOYER" || role === "JOBSEEKER") {
+        setShowPromo(role);
+      } else {
+        router.push(callbackUrl);
+        router.refresh();
+      }
     } catch {
       setError("Une erreur est survenue.");
     } finally {
@@ -85,7 +95,6 @@ function LoginForm() {
     setError("");
     setLoading(true);
     try {
-      // 1. Vérifier que le code est correct et que le compte existe
       const verifyRes = await fetch("/api/auth/otp/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -95,13 +104,10 @@ function LoginForm() {
       if (!verifyRes.ok) { setError(verifyData.error || "Code invalide"); return; }
 
       if (!verifyData.exists) {
-        // Pas de compte → inscription
         router.push(`/inscription?phone=${encodeURIComponent(phone)}&verified=1`);
         return;
       }
 
-      // 2. Compte trouvé → créer la session directement avec le code déjà vérifié
-      // (le provider "phone" de NextAuth va le consommer et supprimer le code)
       const result = await signIn("phone", { phone, otpToken: otp, redirect: false });
       if (!result?.ok) {
         setError("Connexion échouée. Renvoyez un nouveau code.");
@@ -109,8 +115,15 @@ function LoginForm() {
         setOtp("");
         return;
       }
-      router.push(callbackUrl);
-      router.refresh();
+      // Connexion réussie → récupérer le rôle
+      const session = await getSession();
+      const role = (session?.user as { role?: string })?.role;
+      if (role === "EMPLOYER" || role === "JOBSEEKER") {
+        setShowPromo(role);
+      } else {
+        router.push(callbackUrl);
+        router.refresh();
+      }
     } catch {
       setError("Une erreur est survenue.");
     } finally {
@@ -121,23 +134,18 @@ function LoginForm() {
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-white flex items-start justify-center px-4 pt-10 pb-16">
 
-      {/* Employer promo popup */}
-      {showEmployerPromo && (
+      {/* Pop-up recruteur */}
+      {showPromo === "EMPLOYER" && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 relative animate-in fade-in slide-in-from-bottom-4 duration-300">
-            <button
-              onClick={() => setShowEmployerPromo(false)}
-              className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors"
-            >
+            <button onClick={dismissPromo} className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors">
               <X className="h-5 w-5" />
             </button>
-
             <div className="flex items-center justify-center w-14 h-14 rounded-full bg-orange-100 mx-auto mb-4">
               <Briefcase className="h-7 w-7 text-orange-500" />
             </div>
-
             <h2 className="text-center text-gray-900 font-bold text-lg mb-2">
-              🎉 Vous êtes recruteur ?
+              🎉 Publication gratuite jusqu&apos;à fin septembre !
             </h2>
             <p className="text-center text-gray-500 text-sm leading-relaxed mb-5">
               Publiez vos offres d&apos;emploi{" "}
@@ -146,19 +154,58 @@ function LoginForm() {
               <br /><br />
               Offre valable jusqu&apos;au <strong className="text-orange-500">30 septembre 2026</strong>.
             </p>
+            <button
+              onClick={dismissPromo}
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-xl text-sm transition-colors"
+            >
+              Accéder à mon espace recruteur →
+            </button>
+          </div>
+        </div>
+      )}
 
+      {/* Pop-up candidat */}
+      {showPromo === "JOBSEEKER" && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 relative animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <button onClick={dismissPromo} className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors">
+              <X className="h-5 w-5" />
+            </button>
+            <div className="flex items-center justify-center w-14 h-14 rounded-full bg-blue-100 mx-auto mb-4">
+              <FileText className="h-7 w-7 text-blue-600" />
+            </div>
+            <h2 className="text-center text-gray-900 font-bold text-lg mb-2">
+              Votre CV en ligne vous ouvre des portes
+            </h2>
+            <p className="text-center text-gray-500 text-sm leading-relaxed mb-4">
+              Les candidats avec un CV complet ont{" "}
+              <strong className="text-gray-800">3x plus de chances</strong> d&apos;être contactés par un recruteur.
+            </p>
+            <ul className="space-y-2 mb-5">
+              {[
+                "Créez votre CV en quelques minutes",
+                "Visible par tous les recruteurs du site",
+                "Soyez alerté quand un recruteur consulte votre CV",
+              ].map((tip) => (
+                <li key={tip} className="flex items-center gap-2 text-sm text-gray-600">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0" />
+                  {tip}
+                </li>
+              ))}
+            </ul>
             <div className="flex flex-col gap-2">
               <Link
-                href="/inscription?role=employer"
-                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-xl text-sm transition-colors text-center"
+                href="/tableau-de-bord/cv/builder"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl text-sm transition-colors text-center"
+                onClick={() => setShowPromo(null)}
               >
-                Créer un compte recruteur
+                Créer mon CV maintenant →
               </Link>
               <button
-                onClick={() => setShowEmployerPromo(false)}
-                className="w-full text-gray-500 hover:text-gray-700 text-sm py-2 transition-colors"
+                onClick={dismissPromo}
+                className="w-full text-gray-400 hover:text-gray-600 text-sm py-2 transition-colors"
               >
-                Je me connecte à mon compte existant
+                Plus tard
               </button>
             </div>
           </div>
