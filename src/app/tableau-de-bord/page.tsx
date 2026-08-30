@@ -16,6 +16,7 @@ import {
   ArrowRight,
   Search,
   MapPin,
+  FileText,
 } from "lucide-react";
 import { timeAgo, APPLICATION_STATUSES } from "@/lib/utils";
 
@@ -275,6 +276,36 @@ export default async function DashboardPage() {
         >
           <Search className="h-4 w-4" />
           Rechercher
+        </Link>
+      </div>
+
+      {/* CV promo banner */}
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-5 mb-8 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <div className="w-11 h-11 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
+          <FileText className="h-6 w-6 text-white" />
+        </div>
+        <div className="flex-1">
+          <p className="text-white font-semibold text-sm sm:text-base">
+            Un bon CV = 3x plus de chances d&apos;être contacté par un recruteur
+          </p>
+          <ul className="mt-1.5 space-y-0.5">
+            {[
+              "Créez votre CV en ligne en quelques minutes",
+              "Visible par tous les recruteurs inscrits sur KTZ Emploi",
+              "Soyez alerté dès qu'un recruteur consulte votre profil",
+            ].map((tip) => (
+              <li key={tip} className="text-blue-100 text-xs flex items-center gap-1.5">
+                <span className="w-1 h-1 bg-blue-300 rounded-full flex-shrink-0" />
+                {tip}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <Link
+          href="/tableau-de-bord/cv/builder"
+          className="flex-shrink-0 bg-white text-blue-600 font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl hover:bg-blue-50 transition-colors whitespace-nowrap"
+        >
+          Créer mon CV →
         </Link>
       </div>
 
