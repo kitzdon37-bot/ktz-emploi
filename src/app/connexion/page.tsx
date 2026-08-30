@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, Suspense } from "react";
-import { signIn, getSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Briefcase, Eye, EyeOff, Loader2, MessageCircle, Mail, X, FileText } from "lucide-react";
@@ -54,8 +54,9 @@ function LoginForm() {
         return;
       }
       // Connexion réussie → récupérer le rôle et afficher le bon message
-      const session = await getSession();
-      const role = (session?.user as { role?: string })?.role;
+      const sessionRes = await fetch("/api/auth/session");
+      const session = await sessionRes.json();
+      const role = session?.user?.role;
       if (role === "EMPLOYER" || role === "JOBSEEKER") {
         setShowPromo(role);
       } else {
