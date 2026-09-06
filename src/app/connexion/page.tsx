@@ -117,8 +117,9 @@ function LoginForm() {
         return;
       }
       // Connexion réussie → récupérer le rôle
-      const session = await getSession();
-      const role = (session?.user as { role?: string })?.role;
+      const sessionRes = await fetch("/api/auth/session");
+      const session = await sessionRes.json();
+      const role = session?.user?.role;
       if (role === "EMPLOYER" || role === "JOBSEEKER") {
         setShowPromo(role);
       } else {
