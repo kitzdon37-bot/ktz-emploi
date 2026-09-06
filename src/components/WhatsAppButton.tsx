@@ -1,7 +1,7 @@
 "use client";
 
 // Numéro WhatsApp KTZ Emploi (format international sans +)
-const WA_NUMBER = "33754095087";
+const WA_NUMBER = "23670954792";
 const WA_MESSAGE = encodeURIComponent(
   "Bonjour KTZ Emploi ! Je vous contacte depuis votre site web."
 );

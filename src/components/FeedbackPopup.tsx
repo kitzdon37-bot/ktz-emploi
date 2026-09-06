@@ -49,7 +49,7 @@ export default function FeedbackPopup() {
         {/* CTAs */}
         <div className="flex gap-2">
           <a
-            href="https://wa.me/33754095087?text=Bonjour%20KTZ%20Emploi%20!%20Je%20voudrais%20signaler%20un%20bug%20ou%20donner%20mon%20avis%20:%20"
+            href="https://wa.me/23670954792?text=Bonjour%20KTZ%20Emploi%20!%20Je%20voudrais%20signaler%20un%20bug%20ou%20donner%20mon%20avis%20:%20"
             target="_blank"
             rel="noopener noreferrer"
             onClick={dismiss}
