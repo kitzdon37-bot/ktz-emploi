@@ -44,7 +44,7 @@ Nous avons sélectionné pour vous les meilleures offres d'emploi publiées cett
 
 🔥 Ne manquez pas ces opportunités — les recruteurs centrafricains recherchent des profils comme le vôtre !
 
-👉 Rendez-vous sur https://ktzemploi.cf/emplois pour postuler dès maintenant.
+👉 Rendez-vous sur https://ktzemploi.com/emplois pour postuler dès maintenant.
 
 À très bientôt,
 L'équipe KTZ Emploi`,
@@ -104,7 +104,7 @@ Nous avons une nouvelle importante à vous partager.
 
 [CONTENU DE L'ANNONCE]
 
-Pour en savoir plus, visitez notre plateforme sur https://ktzemploi.cf
+Pour en savoir plus, visitez notre plateforme sur https://ktzemploi.com
 
 Merci pour votre confiance,
 L'équipe KTZ Emploi`,

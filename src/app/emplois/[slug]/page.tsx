@@ -13,7 +13,7 @@ import ShareButtons from "./ShareButtons";
 import CompanyPopup from "./CompanyPopup";
 import ContactRecruiter from "./ContactRecruiter";
 
-const BASE_URL = "https://ktzemploi.cf";
+const BASE_URL = "https://ktzemploi.com";
 
 interface Props {
   params: Promise<{ slug: string }>;
