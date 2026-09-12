@@ -12,10 +12,22 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 import FeedbackPopup from "@/components/FeedbackPopup";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://ktzemploi.com"),
   title: "KTZ Emploi — Offres d'emploi en République Centrafricaine",
   description:
     "Trouvez votre prochain emploi en République Centrafricaine. Des milliers d'offres d'emploi à Bangui et partout en RCA.",
-  keywords: "emploi centrafrique, jobs bangui, recrutement RCA, travail centrafrique",
+  keywords: "emploi centrafrique, jobs bangui, recrutement RCA, travail centrafrique, offres emploi bangui, ktzemploi",
+  alternates: {
+    canonical: "https://ktzemploi.com",
+  },
+  openGraph: {
+    title: "KTZ Emploi — Offres d'emploi en République Centrafricaine",
+    description: "Trouvez votre prochain emploi en République Centrafricaine. Des milliers d'offres d'emploi à Bangui et partout en RCA.",
+    url: "https://ktzemploi.com",
+    siteName: "KTZ Emploi",
+    locale: "fr_FR",
+    type: "website",
+  },
   icons: {
     icon: [
       { url: "/favicon-16.png",  sizes: "16x16",  type: "image/png" },
