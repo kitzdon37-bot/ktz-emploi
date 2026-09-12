@@ -7,6 +7,9 @@ const WA_MESSAGE = encodeURIComponent(
 );
 
 export default function WhatsAppButton() {
+  // TEMPORAIREMENT DÉSACTIVÉ — retirer quand le nouveau numéro est prêt
+  return null;
+
   return (
     <a
       href={`https://wa.me/${WA_NUMBER}?text=${WA_MESSAGE}`}

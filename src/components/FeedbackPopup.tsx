@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, MessageCircle, Mail, Bug } from "lucide-react";
+import { X, Mail, Bug } from "lucide-react";
 
 export default function FeedbackPopup() {
   const [visible, setVisible] = useState(false);
@@ -48,6 +48,7 @@ export default function FeedbackPopup() {
 
         {/* CTAs */}
         <div className="flex gap-2">
+          {/* TEMPORAIREMENT DÉSACTIVÉ — remettre quand le nouveau numéro est prêt
           <a
             href="https://wa.me/23670954792?text=Bonjour%20KTZ%20Emploi%20!%20Je%20voudrais%20signaler%20un%20bug%20ou%20donner%20mon%20avis%20:%20"
             target="_blank"
@@ -58,6 +59,7 @@ export default function FeedbackPopup() {
             <MessageCircle className="h-3.5 w-3.5" />
             WhatsApp
           </a>
+          */}
           <a
             href="mailto:contact@ktzemploi.com?subject=Retour%20utilisateur%20KTZ%20Emploi&body=Bonjour%2C%0A%0AJe%20souhaite%20signaler%20%3A%0A"
             onClick={dismiss}
