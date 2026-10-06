@@ -1,5 +1,5 @@
 ﻿import Link from "next/link";
-import { Briefcase, MapPin, Mail } from "lucide-react";
+import { Briefcase, MapPin, Mail, Phone } from "lucide-react";
 import NewsletterWidget from "./NewsletterWidget";
 
 export default function Footer() {
@@ -41,6 +41,12 @@ export default function Footer() {
             <div className="mt-2 flex items-center gap-2 text-sm text-gray-400">
               <Mail className="h-4 w-4 text-yellow-400 flex-shrink-0" />
               <span>contact@ktzemploi.com</span>
+            </div>
+            <div className="mt-2 flex items-center gap-2 text-sm text-gray-400">
+              <Phone className="h-4 w-4 text-yellow-400 flex-shrink-0" />
+              <a href="https://wa.me/33754065694" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-400 transition-colors">
+                +33 7 54 06 56 94
+              </a>
             </div>
           </div>
 
