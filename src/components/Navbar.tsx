@@ -28,8 +28,12 @@ export default function Navbar() {
 
           {/* Logo seul à gauche */}
           <Link href="/" className="flex items-center gap-2 shrink-0 group">
-            <div className="bg-orange-500 p-1.5 rounded-lg transition-transform duration-200 group-hover:scale-110 group-hover:rotate-3">
-              <Briefcase className="h-5 w-5 text-white" />
+            <div className="relative">
+              <div className="bg-orange-500 p-1.5 rounded-lg transition-transform duration-200 group-hover:scale-110 group-hover:rotate-3">
+                <Briefcase className="h-5 w-5 text-white" />
+              </div>
+              {/* Ruban Octobre Rose */}
+              <span className="absolute -top-2 -right-2 text-sm leading-none select-none" title="Octobre Rose — Ensemble contre le cancer du sein">🎀</span>
             </div>
             <span className="font-bold text-xl text-gray-900">KTZ<span className="text-orange-500"> Emploi</span></span>
           </Link>

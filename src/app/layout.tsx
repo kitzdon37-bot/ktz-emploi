@@ -10,6 +10,7 @@ import { Analytics } from "@vercel/analytics/next";
 import InactivityTimer from "@/components/InactivityTimer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import FeedbackPopup from "@/components/FeedbackPopup";
+import OctobreRoseBanner from "@/components/OctobreRoseBanner";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://ktzemploi.com"),
@@ -50,6 +51,7 @@ export default function RootLayout({
     <html lang="fr">
       <body className="min-h-screen flex flex-col bg-gray-50">
         <Providers>
+          <OctobreRoseBanner />
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />
