@@ -17,7 +17,17 @@ export default async function OffresPage() {
 
   const jobs = await prisma.job.findMany({
     where: { companyId: company.id },
-    include: { _count: { select: { applications: true } } },
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      type: true,
+      location: true,
+      published: true,
+      createdAt: true,
+      aiRankingEnabled: true,
+      _count: { select: { applications: true } },
+    },
     orderBy: { createdAt: "desc" },
   });
 

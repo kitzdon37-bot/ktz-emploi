@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  Briefcase, Clock, Users, Eye, Trash2, Loader2, Plus, AlertTriangle, X, CheckCircle,
+  Briefcase, Clock, Users, Eye, Trash2, Loader2, Plus, AlertTriangle, X, CheckCircle, Sparkles,
 } from "lucide-react";
 import { timeAgo } from "@/lib/utils";
 
@@ -15,6 +15,7 @@ interface Job {
   type: string;
   location: string;
   published: boolean;
+  aiRankingEnabled: boolean;
   createdAt: string;
   _count: { applications: number };
 }
@@ -24,6 +25,7 @@ export default function JobsManager({ jobs: initialJobs }: { jobs: Job[] }) {
   const [jobs, setJobs] = useState(initialJobs);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [confirmId, setConfirmId] = useState<string | null>(null);
+  const [togglingAi, setTogglingAi] = useState<string | null>(null);
   const [toast, setToast] = useState<{ type: "success" | "error"; msg: string } | null>(null);
 
   function showToast(type: "success" | "error", msg: string) {
@@ -50,6 +52,28 @@ export default function JobsManager({ jobs: initialJobs }: { jobs: Job[] }) {
       }
     } finally {
       setDeleting(null);
+    }
+  }
+
+  async function handleToggleAiRanking(jobId: string, current: boolean) {
+    setTogglingAi(jobId);
+    try {
+      const res = await fetch(`/api/jobs/${jobId}/ai-ranking`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ enabled: !current }),
+      });
+      if (res.ok) {
+        setJobs((prev) =>
+          prev.map((j) => j.id === jobId ? { ...j, aiRankingEnabled: !current } : j)
+        );
+        showToast("success", !current ? "Classement IA activé." : "Classement IA désactivé.");
+      } else {
+        const data = await res.json();
+        showToast("error", data.error || "Erreur lors de la mise à jour.");
+      }
+    } finally {
+      setTogglingAi(null);
     }
   }
 
@@ -117,6 +141,35 @@ export default function JobsManager({ jobs: initialJobs }: { jobs: Job[] }) {
                     <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{timeAgo(job.createdAt)}</span>
                     <span className="flex items-center gap-1"><Briefcase className="h-3 w-3" />{job.type}</span>
                     <span className="flex items-center gap-1"><Users className="h-3 w-3" />{job._count.applications} candidature{job._count.applications !== 1 ? "s" : ""}</span>
+                  </div>
+
+                  {/* Toggle classement IA */}
+                  <div className="mt-3 flex items-center gap-2">
+                    <Sparkles className={`h-3.5 w-3.5 ${job.aiRankingEnabled ? "text-orange-500" : "text-gray-300"}`} />
+                    <span className="text-xs text-gray-500">Classement IA</span>
+                    <button
+                      onClick={() => handleToggleAiRanking(job.id, job.aiRankingEnabled)}
+                      disabled={togglingAi === job.id}
+                      className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none disabled:opacity-50 ${
+                        job.aiRankingEnabled ? "bg-orange-500" : "bg-gray-200"
+                      }`}
+                      title={job.aiRankingEnabled ? "Désactiver le classement IA" : "Activer le classement IA"}
+                    >
+                      {togglingAi === job.id ? (
+                        <span className="absolute inset-0 flex items-center justify-center">
+                          <Loader2 className="h-3 w-3 animate-spin text-white" />
+                        </span>
+                      ) : (
+                        <span
+                          className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ${
+                            job.aiRankingEnabled ? "translate-x-4" : "translate-x-0"
+                          }`}
+                        />
+                      )}
+                    </button>
+                    <span className={`text-xs font-medium ${job.aiRankingEnabled ? "text-orange-600" : "text-gray-400"}`}>
+                      {job.aiRankingEnabled ? "Activé" : "Désactivé"}
+                    </span>
                   </div>
                 </div>
 

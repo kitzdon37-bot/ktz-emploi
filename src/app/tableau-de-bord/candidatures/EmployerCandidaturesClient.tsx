@@ -33,7 +33,7 @@ interface AppData {
   createdAt: string;
   aiScore: number | null;
   aiSummary: string | null;
-  job: { id: string; title: string; slug: string; type: string };
+  job: { id: string; title: string; slug: string; type: string; aiRankingEnabled: boolean };
   user: {
     name: string | null;
     email: string | null;
@@ -104,10 +104,14 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
   }, [apps]);
 
   const jobOptions = useMemo(() => {
-    const map = new Map<string, string>();
-    apps.forEach((a) => map.set(a.job.id, a.job.title));
-    return Array.from(map.entries()).map(([id, title]) => ({ id, title })).sort((a, b) => a.title.localeCompare(b.title));
+    const map = new Map<string, { title: string; aiRankingEnabled: boolean }>();
+    apps.forEach((a) => map.set(a.job.id, { title: a.job.title, aiRankingEnabled: a.job.aiRankingEnabled }));
+    return Array.from(map.entries())
+      .map(([id, { title, aiRankingEnabled }]) => ({ id, title, aiRankingEnabled }))
+      .sort((a, b) => a.title.localeCompare(b.title));
   }, [apps]);
+
+  const enabledJobOptions = useMemo(() => jobOptions.filter((j) => j.aiRankingEnabled), [jobOptions]);
 
   const displayed = useMemo(() => {
     let list = apps.filter((a) => a.archived === (tab === "archived"));
@@ -131,6 +135,7 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
   const activeCount   = apps.filter((a) => !a.archived).length;
   const archivedCount = apps.filter((a) => a.archived).length;
   const scoredCount   = apps.filter((a) => a.aiScore !== null && !a.archived).length;
+  const rankingEnabledCount = apps.filter((a) => !a.archived && a.job.aiRankingEnabled).length;
 
   async function handleAiRank(jobId?: string) {
     setAiLoading(true);
@@ -217,6 +222,9 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
                 {scoredCount > 0 && (
                   <span className="text-orange-600 font-medium"> {scoredCount}/{activeCount} candidatures analysées.</span>
                 )}
+                {rankingEnabledCount === 0 && activeCount > 0 && (
+                  <span className="text-amber-600 font-medium"> Activez le classement IA sur au moins une offre pour commencer.</span>
+                )}
               </p>
             </div>
           </div>
@@ -224,14 +232,14 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => handleAiRank()}
-              disabled={aiLoading || activeCount === 0}
+              disabled={aiLoading || rankingEnabledCount === 0}
               className="flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {aiLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
               {aiLoading ? "Analyse en cours…" : "Analyser toutes les candidatures"}
             </button>
 
-            {jobOptions.length > 1 && (
+            {enabledJobOptions.length > 1 && (
               <div className="relative group">
                 <button
                   disabled={aiLoading}
@@ -240,7 +248,7 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
                   Par poste <ChevronDown className="h-3.5 w-3.5" />
                 </button>
                 <div className="absolute right-0 top-full mt-1 z-20 bg-white border border-gray-200 rounded-xl shadow-lg min-w-[220px] hidden group-hover:block">
-                  {jobOptions.map((j) => (
+                  {enabledJobOptions.map((j) => (
                     <button
                       key={j.id}
                       onClick={() => handleAiRank(j.id)}

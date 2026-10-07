@@ -31,7 +31,11 @@ export async function POST(req: NextRequest) {
   // Récupère les candidatures (filtre par poste si fourni)
   const applications = await prisma.application.findMany({
     where: {
-      job: { companyId: company.id },
+      job: {
+        companyId: company.id,
+        // Si pas de jobId spécifique, n'analyser que les offres avec classement IA activé
+        ...(jobId ? {} : { aiRankingEnabled: true }),
+      },
       archived: false,
       ...(jobId ? { jobId } : {}),
     },
