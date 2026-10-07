@@ -38,6 +38,42 @@ const LOGOS = [
     logo: "https://upload.wikimedia.org/wikipedia/commons/b/b2/INTERSOS_Humanitarian_Aid_Organization_Logo.png",
   },
   {
+    match: "Action Contre la Faim",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/7/75/Logo_Action_Contre_la_Faim_02.svg",
+  },
+  {
+    match: "ACF",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/7/75/Logo_Action_Contre_la_Faim_02.svg",
+  },
+  {
+    match: "Programme Alimentaire Mondial",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/5/59/World_Food_Programme_Logo_Simple.svg",
+  },
+  {
+    match: "PAM",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/5/59/World_Food_Programme_Logo_Simple.svg",
+  },
+  {
+    match: "WFP",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/5/59/World_Food_Programme_Logo_Simple.svg",
+  },
+  {
+    match: "Médecins Sans Frontières",
+    logo: "https://upload.wikimedia.org/wikipedia/en/b/b9/M%C3%A9decins_Sans_Fronti%C3%A8res_%28logo%29.svg",
+  },
+  {
+    match: "MSF",
+    logo: "https://upload.wikimedia.org/wikipedia/en/b/b9/M%C3%A9decins_Sans_Fronti%C3%A8res_%28logo%29.svg",
+  },
+  {
+    match: "Save the Children",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/5/5c/Save_the_Children_Logo.svg",
+  },
+  {
+    match: "Caritas",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/1/12/Logo_Caritas_International.svg",
+  },
+  {
     match: "COOPI",
     logo: "https://www.coopi.org/images/logo.svg",
   },
