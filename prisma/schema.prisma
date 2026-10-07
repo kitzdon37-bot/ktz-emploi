@@ -217,6 +217,8 @@ model Application {
   updatedAt        DateTime                   @updatedAt
   remindersSent    Int                        @default(0)
   responseDeadline DateTime?
+  aiScore          Int?
+  aiSummary        String?
   job              Job                        @relation(fields: [jobId], references: [id], onDelete: Cascade)
   user             User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
   statusHistory    ApplicationStatusHistory[]

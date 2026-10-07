@@ -23,12 +23,21 @@ export default async function CandidaturesPage() {
     const applications = await prisma.application.findMany({
       where: { job: { companyId: company.id } },
       include: {
-        job: { select: { title: true, slug: true, type: true } },
+        job: { select: { id: true, title: true, slug: true, type: true } },
         user: {
           select: {
             name: true,
             email: true,
-            profile: { select: { whatsappOptIn: true, phone: true } },
+            profile: {
+              select: {
+                whatsappOptIn: true,
+                phone: true,
+                title: true,
+                skills: true,
+                experience: true,
+                education: true,
+              },
+            },
           },
         },
       },

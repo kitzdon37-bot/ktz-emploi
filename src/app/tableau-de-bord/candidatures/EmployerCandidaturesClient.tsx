@@ -6,6 +6,7 @@ import Link from "next/link";
 import {
   Briefcase, FileText, Archive, ArchiveRestore, Trash2,
   ChevronDown, Loader2, SortAsc, Filter, X, AlertTriangle,
+  Sparkles, Star, ChevronRight,
 } from "lucide-react";
 import { timeAgo } from "@/lib/utils";
 import ApplicationActions from "./ApplicationActions";
@@ -20,7 +21,7 @@ const APPLICATION_STATUSES: Record<string, { label: string; color: string }> = {
   REJECTED:  { label: "Refusé",             color: "text-red-700 bg-red-50 border-red-200" },
 };
 
-type SortKey = "date_desc" | "date_asc" | "status" | "name" | "job";
+type SortKey = "date_desc" | "date_asc" | "status" | "name" | "job" | "ai_score";
 type FilterTab = "active" | "archived";
 
 interface AppData {
@@ -30,11 +31,17 @@ interface AppData {
   coverLetter: string | null;
   cvUrl: string | null;
   createdAt: string;
-  job: { title: string; slug: string; type: string };
+  aiScore: number | null;
+  aiSummary: string | null;
+  job: { id: string; title: string; slug: string; type: string };
   user: {
     name: string | null;
     email: string | null;
-    profile: { whatsappOptIn: boolean } | null;
+    profile: {
+      whatsappOptIn: boolean;
+      title?: string | null;
+      skills?: string | null;
+    } | null;
   };
 }
 
@@ -43,14 +50,35 @@ interface Props {
 }
 
 const SORT_OPTIONS: { value: SortKey; label: string }[] = [
-  { value: "date_desc", label: "Plus récentes d'abord" },
-  { value: "date_asc",  label: "Plus anciennes d'abord" },
-  { value: "name",      label: "Candidat (A → Z)" },
-  { value: "job",       label: "Poste (A → Z)" },
-  { value: "status",    label: "Statut" },
+  { value: "date_desc",  label: "Plus récentes d'abord" },
+  { value: "date_asc",   label: "Plus anciennes d'abord" },
+  { value: "ai_score",   label: "Score IA (meilleur en premier)" },
+  { value: "name",       label: "Candidat (A → Z)" },
+  { value: "job",        label: "Poste (A → Z)" },
+  { value: "status",     label: "Statut" },
 ];
 
 const STATUS_ORDER = ["PENDING", "REVIEWING", "INTERVIEW", "ACCEPTED", "REJECTED"];
+
+function ScoreBadge({ score }: { score: number | null }) {
+  if (score === null) return null;
+  const color =
+    score >= 80 ? "bg-green-100 text-green-700 border-green-200" :
+    score >= 60 ? "bg-blue-100 text-blue-700 border-blue-200" :
+    score >= 40 ? "bg-yellow-100 text-yellow-700 border-yellow-200" :
+                  "bg-red-100 text-red-600 border-red-200";
+  const label =
+    score >= 80 ? "Excellent" :
+    score >= 60 ? "Bon profil" :
+    score >= 40 ? "Moyen" : "Faible";
+
+  return (
+    <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full border ${color}`}>
+      <Star className="h-3 w-3" />
+      {score}/100 · {label}
+    </span>
+  );
+}
 
 export default function EmployerCandidaturesClient({ initialApplications }: Props) {
   const router = useRouter();
@@ -64,13 +92,23 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string>("");
 
-  // Unique job titles for filter
+  // ── IA state ────────────────────────────────────────────────────
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiDone, setAiDone] = useState(false);
+  const [aiError, setAiError] = useState("");
+  const [expandedSummary, setExpandedSummary] = useState<string | null>(null);
+
   const jobTitles = useMemo(() => {
     const set = new Set(apps.map((a) => a.job.title));
     return Array.from(set).sort();
   }, [apps]);
 
-  // Filtered + sorted list
+  const jobOptions = useMemo(() => {
+    const map = new Map<string, string>();
+    apps.forEach((a) => map.set(a.job.id, a.job.title));
+    return Array.from(map.entries()).map(([id, title]) => ({ id, title })).sort((a, b) => a.title.localeCompare(b.title));
+  }, [apps]);
+
   const displayed = useMemo(() => {
     let list = apps.filter((a) => a.archived === (tab === "archived"));
     if (filterStatus) list = list.filter((a) => a.status === filterStatus);
@@ -83,6 +121,7 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
         case "name":      return (a.user.name || a.user.email || "").localeCompare(b.user.name || b.user.email || "");
         case "job":       return a.job.title.localeCompare(b.job.title);
         case "status":    return STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status);
+        case "ai_score":  return (b.aiScore ?? -1) - (a.aiScore ?? -1);
         default:          return 0;
       }
     });
@@ -91,6 +130,35 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
 
   const activeCount   = apps.filter((a) => !a.archived).length;
   const archivedCount = apps.filter((a) => a.archived).length;
+  const scoredCount   = apps.filter((a) => a.aiScore !== null && !a.archived).length;
+
+  async function handleAiRank(jobId?: string) {
+    setAiLoading(true);
+    setAiError("");
+    setAiDone(false);
+    try {
+      const res = await fetch("/api/ai/rank-applications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(jobId ? { jobId } : {}),
+      });
+      if (!res.ok) throw new Error("Erreur serveur");
+      const data: { results: Array<{ id: string; aiScore: number; aiSummary: string }> } = await res.json();
+
+      setApps((prev) =>
+        prev.map((app) => {
+          const found = data.results.find((r) => r.id === app.id);
+          return found ? { ...app, aiScore: found.aiScore, aiSummary: found.aiSummary } : app;
+        })
+      );
+      setSort("ai_score");
+      setAiDone(true);
+    } catch {
+      setAiError("L'analyse IA a échoué. Réessayez dans un instant.");
+    } finally {
+      setAiLoading(false);
+    }
+  }
 
   async function handleArchive(id: string, archive: boolean) {
     setPendingArchive(id);
@@ -137,7 +205,70 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
         <ExportCsvButton />
       </div>
 
-      {/* Tabs : Actives / Archivées */}
+      {/* ── Bloc Tri IA ──────────────────────────────────────────── */}
+      <div className="mb-5 bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-2xl p-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-orange-500 flex-shrink-0" />
+            <div>
+              <p className="text-sm font-semibold text-gray-900">Tri automatique des candidatures par IA</p>
+              <p className="text-xs text-gray-500 mt-0.5">
+                Claude analyse la lettre de motivation et le profil de chaque candidat par rapport aux exigences du poste.
+                {scoredCount > 0 && (
+                  <span className="text-orange-600 font-medium"> {scoredCount}/{activeCount} candidatures analysées.</span>
+                )}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => handleAiRank()}
+              disabled={aiLoading || activeCount === 0}
+              className="flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {aiLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+              {aiLoading ? "Analyse en cours…" : "Analyser toutes les candidatures"}
+            </button>
+
+            {jobOptions.length > 1 && (
+              <div className="relative group">
+                <button
+                  disabled={aiLoading}
+                  className="flex items-center gap-1.5 px-3 py-2 border border-orange-300 text-orange-600 hover:bg-orange-50 rounded-xl text-sm font-medium transition-colors disabled:opacity-50"
+                >
+                  Par poste <ChevronDown className="h-3.5 w-3.5" />
+                </button>
+                <div className="absolute right-0 top-full mt-1 z-20 bg-white border border-gray-200 rounded-xl shadow-lg min-w-[220px] hidden group-hover:block">
+                  {jobOptions.map((j) => (
+                    <button
+                      key={j.id}
+                      onClick={() => handleAiRank(j.id)}
+                      className="w-full text-left flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 first:rounded-t-xl last:rounded-b-xl"
+                    >
+                      <ChevronRight className="h-3.5 w-3.5 text-orange-400 flex-shrink-0" />
+                      <span className="truncate">{j.title}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {aiDone && (
+          <p className="mt-2 text-xs text-green-700 bg-green-50 border border-green-200 px-3 py-1.5 rounded-lg inline-block">
+            Analyse terminée — candidatures triées par score IA
+          </p>
+        )}
+        {aiError && (
+          <p className="mt-2 text-xs text-red-600 bg-red-50 border border-red-100 px-3 py-1.5 rounded-lg inline-block">
+            {aiError}
+          </p>
+        )}
+      </div>
+
+      {/* Tabs */}
       <div className="flex gap-1 p-1 bg-gray-100 rounded-xl mb-5 w-fit">
         <button
           onClick={() => setTab("active")}
@@ -166,7 +297,6 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
 
       {/* Filtres + Tri */}
       <div className="flex flex-wrap items-center gap-3 mb-5">
-        {/* Tri */}
         <div className="relative">
           <SortAsc className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400 pointer-events-none" />
           <select
@@ -181,7 +311,6 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
           <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 h-3 w-3 text-gray-400 pointer-events-none" />
         </div>
 
-        {/* Filtre statut */}
         <div className="relative">
           <Filter className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400 pointer-events-none" />
           <select
@@ -197,7 +326,6 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
           <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 h-3 w-3 text-gray-400 pointer-events-none" />
         </div>
 
-        {/* Filtre poste */}
         {jobTitles.length > 1 && (
           <div className="relative">
             <Briefcase className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400 pointer-events-none" />
@@ -215,7 +343,6 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
           </div>
         )}
 
-        {/* Reset filtres */}
         {(filterStatus || filterJob) && (
           <button
             onClick={() => { setFilterStatus(""); setFilterJob(""); }}
@@ -235,13 +362,15 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
         </div>
       )}
 
-      {/* Liste */}
+      {/* Liste des candidatures */}
       {displayed.length > 0 ? (
         <div className="space-y-3">
           {displayed.map((app) => {
             const st = APPLICATION_STATUSES[app.status];
-            const isArchiving = pendingArchive === app.id;
-            const isDeleting  = pendingDelete === app.id;
+            const isArchiving  = pendingArchive === app.id;
+            const isDeleting   = pendingDelete  === app.id;
+            const showSummary  = expandedSummary === app.id;
+
             return (
               <div
                 key={app.id}
@@ -258,19 +387,46 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
                           {st.label}
                         </span>
                       )}
+                      <ScoreBadge score={app.aiScore} />
                     </div>
+
                     <p className="text-sm text-gray-500">{app.user.email}</p>
+                    {app.user.profile?.title && (
+                      <p className="text-xs text-gray-400 mt-0.5">{app.user.profile.title}</p>
+                    )}
+
                     <div className="mt-1">
                       <Link href={`/emplois/${app.job.slug}`} className="text-sm text-orange-500 hover:underline">
                         {app.job.title}
                       </Link>
                       <span className="text-xs text-gray-400 ml-2">· {app.job.type}</span>
                     </div>
+
                     {app.coverLetter && (
                       <p className="text-sm text-gray-600 mt-2 bg-gray-50 px-3 py-2 rounded-lg line-clamp-2">
                         {app.coverLetter}
                       </p>
                     )}
+
+                    {/* Résumé IA */}
+                    {app.aiSummary && (
+                      <div className="mt-2">
+                        <button
+                          onClick={() => setExpandedSummary(showSummary ? null : app.id)}
+                          className="flex items-center gap-1.5 text-xs text-orange-500 hover:text-orange-600 font-medium"
+                        >
+                          <Sparkles className="h-3.5 w-3.5" />
+                          {showSummary ? "Masquer l'analyse IA" : "Voir l'analyse IA"}
+                          <ChevronDown className={`h-3 w-3 transition-transform ${showSummary ? "rotate-180" : ""}`} />
+                        </button>
+                        {showSummary && (
+                          <p className="mt-1.5 text-xs text-gray-600 bg-orange-50 border border-orange-100 px-3 py-2 rounded-lg leading-relaxed">
+                            {app.aiSummary}
+                          </p>
+                        )}
+                      </div>
+                    )}
+
                     {app.cvUrl && (
                       <a
                         href={app.cvUrl}
@@ -293,9 +449,7 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
                     />
                     <span className="text-xs text-gray-400">{timeAgo(app.createdAt)}</span>
 
-                    {/* Actions secondaires */}
                     <div className="flex items-center gap-1 mt-1">
-                      {/* Archive / Désarchiver */}
                       <button
                         onClick={() => handleArchive(app.id, !app.archived)}
                         disabled={isArchiving}
@@ -311,7 +465,6 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
                         )}
                       </button>
 
-                      {/* Supprimer */}
                       <button
                         onClick={() => setDeleteConfirmId(app.id)}
                         disabled={isDeleting}
@@ -341,7 +494,7 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
         </div>
       )}
 
-      {/* Modal confirmation suppression */}
+      {/* Modal suppression */}
       {deleteConfirmId && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
