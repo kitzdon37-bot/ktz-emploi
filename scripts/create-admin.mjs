@@ -6,7 +6,8 @@ dotenv.config();
 const prisma = new PrismaClient();
 
 const ADMIN_EMAIL = "admin@ktzemploi.com";
-const ADMIN_PASSWORD = "KtzAdmin@2025!";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+if (!ADMIN_PASSWORD) throw new Error("Définir ADMIN_PASSWORD dans .env");
 const ADMIN_NAME = "Donald KITEZE";
 
 async function main() {

@@ -6,7 +6,7 @@ import Link from "next/link";
 import {
   Briefcase, FileText, Archive, ArchiveRestore, Trash2,
   ChevronDown, Loader2, SortAsc, Filter, X, AlertTriangle,
-  Sparkles, Star, ChevronRight,
+  Sparkles, Star, ChevronRight, CheckCircle2, XCircle, Clock,
 } from "lucide-react";
 import { timeAgo } from "@/lib/utils";
 import ApplicationActions from "./ApplicationActions";
@@ -23,6 +23,10 @@ const APPLICATION_STATUSES: Record<string, { label: string; color: string }> = {
 
 type SortKey = "date_desc" | "date_asc" | "status" | "name" | "job" | "ai_score";
 type FilterTab = "active" | "archived";
+type MatchFilter = "all" | "match" | "nomatch" | "pending";
+
+// Même seuil que côté serveur (src/lib/ai-ranking.ts) : 60/100 = « Bon profil »
+const AI_MATCH_THRESHOLD = 60;
 
 interface AppData {
   id: string;
@@ -60,8 +64,16 @@ const SORT_OPTIONS: { value: SortKey; label: string }[] = [
 
 const STATUS_ORDER = ["PENDING", "REVIEWING", "INTERVIEW", "ACCEPTED", "REJECTED"];
 
-function ScoreBadge({ score }: { score: number | null }) {
-  if (score === null) return null;
+function ScoreBadge({ score, rankingEnabled }: { score: number | null; rankingEnabled: boolean }) {
+  if (score === null) {
+    if (!rankingEnabled) return null;
+    return (
+      <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full border bg-gray-50 text-gray-500 border-gray-200">
+        <Clock className="h-3 w-3" />
+        Non analysé
+      </span>
+    );
+  }
   const color =
     score >= 80 ? "bg-green-100 text-green-700 border-green-200" :
     score >= 60 ? "bg-blue-100 text-blue-700 border-blue-200" :
@@ -87,6 +99,7 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
   const [sort, setSort] = useState<SortKey>("date_desc");
   const [filterStatus, setFilterStatus] = useState<string>("");
   const [filterJob, setFilterJob] = useState<string>("");
+  const [matchFilter, setMatchFilter] = useState<MatchFilter>("all");
   const [pendingArchive, setPendingArchive] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
@@ -96,6 +109,7 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
   const [aiLoading, setAiLoading] = useState(false);
   const [aiDone, setAiDone] = useState(false);
   const [aiError, setAiError] = useState("");
+  const [aiInfo, setAiInfo] = useState("");
   const [expandedSummary, setExpandedSummary] = useState<string | null>(null);
 
   const jobTitles = useMemo(() => {
@@ -113,10 +127,26 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
 
   const enabledJobOptions = useMemo(() => jobOptions.filter((j) => j.aiRankingEnabled), [jobOptions]);
 
-  const displayed = useMemo(() => {
+  // Candidatures après filtres onglet / statut / poste (avant le filtre de correspondance)
+  const baseList = useMemo(() => {
     let list = apps.filter((a) => a.archived === (tab === "archived"));
     if (filterStatus) list = list.filter((a) => a.status === filterStatus);
     if (filterJob) list = list.filter((a) => a.job.title === filterJob);
+    return list;
+  }, [apps, tab, filterStatus, filterJob]);
+
+  const matchCounts = useMemo(() => ({
+    all:     baseList.length,
+    match:   baseList.filter((a) => a.aiScore !== null && a.aiScore >= AI_MATCH_THRESHOLD).length,
+    nomatch: baseList.filter((a) => a.aiScore !== null && a.aiScore < AI_MATCH_THRESHOLD).length,
+    pending: baseList.filter((a) => a.aiScore === null).length,
+  }), [baseList]);
+
+  const displayed = useMemo(() => {
+    let list = baseList;
+    if (matchFilter === "match")   list = list.filter((a) => a.aiScore !== null && a.aiScore >= AI_MATCH_THRESHOLD);
+    if (matchFilter === "nomatch") list = list.filter((a) => a.aiScore !== null && a.aiScore < AI_MATCH_THRESHOLD);
+    if (matchFilter === "pending") list = list.filter((a) => a.aiScore === null);
 
     list = [...list].sort((a, b) => {
       switch (sort) {
@@ -130,25 +160,36 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
       }
     });
     return list;
-  }, [apps, tab, sort, filterStatus, filterJob]);
+  }, [baseList, sort, matchFilter]);
 
   const activeCount   = apps.filter((a) => !a.archived).length;
   const archivedCount = apps.filter((a) => a.archived).length;
   const scoredCount   = apps.filter((a) => a.aiScore !== null && !a.archived).length;
   const rankingEnabledCount = apps.filter((a) => !a.archived && a.job.aiRankingEnabled).length;
 
-  async function handleAiRank(jobId?: string) {
+  async function handleAiRank(jobId?: string, force = false) {
     setAiLoading(true);
     setAiError("");
+    setAiInfo("");
     setAiDone(false);
     try {
       const res = await fetch("/api/ai/rank-applications", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(jobId ? { jobId } : {}),
+        body: JSON.stringify({ ...(jobId ? { jobId } : {}), ...(force ? { force: true } : {}) }),
       });
       if (!res.ok) throw new Error("Erreur serveur");
-      const data: { results: Array<{ id: string; aiScore: number; aiSummary: string }> } = await res.json();
+      const data: {
+        scored: number;
+        failed: number;
+        results: Array<{ id: string; aiScore: number; aiSummary: string }>;
+      } = await res.json();
+
+      if (data.scored === 0 && data.failed === 0) {
+        setAiInfo("Toutes les candidatures sont déjà analysées.");
+      } else if (data.failed > 0) {
+        setAiInfo(`${data.scored} candidature(s) analysée(s), ${data.failed} n'ont pas pu l'être (onglet « Non analysés »). Relancez l'analyse pour réessayer.`);
+      }
 
       setApps((prev) =>
         prev.map((app) => {
@@ -218,7 +259,7 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
             <div>
               <p className="text-sm font-semibold text-gray-900">Tri automatique des candidatures par IA</p>
               <p className="text-xs text-gray-500 mt-0.5">
-                Claude analyse la lettre de motivation et le profil de chaque candidat par rapport aux exigences du poste.
+                Chaque nouvelle candidature est analysée automatiquement : Claude lit le CV (PDF), le profil et la lettre de motivation, et les compare aux exigences du poste.
                 {scoredCount > 0 && (
                   <span className="text-orange-600 font-medium"> {scoredCount}/{activeCount} candidatures analysées.</span>
                 )}
@@ -236,8 +277,18 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
               className="flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {aiLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-              {aiLoading ? "Analyse en cours…" : "Analyser toutes les candidatures"}
+              {aiLoading ? "Analyse en cours…" : "Analyser les candidatures en attente"}
             </button>
+
+            {scoredCount > 0 && (
+              <button
+                onClick={() => handleAiRank(undefined, true)}
+                disabled={aiLoading || rankingEnabledCount === 0}
+                className="px-3 py-2 border border-orange-300 text-orange-600 hover:bg-orange-50 rounded-xl text-sm font-medium transition-colors disabled:opacity-50"
+              >
+                Tout réanalyser
+              </button>
+            )}
 
             {enabledJobOptions.length > 1 && (
               <div className="relative group">
@@ -267,6 +318,11 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
         {aiDone && (
           <p className="mt-2 text-xs text-green-700 bg-green-50 border border-green-200 px-3 py-1.5 rounded-lg inline-block">
             Analyse terminée — candidatures triées par score IA
+          </p>
+        )}
+        {aiInfo && (
+          <p className="mt-2 text-xs text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-lg inline-block">
+            {aiInfo}
           </p>
         )}
         {aiError && (
@@ -302,6 +358,36 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
           </span>
         </button>
       </div>
+
+      {/* Correspondance au poste (score IA) */}
+      {(scoredCount > 0 || rankingEnabledCount > 0) && (
+        <div className="flex flex-wrap gap-2 mb-5">
+          {([
+            { key: "all",     label: "Toutes",                    icon: null,                                         active: "bg-gray-900 text-white border-gray-900" },
+            { key: "match",   label: "Correspondent au poste",    icon: <CheckCircle2 className="h-3.5 w-3.5" />,     active: "bg-green-600 text-white border-green-600" },
+            { key: "nomatch", label: "Ne correspondent pas",      icon: <XCircle className="h-3.5 w-3.5" />,          active: "bg-red-500 text-white border-red-500" },
+            { key: "pending", label: "Non analysés",              icon: <Clock className="h-3.5 w-3.5" />,            active: "bg-gray-500 text-white border-gray-500" },
+          ] as const).map((f) => (
+            <button
+              key={f.key}
+              onClick={() => {
+                setMatchFilter(f.key);
+                if (f.key === "match" || f.key === "nomatch") setSort("ai_score");
+              }}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-sm font-medium transition-colors ${
+                matchFilter === f.key ? f.active : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
+              }`}
+            >
+              {f.icon}
+              {f.label}
+              <span className={`text-xs px-1.5 py-0.5 rounded-full ${matchFilter === f.key ? "bg-white/25" : "bg-gray-100 text-gray-500"}`}>
+                {matchCounts[f.key]}
+              </span>
+            </button>
+          ))}
+          <span className="self-center text-xs text-gray-400">Seuil : {AI_MATCH_THRESHOLD}/100</span>
+        </div>
+      )}
 
       {/* Filtres + Tri */}
       <div className="flex flex-wrap items-center gap-3 mb-5">
@@ -395,7 +481,7 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
                           {st.label}
                         </span>
                       )}
-                      <ScoreBadge score={app.aiScore} />
+                      <ScoreBadge score={app.aiScore} rankingEnabled={app.job.aiRankingEnabled} />
                     </div>
 
                     <p className="text-sm text-gray-500">{app.user.email}</p>
@@ -497,7 +583,10 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
         <div className="text-center py-16 text-gray-400">
           <Briefcase className="h-12 w-12 mx-auto mb-3 text-gray-200" />
           <p className="text-sm">
-            {tab === "archived" ? "Aucune candidature archivée" : "Aucune candidature active"}
+            {matchFilter === "match"   ? "Aucune candidature ne correspond au poste pour l'instant"
+              : matchFilter === "nomatch" ? "Aucune candidature écartée"
+              : matchFilter === "pending" ? "Toutes les candidatures sont analysées"
+              : tab === "archived" ? "Aucune candidature archivée" : "Aucune candidature active"}
           </p>
         </div>
       )}

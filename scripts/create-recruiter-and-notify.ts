@@ -20,7 +20,7 @@ const prisma = new PrismaClient();
 const RECRUITER = {
   name: "Sandra Mossito",
   email: "sandra.mossito@afritech-rca.com",
-  password: "Recrut3ur@2025",
+  password: process.env.RECRUITER_PASSWORD ?? (() => { throw new Error("Définir RECRUITER_PASSWORD dans .env"); })(),
 };
 
 const COMPANY = {

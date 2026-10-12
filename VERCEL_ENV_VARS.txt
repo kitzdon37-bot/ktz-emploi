@@ -14,7 +14,7 @@ postgresql://postgres.rtotnmbpwxfbiufcsvsx:[TON-MOT-DE-PASSE]@aws-0-eu-west-1.po
 
 ------------------------------------------------------------
 NEXTAUTH_SECRET
-ktz-emploi-prod-2026-centrafrique-secret-a8f3kx92mz
+[GÉNÈRE UNE CHAÎNE ALÉATOIRE : openssl rand -base64 32]
 
 ------------------------------------------------------------
 NEXTAUTH_URL

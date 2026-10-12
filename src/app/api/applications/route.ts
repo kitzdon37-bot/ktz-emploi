@@ -1,9 +1,13 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getMobileUser } from "@/lib/mobile-auth";
 import { prisma } from "@/lib/prisma";
 import { sendNewApplicationNotificationEmail } from "@/lib/email";
+import { scoreApplication } from "@/lib/ai-ranking";
+
+// Laisse le temps à l'analyse IA lancée en arrière-plan après la réponse
+export const maxDuration = 60;
 
 async function getAuthUser(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -80,6 +84,13 @@ export async function POST(req: NextRequest) {
       candidateName: candidate?.name ?? "Un candidat",
       jobTitle: job.title,
       applicationsUrl: `${baseUrl}/tableau-de-bord/recruteur/candidatures`,
+    });
+  }
+
+  // Analyse IA automatique, après la réponse (le candidat n'attend pas)
+  if (job.aiRankingEnabled) {
+    after(async () => {
+      await scoreApplication(app.id);
     });
   }
 

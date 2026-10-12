@@ -1,3 +1,4 @@
+import "dotenv/config";
 /**
  * seed-octobre-2026.mjs
  * 1. Supprime les offres expirées
@@ -10,7 +11,7 @@ import bcrypt from 'bcryptjs';
 import { createId } from '@paralleldrive/cuid2';
 
 const { Client } = pg;
-const DB = "postgresql://postgres.rtotnmbpwxfbiufcsvsx:rKyz3vHSkmADsKze@aws-0-eu-west-1.pooler.supabase.com:5432/postgres";
+const DB = process.env.DIRECT_URL ?? process.env.DATABASE_URL;
 
 function slug(title, suffix) {
   return title.toLowerCase()
@@ -648,7 +649,8 @@ async function main() {
 
   // ── 2. Réinitialiser les mots de passe admin ────────────────────
   console.log("\n=== 2. Réinitialisation des mots de passe admin ===");
-  const NEW_PASSWORD = "KTZ@Admin2026!";
+  const NEW_PASSWORD = process.env.ADMIN_NEW_PASSWORD;
+  if (!NEW_PASSWORD) throw new Error("Définir ADMIN_NEW_PASSWORD dans .env");
   const hash = await bcrypt.hash(NEW_PASSWORD, 12);
   const updated = await client.query(
     `UPDATE "User" SET password = $1 WHERE role = 'ADMIN' RETURNING email, name`,
@@ -656,7 +658,6 @@ async function main() {
   );
   console.log(`✅ ${updated.rowCount} compte(s) mis à jour`);
   for (const u of updated.rows) console.log(`   - ${u.email} (${u.name})`);
-  console.log(`   Nouveau mot de passe : ${NEW_PASSWORD}`);
 
   // ── 3. Ajouter les nouvelles offres ─────────────────────────────
   console.log("\n=== 3. Ajout des nouvelles offres d'emploi ===");

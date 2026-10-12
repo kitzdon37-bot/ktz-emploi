@@ -1,3 +1,4 @@
+import "dotenv/config";
 /**
  * seed-ong-jobs-2026.mjs
  * Crée les profils ONG manquants + 12 offres d'emploi réelles (mai–juin 2026)
@@ -10,7 +11,7 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient({
   datasources: {
     db: {
-      url: "postgresql://postgres.rtotnmbpwxfbiufcsvsx:rKyz3vHSkmADsKze@aws-0-eu-west-1.pooler.supabase.com:5432/postgres",
+      url: process.env.DIRECT_URL ?? process.env.DATABASE_URL,
     },
   },
 });

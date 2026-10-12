@@ -1,10 +1,11 @@
+import "dotenv/config";
 import pg from "pg";
 
 const { Client } = pg;
 
 const client = new Client({
   connectionString:
-    "postgresql://postgres.rtotnmbpwxfbiufcsvsx:rKyz3vHSkmADsKze@aws-0-eu-west-1.pooler.supabase.com:5432/postgres",
+    process.env.DIRECT_URL ?? process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false },
 });
 

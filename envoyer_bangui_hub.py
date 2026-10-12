@@ -12,7 +12,7 @@ import os
 # ─── CONFIG ───────────────────────────────────────────────────────────────────
 EXPEDITEUR_NOM   = "Donald Chrysostome KITEZE - KTZ Emploi"
 EXPEDITEUR_EMAIL = "kitzdon37@gmail.com"
-APP_PASSWORD     = "jclp lvyv kuby kiin"
+APP_PASSWORD     = os.environ.get("GMAIL_APP_PASSWORD", "")
 
 DESTINATAIRES = [
     {"nom": "Fondation Bangui Hub", "email": "contact@banguihub.org"},

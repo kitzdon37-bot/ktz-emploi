@@ -1,9 +1,10 @@
+import os
 # -*- coding: utf-8 -*-
 import asyncio
 from playwright.async_api import async_playwright
 
 EMAIL    = "kitzdon37@gmail.com"
-PASSWORD = "Fuze@KTZ2026!"
+PASSWORD = os.environ.get("FUZE_PASSWORD", "")
 PITCH    = "C:/Users/donald-chrysostome.k/rca-jobs/PITCH_DECK_FUZE_KTZ_EMPLOI.pdf"
 DOSSIER  = "C:/Users/donald-chrysostome.k/rca-jobs/DOSSIER_FUZE_DIGITAL_AFRICA.pdf"
 PV       = "C:/Users/donald-chrysostome.k/Desktop/PV- KTZ Association.pdf"

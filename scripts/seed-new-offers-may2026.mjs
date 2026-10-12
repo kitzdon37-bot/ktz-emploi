@@ -1,3 +1,4 @@
+import "dotenv/config";
 /**
  * seed-new-offers-may2026.mjs
  * Crée les profils de 5 nouvelles organisations + leurs offres d'emploi en RCA
@@ -11,7 +12,7 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient({
   datasources: {
     db: {
-      url: "postgresql://postgres.rtotnmbpwxfbiufcsvsx:rKyz3vHSkmADsKze@aws-0-eu-west-1.pooler.supabase.com:5432/postgres",
+      url: process.env.DIRECT_URL ?? process.env.DATABASE_URL,
     },
   },
 });

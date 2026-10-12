@@ -1,9 +1,10 @@
+import os
 # -*- coding: utf-8 -*-
 import asyncio
 from playwright.async_api import async_playwright
 
 EMAIL    = "kitzdon37@gmail.com"
-PASSWORD = "Fuze@KTZ2026!"
+PASSWORD = os.environ.get("FUZE_PASSWORD", "")
 
 async def run():
     async with async_playwright() as pw:
