@@ -26,7 +26,12 @@ function renderText(text: string) {
       if (part.startsWith("**") && part.endsWith("**")) {
         return <strong key={j}>{part.slice(2, -2)}</strong>;
       }
-      return part;
+      // Liens internes du site (/emplois, /tarifs…) rendus cliquables
+      return part.split(/((?:^|(?<=[\s(]))\/[a-z][a-z0-9-]*(?:\/[a-z0-9-]+)*)/g).map((seg, k) =>
+        /^\/[a-z]/.test(seg)
+          ? <a key={`${j}-${k}`} href={seg} className="text-orange-600 underline font-medium">{seg}</a>
+          : seg
+      );
     });
 
     if (isBullet) {
