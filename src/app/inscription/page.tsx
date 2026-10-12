@@ -223,14 +223,14 @@ function RegisterForm() {
             </div>
 
             <h2 className="text-center text-gray-900 font-bold text-lg mb-2">
-              🎉 Publication gratuite jusqu&apos;à fin septembre !
+              🎉 Publication gratuite jusqu&apos;à fin novembre !
             </h2>
             <p className="text-center text-gray-500 text-sm leading-relaxed mb-5">
               Publiez vos offres d&apos;emploi{" "}
               <strong className="text-gray-800">gratuitement</strong> sur KTZ Emploi
               et touchez des milliers de candidats qualifiés en RCA.
               <br /><br />
-              Offre valable jusqu&apos;au <strong className="text-orange-500">30 septembre 2026</strong>.
+              Offre valable jusqu&apos;au <strong className="text-orange-500">30 novembre 2026</strong>.
             </p>
 
             <button

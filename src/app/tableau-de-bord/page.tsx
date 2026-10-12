@@ -91,7 +91,7 @@ export default async function DashboardPage() {
           <div className="text-2xl">🎉</div>
           <div className="flex-1">
             <p className="text-white font-semibold text-sm sm:text-base">
-              Offre spéciale — Publication gratuite jusqu&apos;à fin septembre !
+              Offre spéciale — Publication gratuite jusqu&apos;à fin novembre !
             </p>
             <p className="text-orange-100 text-xs sm:text-sm mt-0.5">
               Publiez vos offres d&apos;emploi gratuitement sur KTZ Emploi et touchez des milliers de candidats en RCA.
