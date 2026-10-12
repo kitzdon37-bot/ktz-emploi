@@ -5,6 +5,14 @@ import { MapPin, Filter, Briefcase } from "lucide-react";
 import Link from "next/link";
 import EmploisSearchBar from "./EmploisClient";
 
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata({
+  path: "/emplois",
+  title: "Offres d'emploi en Centrafrique — Bangui et toute la RCA",
+  description: "Toutes les offres d'emploi en République Centrafricaine : Bangui et provinces, CDI, CDD, stages, ONG et organisations internationales. Postulez en ligne gratuitement sur KTZ Emploi.",
+});
+
 interface Props {
   searchParams: Promise<{
     q?: string;

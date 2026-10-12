@@ -1,6 +1,14 @@
 import { prisma } from "@/lib/prisma";
 import { CalendarDays, MapPin, ExternalLink, Inbox } from "lucide-react";
 
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata({
+  path: "/evenements",
+  title: "Événements emploi et recrutement en Centrafrique",
+  description: "Salons de l'emploi, forums, formations et événements recrutement à Bangui et en République Centrafricaine.",
+});
+
 function formatEventDate(date: Date) {
   return {
     day: new Intl.DateTimeFormat("fr-FR", { day: "2-digit" }).format(date),

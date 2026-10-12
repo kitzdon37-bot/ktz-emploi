@@ -3,6 +3,14 @@ import Image from "next/image";
 import { BookOpen, ArrowRight } from "lucide-react";
 import { articles } from "@/lib/articles";
 
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata({
+  path: "/conseils",
+  title: "Conseils carrière : CV, lettre de motivation, entretien",
+  description: "Conseils pratiques pour trouver un emploi en Centrafrique : rédiger son CV et sa lettre de motivation, réussir son entretien, négocier son salaire.",
+});
+
 const CARD_BG_MAP: Record<string, string> = {
   "CV & Candidature": "bg-blue-50",
   "Entretien":        "bg-orange-50",

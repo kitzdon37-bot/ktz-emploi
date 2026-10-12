@@ -7,6 +7,15 @@ import HeroSearch from "@/components/HeroSearch";
 import { JOB_CATEGORIES } from "@/lib/utils";
 import ComingSoon from "@/components/ComingSoon";
 
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata({
+  path: "/",
+  title: "KTZ Emploi — Offres d'emploi en Centrafrique (Bangui, RCA)",
+  absoluteTitle: true,
+  description: "Trouvez un emploi en République Centrafricaine avec KTZ Emploi : offres à Bangui et partout en RCA (CDI, CDD, stages, ONG). Inscription gratuite, candidature en ligne en quelques clics.",
+});
+
 async function getHomeData() {
   const [featuredJobs, recentJobs, topCompanies, totalJobs, totalCompanies, totalUsers] = await Promise.all([
     prisma.job.findMany({

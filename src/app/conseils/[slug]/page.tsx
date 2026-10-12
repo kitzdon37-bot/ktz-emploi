@@ -6,6 +6,9 @@ import { articles, getArticleBySlug } from "@/lib/articles";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
+import { pageMetadata } from "@/lib/seo";
+import type { Metadata } from "next";
+
 const ILLUSTRATION_MAP: Record<string, string> = {
   "CV & Candidature":   "/illustrations/cv-candidature.svg",
   "Entretien":          "/illustrations/entretien.svg",
@@ -19,6 +22,13 @@ export async function generateStaticParams() {
 
 interface Props {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const article = getArticleBySlug(slug);
+  if (!article) return {};
+  return pageMetadata({ path: `/conseils/${article.slug}`, title: article.title, description: article.excerpt });
 }
 
 export default async function ArticlePage({ params }: Props) {

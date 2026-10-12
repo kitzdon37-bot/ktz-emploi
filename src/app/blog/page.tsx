@@ -3,6 +3,14 @@ import Link from "next/link";
 import { BookOpen, ArrowRight, Tag } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata({
+  path: "/blog",
+  title: "Blog emploi et carrière en Centrafrique",
+  description: "Actualités de l'emploi, conseils carrière et recrutement en République Centrafricaine, par KTZ Emploi.",
+});
+
 export default async function BlogPage() {
   const posts = await prisma.blogPost.findMany({
     where: { published: true },

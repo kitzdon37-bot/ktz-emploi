@@ -31,13 +31,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     : `Découvrez les offres d'emploi de ${company.name} sur KTZ Emploi.`;
 
   return {
-    title: `${company.name} - KTZ Emploi`,
+    title: `${company.name} : offres d'emploi et recrutement`,
     description,
+    alternates: { canonical: `https://ktzemploi.com/entreprises/${slug}` },
     icons: company.logo
       ? { icon: company.logo, apple: company.logo }
       : undefined,
     openGraph: {
-      title: `${company.name} - KTZ Emploi`,
+      title: `${company.name} : offres d'emploi | KTZ Emploi`,
       description,
     },
   };

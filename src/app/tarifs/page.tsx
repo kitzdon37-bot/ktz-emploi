@@ -4,6 +4,14 @@ import { PLANS } from "@/lib/plans";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata({
+  path: "/tarifs",
+  title: "Tarifs recruteurs : publier une offre d'emploi en RCA",
+  description: "Publiez vos offres d'emploi en Centrafrique dès 10 000 XAF/mois, sans engagement. Paiement Orange Money et Airtel Money. Publication gratuite jusqu'à fin novembre 2026.",
+});
+
 const PLAN_ICONS = {
   FREE: Building2,
   MICRO: Sparkles,

@@ -1,5 +1,13 @@
 import { TrendingUp, DollarSign } from "lucide-react";
 
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata({
+  path: "/salaires",
+  title: "Salaires en Centrafrique 2026 : grilles par métier",
+  description: "Combien gagne-t-on en République Centrafricaine ? Grilles de salaires 2026 par métier et par secteur à Bangui et en RCA, en FCFA (XAF).",
+});
+
 interface SalaryEntry {
   sector: string;
   poste: string;

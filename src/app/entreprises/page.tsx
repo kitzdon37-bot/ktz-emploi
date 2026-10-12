@@ -5,6 +5,14 @@ import CompanyLogo from "@/components/CompanyLogo";
 import { ANNUAIRE_RCA, SECTEURS_ANNUAIRE } from "@/lib/annuaire-rca";
 import SecteurBanner from "./SecteurBanner";
 
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata({
+  path: "/entreprises",
+  title: "Entreprises qui recrutent en Centrafrique",
+  description: "Découvrez les entreprises, ONG et organisations qui recrutent en République Centrafricaine et consultez leurs offres d'emploi sur KTZ Emploi.",
+});
+
 interface Props {
   searchParams: Promise<{ q?: string; sector?: string }>;
 }

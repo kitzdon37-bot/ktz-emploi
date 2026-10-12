@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
+import { articles } from "@/lib/articles";
 
 const BASE_URL = "https://ktzemploi.com";
 
@@ -12,11 +13,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/blog`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
     { url: `${BASE_URL}/salaires`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE_URL}/evenements`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.6 },
+    { url: `${BASE_URL}/a-propos`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
+    { url: `${BASE_URL}/tarifs`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
+    { url: `${BASE_URL}/conseils`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.6 },
+    { url: `${BASE_URL}/inscription`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.5 },
+    ...articles.map((a) => ({
+      url: `${BASE_URL}/conseils/${a.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    })),
   ];
 
   // Pages dynamiques — offres d'emploi publiées
   const jobs = await prisma.job.findMany({
-    where: { published: true },
+    where: { published: true, OR: [{ deadline: null }, { deadline: { gte: new Date() } }] },
     select: { slug: true, updatedAt: true },
   });
   const jobPages: MetadataRoute.Sitemap = jobs.map((job) => ({

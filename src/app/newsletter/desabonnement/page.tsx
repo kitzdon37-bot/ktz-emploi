@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { CheckCircle, Info } from "lucide-react";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Désabonnement newsletter", robots: { index: false, follow: false } };
+
 export default function UnsubscribePage({
   searchParams,
 }: {

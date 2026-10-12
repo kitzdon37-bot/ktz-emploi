@@ -1,3 +1,4 @@
+import { googleEmploymentType, jsonLd } from "@/lib/seo";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -38,8 +39,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = job.description.slice(0, 160).replace(/\s+/g, " ").trim();
 
   return {
-    title: `${job.title} – ${job.company.name} | KTZ Emploi`,
+    title: `${job.title} – ${job.company.name} (${job.remote ? "Télétravail" : job.location})`,
     description,
+    alternates: { canonical: `${BASE_URL}/emplois/${job.slug}` },
     openGraph: {
       title: `${job.title} – ${job.company.name}`,
       description,
@@ -99,22 +101,31 @@ export default async function JobDetailPage({ params }: Props) {
     description: job.description,
     datePosted: job.createdAt.toISOString(),
     ...(job.deadline && { validThrough: job.deadline.toISOString() }),
-    employmentType: job.type,
+    // Sans date limite, Google demande une date de fin : 60 jours après publication
+    ...(!job.deadline && { validThrough: new Date(job.createdAt.getTime() + 60 * 86400000).toISOString() }),
+    employmentType: googleEmploymentType(job.type),
+    identifier: { "@type": "PropertyValue", name: "KTZ Emploi", value: job.id },
+    url: `${BASE_URL}/emplois/${job.slug}`,
+    directApply: true,
     hiringOrganization: {
       "@type": "Organization",
       name: job.company.name,
-      ...(job.company.logo && { logo: job.company.logo }),
+      ...(job.company.logo && { logo: job.company.logo.startsWith("http") ? job.company.logo : `${BASE_URL}${job.company.logo}` }),
       ...(job.company.website && { sameAs: job.company.website }),
     },
     jobLocation: {
       "@type": "Place",
       address: {
         "@type": "PostalAddress",
-        addressLocality: job.remote ? "Télétravail" : job.location,
+        addressLocality: job.remote ? "Bangui" : job.location,
+        addressRegion: job.remote ? "Bangui" : job.location,
         addressCountry: "CF",
       },
     },
-    ...(job.remote && { jobLocationType: "TELECOMMUTE" }),
+    ...(job.remote && {
+      jobLocationType: "TELECOMMUTE",
+      applicantLocationRequirements: { "@type": "Country", name: "République Centrafricaine" },
+    }),
     ...(job.salaryMin && {
       baseSalary: {
         "@type": "MonetaryAmount",
@@ -133,7 +144,7 @@ export default async function JobDetailPage({ params }: Props) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jobPostingSchema) }}
+        dangerouslySetInnerHTML={jsonLd(jobPostingSchema)}
       />
 
       {/* Popup entreprise — apparaît automatiquement */}

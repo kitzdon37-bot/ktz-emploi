@@ -1,3 +1,4 @@
+import { pageMetadata, founderSchema, jsonLd, SITE_URL } from "@/lib/seo";
 import Link from "next/link";
 import Image from "next/image";
 import { Metadata } from "next";
@@ -6,10 +7,21 @@ import {
   MapPin, CheckCircle, ArrowRight, Globe, Shield, Zap, Quote,
 } from "lucide-react";
 
-export const metadata: Metadata = {
-  title: "Qui sommes-nous — KTZ Emploi",
+export const metadata: Metadata = pageMetadata({
+  path: "/a-propos",
+  title: "Donald KITEZE, fondateur de KTZ Emploi — Qui sommes-nous",
   description:
-    "Découvrez l'histoire de KTZ Emploi, fondée par Donald KITEZE. La première plateforme d'emploi dédiée à la République Centrafricaine. Notre mission : connecter les talents centrafricains aux meilleures opportunités.",
+    "Donald KITEZE (KITEZE Donald), ingénieur et entrepreneur centrafricain, a fondé KTZ Emploi, la plateforme d'emploi de la République Centrafricaine. Découvrez son histoire et notre mission.",
+});
+
+// Page de profil du fondateur : aide Google à associer « Donald KITEZE » à KTZ Emploi
+const profileSchema = {
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  url: `${SITE_URL}/a-propos`,
+  name: "Donald KITEZE — Fondateur de KTZ Emploi",
+  mainEntity: founderSchema(),
+  about: { "@id": `${SITE_URL}/#organisation` },
 };
 
 const PROBLEMS = [
@@ -72,6 +84,7 @@ const IMPACTS = [
 export default function AProposPage() {
   return (
     <div className="bg-white">
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(profileSchema)} />
 
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-orange-950 text-white overflow-hidden">
