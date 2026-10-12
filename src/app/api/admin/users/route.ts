@@ -21,6 +21,7 @@ export async function GET(req: NextRequest) {
         OR: [
           { name: { contains: search, mode: 'insensitive' as const } },
           { email: { contains: search, mode: 'insensitive' as const } },
+          { phone: { contains: search.replace(/\s/g, "") } },
         ],
       } : {}),
     },
@@ -32,6 +33,7 @@ export async function GET(req: NextRequest) {
       suspended: true,
       createdAt: true,
       image: true,
+      phone: true,
       password: true,
       profile: { select: { phone: true } },
     },
@@ -43,7 +45,8 @@ export async function GET(req: NextRequest) {
   // Ne jamais renvoyer l'empreinte du mot de passe : seulement s'il en existe un
   const flat = users.map(({ password, profile, ...u }: (typeof users)[number]) => ({
     ...u,
-    phone: profile?.phone ?? null,
+    phone: u.phone ?? profile?.phone ?? null,
+    whatsappSignup: !!u.phone && !u.email,
     hasPassword: !!password,
   }));
 

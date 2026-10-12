@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
         },
       },
       user: {
-        select: { name: true, email: true },
+        select: { name: true, email: true, phone: true },
       },
     },
     orderBy: { createdAt: "desc" },

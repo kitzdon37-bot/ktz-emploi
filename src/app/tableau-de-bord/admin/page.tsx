@@ -13,6 +13,24 @@ import {
 import { JOB_CATEGORIES, JOB_TYPES, RCA_LOCATIONS, APPLICATION_STATUSES } from "@/lib/utils";
 import PasswordModal from "./PasswordModal";
 
+// Numéro de téléphone cliquable (ouvre WhatsApp)
+function PhoneLink({ phone, className = "" }: { phone?: string | null; className?: string }) {
+  if (!phone) return null;
+  const digits = phone.replace(/[^\d]/g, "");
+  return (
+    <a
+      href={`https://wa.me/${digits}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`inline-flex items-center gap-1 text-xs font-medium text-emerald-700 hover:underline ${className}`}
+      title="Ouvrir dans WhatsApp"
+    >
+      <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-current" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2l-.5-.3Z"/></svg>
+      {phone}
+    </a>
+  );
+}
+
 interface Candidate {
   id: string;
   name: string | null;
@@ -63,6 +81,7 @@ interface SiteUser {
   createdAt: string;
   image: string | null;
   hasPassword?: boolean;
+  whatsappSignup?: boolean;
 }
 
 interface StatsData {
@@ -88,7 +107,7 @@ interface AdminApplication {
   coverLetter: string | null;
   cvUrl: string | null;
   job: { title: string; slug: string; company: { name: string } };
-  user: { name: string | null; email: string };
+  user: { name: string | null; email: string | null; phone?: string | null };
 }
 
 interface AdminReport {
@@ -1697,10 +1716,13 @@ function AdminDashboard() {
                   <div className="flex items-center justify-between gap-2 flex-wrap">
                     <div>
                       <p className="font-semibold text-gray-900">{c.name ?? "—"}</p>
-                      <a href={`mailto:${c.email}`} className="text-sm text-orange-500 hover:underline flex items-center gap-1">
-                        <Mail className="h-3.5 w-3.5" />
-                        {c.email}
-                      </a>
+                      {c.email && (
+                        <a href={`mailto:${c.email}`} className="text-sm text-orange-500 hover:underline flex items-center gap-1">
+                          <Mail className="h-3.5 w-3.5" />
+                          {c.email}
+                        </a>
+                      )}
+                      <PhoneLink phone={c.phone} className="mt-0.5" />
                     </div>
                     <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
                       c.matchCount > 0 ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-500"
@@ -1886,7 +1908,7 @@ function AdminDashboard() {
                 type="text"
                 value={userSearch}
                 onChange={(e) => setUserSearch(e.target.value)}
-                placeholder="Rechercher par nom ou email..."
+                placeholder="Rechercher par nom, email ou numéro..."
                 className="flex-1 text-sm outline-none text-gray-700 placeholder:text-gray-400"
               />
             </div>
@@ -1910,7 +1932,8 @@ function AdminDashboard() {
                 .filter((u) =>
                   !userSearch ||
                   u.name?.toLowerCase().includes(userSearch.toLowerCase()) ||
-                  (u.email ?? "").toLowerCase().includes(userSearch.toLowerCase())
+                  (u.email ?? "").toLowerCase().includes(userSearch.toLowerCase()) ||
+                  (u.phone ?? "").replace(/\s/g, "").includes(userSearch.replace(/\s/g, ""))
                 )
                 .map((u) => (
                   <div key={u.id} className={`bg-white rounded-2xl border p-4 ${selectedUsers.has(u.id) ? "border-orange-300 ring-1 ring-orange-100" : "border-gray-200"}`}>
@@ -1927,7 +1950,13 @@ function AdminDashboard() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-gray-900 truncate text-sm">{u.name ?? "—"}</p>
-                        <p className="text-xs text-gray-400 truncate">{u.email}</p>
+                        <div className="flex items-center gap-2 flex-wrap min-w-0">
+                          {u.email && <p className="text-xs text-gray-400 truncate">{u.email}</p>}
+                          <PhoneLink phone={u.phone} />
+                          {u.whatsappSignup && (
+                            <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">Inscrit via WhatsApp</span>
+                          )}
+                        </div>
                       </div>
                       <span className={`text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0 ${ROLE_LABELS[u.role]?.color}`}>
                         {u.role === "ADMIN" && <Shield className="h-3 w-3 inline mr-1" />}
@@ -1984,7 +2013,8 @@ function AdminDashboard() {
               {siteUsers.filter((u) =>
                 !userSearch ||
                 u.name?.toLowerCase().includes(userSearch.toLowerCase()) ||
-                (u.email ?? "").toLowerCase().includes(userSearch.toLowerCase())
+                (u.email ?? "").toLowerCase().includes(userSearch.toLowerCase()) ||
+                (u.phone ?? "").replace(/\s/g, "").includes(userSearch.replace(/\s/g, ""))
               ).length === 0 && (
                 <div className="text-center py-16 bg-white rounded-2xl border border-gray-200">
                   <Users className="h-10 w-10 mx-auto mb-3 text-gray-200" />
@@ -2169,11 +2199,14 @@ function AdminDashboard() {
                 return (
                   <div key={app.id} className="bg-white rounded-2xl border border-gray-200 p-4 flex items-start gap-4">
                     <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center font-bold text-blue-600 text-sm flex-shrink-0">
-                      {(app.user.name ?? app.user.email).slice(0, 2).toUpperCase()}
+                      {(app.user.name ?? app.user.email ?? app.user.phone ?? "??").slice(0, 2).toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-gray-900">{app.user.name ?? "—"}</p>
-                      <a href={`mailto:${app.user.email}`} className="text-sm text-orange-500 hover:underline">{app.user.email}</a>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {app.user.email && <a href={`mailto:${app.user.email}`} className="text-sm text-orange-500 hover:underline">{app.user.email}</a>}
+                        <PhoneLink phone={app.user.phone} />
+                      </div>
                       <p className="text-sm text-gray-500 mt-0.5">
                         → <span className="font-medium">{app.job.title}</span> chez {app.job.company.name}
                       </p>
