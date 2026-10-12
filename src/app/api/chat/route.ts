@@ -31,7 +31,28 @@ Règles de style — TRÈS IMPORTANT :
 - Réponds toujours en français
 - Si la question ne concerne pas l'emploi ou KTZ Emploi, redirige gentiment`;
 
+// Traduit une erreur de l'API Anthropic en cause lisible (pour les logs)
+function describeAiError(err: unknown) {
+  const e = err as { status?: number; error?: { error?: { type?: string; message?: string } }; message?: string };
+  const status = e?.status;
+  const type = e?.error?.error?.type;
+  const message = e?.error?.error?.message ?? e?.message ?? String(err);
+  let cause = "erreur inconnue";
+  if (status === 401) cause = "clé ANTHROPIC_API_KEY invalide ou révoquée";
+  else if (status === 400 && /credit|billing/i.test(message)) cause = "crédit Anthropic épuisé";
+  else if (status === 403) cause = "accès refusé par Anthropic";
+  else if (status === 404) cause = "modèle introuvable";
+  else if (status === 429) cause = "limite de requêtes Anthropic atteinte";
+  else if (status === 529 || status === 503) cause = "service Anthropic surchargé";
+  return { status, type, message, cause };
+}
+
 export async function POST(req: NextRequest) {
+  if (!process.env.ANTHROPIC_API_KEY) {
+    console.error("[Chat] ANTHROPIC_API_KEY manquant");
+    return new Response(JSON.stringify({ error: "Assistant non configuré" }), { status: 503 });
+  }
+
   try {
     const { messages } = await req.json();
 
@@ -39,7 +60,7 @@ export async function POST(req: NextRequest) {
       return new Response(JSON.stringify({ error: "Messages requis" }), { status: 400 });
     }
 
-    const stream = await client.messages.stream({
+    const stream = client.messages.stream({
       model: "claude-haiku-4-5",
       max_tokens: 1024,
       system: SYSTEM_PROMPT,
@@ -66,7 +87,10 @@ export async function POST(req: NextRequest) {
           controller.enqueue(encoder.encode("data: [DONE]\n\n"));
           controller.close();
         } catch (err) {
-          controller.error(err);
+          console.error("[Chat] Erreur Anthropic :", describeAiError(err));
+          // Prévient le navigateur proprement au lieu de couper le flux
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ error: true })}\n\n`));
+          controller.close();
         }
       },
     });
@@ -79,7 +103,7 @@ export async function POST(req: NextRequest) {
       },
     });
   } catch (err) {
-    console.error("Chat API error:", err);
+    console.error("[Chat] Erreur :", describeAiError(err));
     return new Response(JSON.stringify({ error: "Erreur serveur" }), { status: 500 });
   }
 }

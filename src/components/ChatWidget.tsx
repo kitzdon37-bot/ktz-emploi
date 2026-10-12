@@ -116,12 +116,13 @@ export default function ChatWidget() {
           if (!line.startsWith("data: ")) continue;
           const data = line.slice(6);
           if (data === "[DONE]") break;
-          try {
-            const { text } = JSON.parse(data);
+          let parsed: { text?: string; error?: boolean };
+          try { parsed = JSON.parse(data); } catch { continue; } // morceau illisible
+          if (parsed.error) throw new Error("Erreur IA");
+          {
+            const text = parsed.text ?? "";
             assistantMessage.content += text;
             setMessages([...newMessages, { ...assistantMessage }]);
-          } catch {
-            // skip malformed chunks
           }
         }
       }
