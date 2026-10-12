@@ -17,27 +17,74 @@ type DocBlock = {
   title?: string;
 };
 
-// Télécharge le CV s'il s'agit d'un PDF exploitable par Claude
-async function loadCvPdf(url: string | null | undefined): Promise<{ block: DocBlock | null; note: string }> {
-  if (!url) return { block: null, note: "Aucun CV joint." };
+const MAX_CV_TEXT_CHARS = 15000;
+
+function isPdf(type: string, url: string, buf: Buffer) {
+  return type.includes("pdf") || url.endsWith(".pdf") || buf.subarray(0, 5).toString() === "%PDF-";
+}
+
+// .docx = archive ZIP (« PK »), .doc = document OLE (D0 CF 11 E0)
+function isWord(type: string, url: string, buf: Buffer) {
+  return (
+    type.includes("word") || type.includes("officedocument") || type.includes("msword") ||
+    url.endsWith(".docx") || url.endsWith(".doc") ||
+    buf.subarray(0, 2).toString() === "PK" ||
+    buf.subarray(0, 4).equals(Buffer.from([0xd0, 0xcf, 0x11, 0xe0]))
+  );
+}
+
+// Extrait le texte d'un CV Word (.docx et ancien .doc)
+async function extractWordText(buf: Buffer): Promise<string | null> {
+  try {
+    const { default: WordExtractor } = await import("word-extractor");
+    const doc = await new WordExtractor().extract(buf);
+    const parts = [doc.getHeaders?.({ includeFooters: true }), doc.getBody(), doc.getTextboxes?.({ includeHeadersAndFooters: false })];
+    const text = parts.filter(Boolean).join("\n").replace(/\n{3,}/g, "\n\n").trim();
+    return text.length > 0 ? text.slice(0, MAX_CV_TEXT_CHARS) : null;
+  } catch (err) {
+    console.error("[AI ranking] Extraction Word échouée", err);
+    return null;
+  }
+}
+
+// Télécharge le CV : PDF → envoyé tel quel à Claude ; Word → texte extrait
+async function loadCv(url: string | null | undefined): Promise<{ block: DocBlock | null; text: string | null; note: string }> {
+  if (!url) return { block: null, text: null, note: "Aucun CV joint." };
   try {
     const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) return { block: null, note: "CV joint inaccessible." };
+    if (!res.ok) return { block: null, text: null, note: "CV joint inaccessible." };
     const type = res.headers.get("content-type") ?? "";
-    const isPdf = type.includes("pdf") || url.toLowerCase().split("?")[0].endsWith(".pdf");
-    if (!isPdf) return { block: null, note: "CV joint au format Word (non lu) : se baser sur le profil." };
+    const cleanUrl = url.toLowerCase().split("?")[0];
     const buf = Buffer.from(await res.arrayBuffer());
-    if (buf.byteLength > MAX_CV_BYTES) return { block: null, note: "CV joint trop volumineux (non lu)." };
-    return {
-      block: {
-        type: "document",
-        source: { type: "base64", media_type: "application/pdf", data: buf.toString("base64") },
-        title: "CV du candidat",
-      },
-      note: "Le CV du candidat est fourni en pièce jointe (PDF) : c'est la source principale.",
-    };
+    if (buf.byteLength > MAX_CV_BYTES) return { block: null, text: null, note: "CV joint trop volumineux (non lu)." };
+
+    if (isPdf(type, cleanUrl, buf)) {
+      return {
+        block: {
+          type: "document",
+          source: { type: "base64", media_type: "application/pdf", data: buf.toString("base64") },
+          title: "CV du candidat",
+        },
+        text: null,
+        note: "Le CV du candidat est fourni en pièce jointe (PDF) : c'est la source principale.",
+      };
+    }
+
+    if (isWord(type, cleanUrl, buf)) {
+      const text = await extractWordText(buf);
+      if (text) {
+        return {
+          block: null,
+          text,
+          note: "Le texte du CV du candidat (fichier Word) est fourni ci-dessous : c'est la source principale.",
+        };
+      }
+      return { block: null, text: null, note: "CV Word illisible : se baser sur le profil." };
+    }
+
+    return { block: null, text: null, note: "Format de CV non reconnu : se baser sur le profil." };
   } catch {
-    return { block: null, note: "CV joint inaccessible." };
+    return { block: null, text: null, note: "CV joint inaccessible." };
   }
 }
 
@@ -86,7 +133,7 @@ export async function scoreApplication(applicationId: string): Promise<{ id: str
 
   const job = app.job;
   const profile = app.user.profile;
-  const { block: cvBlock, note: cvNote } = await loadCvPdf(app.cvUrl ?? profile?.cv);
+  const { block: cvBlock, text: cvText, note: cvNote } = await loadCv(app.cvUrl ?? profile?.cv);
 
   const prompt = `Tu es un assistant RH expert. Analyse cette candidature et attribue un score de compatibilité avec le poste.
 
@@ -98,7 +145,7 @@ POSTE RECHERCHÉ :
 - Exigences : ${job.requirements?.slice(0, 1000) ?? "Non fournies"}
 
 CV : ${cvNote}
-
+${cvText ? `\n--- DÉBUT DU CV ---\n${cvText}\n--- FIN DU CV ---\n` : ""}
 PROFIL SAISI SUR LE SITE :
 - Titre professionnel : ${profile?.title ?? "Non renseigné"}
 - Compétences : ${profile?.skills ?? "Non renseignées"}

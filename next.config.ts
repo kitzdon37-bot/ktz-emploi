@@ -25,6 +25,8 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Lecture des CV Word côté serveur (classement IA) : laisser Node charger le paquet
+  serverExternalPackages: ["word-extractor"],
   images: {
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",

@@ -259,7 +259,7 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
             <div>
               <p className="text-sm font-semibold text-gray-900">Tri automatique des candidatures par IA</p>
               <p className="text-xs text-gray-500 mt-0.5">
-                Chaque nouvelle candidature est analysée automatiquement : Claude lit le CV (PDF), le profil et la lettre de motivation, et les compare aux exigences du poste.
+                Chaque nouvelle candidature est analysée automatiquement : Claude lit le CV (PDF ou Word), le profil et la lettre de motivation, et les compare aux exigences du poste.
                 {scoredCount > 0 && (
                   <span className="text-orange-600 font-medium"> {scoredCount}/{activeCount} candidatures analysées.</span>
                 )}
