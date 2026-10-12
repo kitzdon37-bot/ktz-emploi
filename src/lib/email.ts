@@ -1032,7 +1032,7 @@ export async function sendDeadlineReminderEmail({
   applicationId: string;
 }): Promise<void> {
   const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
-  const applicationsUrl = `${baseUrl}/tableau-de-bord/recruteur/candidatures`;
+  const applicationsUrl = `${baseUrl}/tableau-de-bord/candidatures`;
 
   const isUrgent = daysLeft <= 1;
   const accentColor = isUrgent ? "#ef4444" : "#f97316";

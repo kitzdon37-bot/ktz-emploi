@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
       recruiterEmail,
       candidateName: candidate?.name ?? "Un candidat",
       jobTitle: job.title,
-      applicationsUrl: `${baseUrl}/tableau-de-bord/recruteur/candidatures`,
+      applicationsUrl: `${baseUrl}/tableau-de-bord/candidatures`,
     });
   }
 
