@@ -32,6 +32,7 @@ export async function GET(req: NextRequest) {
       suspended: true,
       createdAt: true,
       image: true,
+      password: true,
       profile: { select: { phone: true } },
     },
     orderBy: { createdAt: "desc" },
@@ -39,7 +40,12 @@ export async function GET(req: NextRequest) {
   });
 
   // Aplatit le téléphone pour faciliter l'usage côté client
-  const flat = users.map(u => ({ ...u, phone: u.profile?.phone ?? null, profile: undefined }));
+  // Ne jamais renvoyer l'empreinte du mot de passe : seulement s'il en existe un
+  const flat = users.map(({ password, profile, ...u }: (typeof users)[number]) => ({
+    ...u,
+    phone: profile?.phone ?? null,
+    hasPassword: !!password,
+  }));
 
   return NextResponse.json({ users: flat });
 }

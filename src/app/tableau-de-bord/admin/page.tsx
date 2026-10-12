@@ -11,6 +11,7 @@ import {
   BarChart2, Download, Flag, Settings, FileText, CreditCard, Bell
 } from "lucide-react";
 import { JOB_CATEGORIES, JOB_TYPES, RCA_LOCATIONS, APPLICATION_STATUSES } from "@/lib/utils";
+import PasswordModal from "./PasswordModal";
 
 interface Candidate {
   id: string;
@@ -61,6 +62,7 @@ interface SiteUser {
   suspended?: boolean;
   createdAt: string;
   image: string | null;
+  hasPassword?: boolean;
 }
 
 interface StatsData {
@@ -517,6 +519,7 @@ function AdminDashboard() {
   const [usersLoading, setUsersLoading] = useState(false);
   const [userSearch, setUserSearch] = useState("");
   const [updatingRole, setUpdatingRole] = useState<string | null>(null);
+  const [passwordUser, setPasswordUser] = useState<SiteUser | null>(null);
 
   function loadUsers() {
     setUsersLoading(true);
@@ -1870,6 +1873,10 @@ function AdminDashboard() {
       )}
 
       {/* ══════ ONGLET UTILISATEURS ══════ */}
+      {passwordUser && (
+        <PasswordModal user={passwordUser} onClose={() => setPasswordUser(null)} />
+      )}
+
       {activeTab === "utilisateurs" && (
         <div>
           <div className="flex items-center gap-3 mb-4">
@@ -1946,9 +1953,19 @@ function AdminDashboard() {
                           : <ChevDown className="h-3 w-3 absolute right-2 top-2 text-gray-400 pointer-events-none" />
                         }
                       </div>
+                      {u.role !== "ADMIN" && (
+                        <button
+                          onClick={() => u.email && setPasswordUser(u)}
+                          disabled={!u.email}
+                          title={u.email ? "Modifier le mot de passe" : "Compte sans email (WhatsApp) : connexion par code uniquement"}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-orange-50 text-orange-600 hover:bg-orange-100 transition-colors ml-auto disabled:opacity-40 disabled:cursor-not-allowed"
+                        >
+                          <UserCog className="h-3.5 w-3.5" /> Mot de passe
+                        </button>
+                      )}
                       <button
                         onClick={() => suspendUser(u.id, !u.suspended)}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ml-auto ${
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${u.role === "ADMIN" ? "ml-auto" : ""} ${
                           u.suspended ? "bg-red-100 text-red-700 hover:bg-red-200" : "bg-gray-100 text-gray-500 hover:bg-gray-200"
                         }`}
                       >
