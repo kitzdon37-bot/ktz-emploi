@@ -209,6 +209,39 @@ async function sendWhatsAppWasender(to: string, message: string, retries = 3): P
   }
 }
 
+// ── État de la session WasenderAPI ───────────────────────────────────────────
+// GET /api/status s'utilise avec la clé API de session (la même que pour l'envoi).
+// (/api/whatsapp-sessions exige un Personal Access Token et liste aussi les
+//  sessions déconnectées : il ne permet pas de savoir si l'envoi fonctionne.)
+export async function getWasenderStatus(): Promise<{
+  state: "authorized" | "notAuthorized" | "not_configured" | "error";
+  status?: string;
+  httpCode?: number;
+  raw?: unknown;
+  error?: string;
+}> {
+  const apiKey = process.env.WASENDER_API_KEY;
+  if (!apiKey) return { state: "not_configured" };
+
+  try {
+    const res = await fetch("https://www.wasenderapi.com/api/status", {
+      headers: { Authorization: `Bearer ${apiKey}`, Accept: "application/json" },
+      cache: "no-store",
+    });
+    const text = await res.text();
+    let raw: Record<string, unknown> = {};
+    try { raw = JSON.parse(text); } catch { /* non-JSON */ }
+
+    const nested = (raw?.data ?? {}) as Record<string, unknown>;
+    const status = String(raw?.status ?? nested?.status ?? "").toLowerCase();
+
+    if (!res.ok) return { state: "error", httpCode: res.status, raw: raw ?? text, status };
+    return { state: status === "connected" ? "authorized" : "notAuthorized", status, httpCode: res.status, raw };
+  } catch (err) {
+    return { state: "error", error: String(err) };
+  }
+}
+
 // ── Normalise en format E.164 ────────────────────────────────────────────────
 export function normalizePhone(phone: string): string | null {
   let p = phone.replace(/[\s\-().]/g, "");

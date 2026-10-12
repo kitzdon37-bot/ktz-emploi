@@ -3,6 +3,7 @@
 import { NextResponse }     from "next/server";
 import { getServerSession }  from "next-auth";
 import { authOptions }       from "@/lib/auth";
+import { getWasenderStatus } from "@/lib/sms";
 
 export async function GET(): Promise<NextResponse> {
   const session = await getServerSession(authOptions);
@@ -81,21 +82,8 @@ export async function GET(): Promise<NextResponse> {
       return NextResponse.json({ ...results, state: "not_configured" });
     }
 
-    try {
-      // WasenderAPI : vérifier l'état de la session
-      const res  = await fetch("https://www.wasenderapi.com/api/whatsapp-sessions", {
-        headers: { Authorization: `Bearer ${apiKey}` },
-        cache: "no-store",
-      });
-      const data = await res.json();
-      // Retourne { success: true, data: [...sessions] }
-      // Au moins une session dans data = connecté
-      const sessions = data?.data ?? [];
-      const ok = data?.success === true && sessions.length > 0;
-      return NextResponse.json({ ...results, state: ok ? "authorized" : "notAuthorized", sessions, raw: data });
-    } catch (err) {
-      return NextResponse.json({ ...results, state: "error", error: String(err) });
-    }
+    const st = await getWasenderStatus();
+    return NextResponse.json({ ...results, ...st });
   }
 
   return NextResponse.json({ ...results, state: "unknown_provider" });

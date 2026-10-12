@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
-import { sendWhatsApp, normalizePhone } from "@/lib/sms";
+import { sendWhatsApp, sendSMS, normalizePhone } from "@/lib/sms";
 
 function generateCode() {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -30,9 +30,16 @@ export async function POST(req: NextRequest) {
 
   const message = `🔐 *KTZ Emploi* — Votre code de vérification est : *${code}*\n\nCe code expire dans 10 minutes. Ne le partagez avec personne.`;
 
-  const sent = await sendWhatsApp(phone, message);
+  let sent = await sendWhatsApp(phone, message);
+
+  // Repli SMS si WhatsApp est indisponible (session déconnectée, quota…)
+  if (!sent && process.env.AT_API_KEY && process.env.AT_USERNAME) {
+    console.warn("[OTP] Échec WhatsApp — tentative par SMS pour", phone);
+    sent = await sendSMS(phone, `KTZ Emploi - Votre code de verification : ${code} (valable 10 min)`);
+  }
 
   if (!sent) {
+    console.error("[OTP] Impossible d'envoyer le code à", phone, "— vérifier la session WhatsApp (GET /api/admin/whatsapp/debug)");
     // Mode développement : afficher le code dans la console si l'envoi échoue
     if (process.env.NODE_ENV !== "production") {
       console.log(`\n[DEV OTP] ${phone} → ${code}\n`);

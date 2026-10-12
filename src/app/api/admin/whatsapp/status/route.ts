@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { getWasenderStatus } from "@/lib/sms";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -12,25 +13,14 @@ export async function GET() {
 
   // ── WasenderAPI ──
   if (provider === "wasenderapi") {
-    const apiKey = process.env.WASENDER_API_KEY;
-
-    if (!apiKey) {
-      return NextResponse.json({ configured: false, state: "not_configured", provider });
-    }
-
-    try {
-      const res = await fetch("https://www.wasenderapi.com/api/whatsapp-sessions", {
-        headers: { Authorization: `Bearer ${apiKey}` },
-        cache: "no-store",
-      });
-      const data = await res.json();
-      const sessions = data?.data ?? [];
-      const connected = data?.success === true && sessions.length > 0;
-      return NextResponse.json({ configured: true, state: connected ? "authorized" : "notAuthorized", provider, sessions });
-    } catch (err) {
-      console.error("[WasenderAPI status error]", err);
-      return NextResponse.json({ configured: true, state: "error", provider });
-    }
+    const st = await getWasenderStatus();
+    if (st.state === "error") console.error("[WasenderAPI status error]", st);
+    return NextResponse.json({
+      configured: st.state !== "not_configured",
+      state: st.state,
+      provider,
+      status: st.status,
+    });
   }
 
   // ── UltraMsg ──
