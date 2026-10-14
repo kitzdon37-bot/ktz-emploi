@@ -1794,6 +1794,10 @@ function AdminDashboard() {
       {/* ══════ ONGLET RECRUTEURS ══════ */}
       {activeTab === "recruteurs" && (
         <div>
+          <a href="/tableau-de-bord/admin/entreprises" className="mb-4 flex items-center justify-between gap-3 bg-orange-50 border border-orange-200 rounded-xl px-4 py-3 text-sm text-orange-700 hover:bg-orange-100">
+            <span><strong>Nettoyage des entreprises</strong> : fusionner les doublons et supprimer les entreprises de test</span>
+            <span aria-hidden="true">→</span>
+          </a>
           <div className="flex items-center gap-3 mb-4">
             <div className="flex-1 flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-4 py-2.5">
               <Search className="h-4 w-4 text-gray-400" />

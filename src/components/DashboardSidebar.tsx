@@ -63,6 +63,7 @@ const ADMIN_LINKS = [
   { href: "/tableau-de-bord/admin?tab=abonnements", label: "Abonnements", icon: CreditCard },
   { href: "/tableau-de-bord/admin?tab=utilisateurs", label: "Utilisateurs", icon: Users },
   { href: "/tableau-de-bord/admin?tab=recruteurs", label: "Recruteurs", icon: Building2 },
+  { href: "/tableau-de-bord/admin/entreprises", label: "Nettoyage entreprises", icon: Building2 },
   { href: "/tableau-de-bord/cvtheque", label: "CVthèque", icon: BookOpen },
   { href: "/tableau-de-bord/admin?tab=stats", label: "Statistiques", icon: BarChart2 },
   { href: "/tableau-de-bord/admin?tab=offres", label: "Offres à valider", icon: Mail },

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
+import { getSlugRedirects } from "@/lib/company-cleanup";
 import Link from "next/link";
 import { Metadata } from "next";
 import {
@@ -58,7 +59,12 @@ export default async function EntrepriseDetailPage({ params }: Props) {
     },
   });
 
-  if (!company) notFound();
+  if (!company) {
+    // Entreprise fusionnée avec une autre : redirection permanente vers la fiche conservée
+    const redirects = await getSlugRedirects();
+    if (redirects[slug]) permanentRedirect(`/entreprises/${redirects[slug]}`);
+    notFound();
+  }
 
   const reviews = await prisma.companyReview.findMany({
     where: { companyId: company.id, status: "APPROVED" },
