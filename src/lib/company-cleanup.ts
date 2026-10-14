@@ -84,7 +84,9 @@ export class CleanupError extends Error {
 
 const FILLABLE = ["logo", "website", "description", "sector", "size", "location", "phone", "email", "banner", "videoUrl", "photos", "foundedYear"] as const;
 
-type Sub = { plan: string; status: string; paymentRef?: string | null } | null;
+type Sub = { plan: string; status: string; paymentRef?: string | null; paymentMethod?: string | null } | null;
+// Vrai paiement = référence de transaction réelle (pas un abonnement offert depuis l'admin)
+const isRealPayment = (s: Sub) => !!s?.paymentRef && s.paymentMethod !== "admin" && s.paymentRef !== "ADMIN_UNLIMITED";
 const isPaid = (s: Sub) => !!s && s.status === "ACTIVE" && s.plan !== "FREE";
 const PLAN_RANK: Record<string, number> = { FREE: 0, MICRO: 1, STARTER: 2, PRO: 3 };
 const rank = (s: Sub) => (isPaid(s) ? PLAN_RANK[s!.plan] ?? 1 : -1);
@@ -113,10 +115,10 @@ export async function mergeCompanies(keepId: string, removeIdsIn: string[], acto
   const paidRemoved = removed.filter((c: C) => isPaid(c.subscription)).sort((a: C, b: C) => rank(b.subscription) - rank(a.subscription));
   const transfer = paidRemoved.length > 0 && rank(paidRemoved[0].subscription) > rank(keep.subscription) ? paidRemoved[0] : null;
   const dropped = paidRemoved.filter((c: C) => c !== transfer);
-  if (dropped.some((c: C) => c.subscription?.paymentRef)) {
+  if (dropped.some((c: C) => isRealPayment(c.subscription))) {
     throw new CleanupError(409, "Un des doublons a un abonnement payé (référence de paiement) : gardez cette entreprise-là, ou traitez l'abonnement d'abord.");
   }
-  if (keep.subscription?.paymentRef && transfer) {
+  if (isRealPayment(keep.subscription) && transfer) {
     throw new CleanupError(409, "L'entreprise gardée a un abonnement payé et un doublon a un abonnement supérieur : décision manuelle nécessaire.");
   }
 
