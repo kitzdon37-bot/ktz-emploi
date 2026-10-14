@@ -1,4 +1,5 @@
 import { googleEmploymentType, jsonLd } from "@/lib/seo";
+import { sectorSlugForCategory } from "@/lib/seo-landing";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -140,12 +141,27 @@ export default async function JobDetailPage({ params }: Props) {
     }),
   };
 
+  const sectorSlug = sectorSlugForCategory(job.category);
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Accueil", item: BASE_URL },
+      { "@type": "ListItem", position: 2, name: "Offres d'emploi", item: `${BASE_URL}/emplois` },
+      ...(sectorSlug
+        ? [{ "@type": "ListItem", position: 3, name: job.category, item: `${BASE_URL}/emplois/secteur/${sectorSlug}` }]
+        : []),
+      { "@type": "ListItem", position: sectorSlug ? 4 : 3, name: job.title, item: `${BASE_URL}/emplois/${job.slug}` },
+    ],
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={jsonLd(jobPostingSchema)}
       />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(breadcrumbSchema)} />
 
       {/* Popup entreprise — apparaît automatiquement */}
       <CompanyPopup

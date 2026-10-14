@@ -4,6 +4,7 @@ import { JOB_CATEGORIES, JOB_TYPES, EXPERIENCE_LEVELS, RCA_LOCATIONS } from "@/l
 import { MapPin, Filter, Briefcase } from "lucide-react";
 import Link from "next/link";
 import EmploisSearchBar from "./EmploisClient";
+import { LANDINGS } from "@/lib/seo-landing";
 
 import { pageMetadata } from "@/lib/seo";
 
@@ -83,7 +84,7 @@ export default async function EmploisPage({ searchParams }: Props) {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Offres d&apos;emploi en RCA</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Offres d&apos;emploi en Centrafrique</h1>
         <p className="text-gray-500 mt-1">
           {total} offre{total !== 1 ? "s" : ""} disponible{total !== 1 ? "s" : ""}
           {params.q && <span className="text-orange-500"> pour &quot;{params.q}&quot;</span>}
@@ -255,7 +256,34 @@ export default async function EmploisPage({ searchParams }: Props) {
           )}
         </div>
       </div>
+
+      {/* Recherches populaires (liens vers les pages ville / secteur / contrat) */}
+      <section className="mt-14 border-t border-gray-200 pt-10 grid sm:grid-cols-3 gap-8">
+        <div>
+          <h2 className="font-semibold text-gray-900 mb-3">Emploi par ville</h2>
+          <ul className="flex flex-wrap gap-2">
+            {LANDINGS.ville.map((l) => (
+              <li key={l.slug}><Link href={`/emplois/ville/${l.slug}`} className="text-sm text-gray-600 hover:text-orange-600">Emploi {l.label}</Link></li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h2 className="font-semibold text-gray-900 mb-3">Emploi par secteur</h2>
+          <ul className="flex flex-wrap gap-x-3 gap-y-2">
+            {LANDINGS.secteur.map((l) => (
+              <li key={l.slug}><Link href={`/emplois/secteur/${l.slug}`} className="text-sm text-gray-600 hover:text-orange-600">{l.label}</Link></li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h2 className="font-semibold text-gray-900 mb-3">Par type de contrat</h2>
+          <ul className="flex flex-wrap gap-x-3 gap-y-2">
+            {LANDINGS.contrat.map((l) => (
+              <li key={l.slug}><Link href={`/emplois/contrat/${l.slug}`} className="text-sm text-gray-600 hover:text-orange-600">{l.label}</Link></li>
+            ))}
+          </ul>
+        </div>
+      </section>
     </div>
   );
 }
-

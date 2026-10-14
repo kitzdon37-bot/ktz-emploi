@@ -13,8 +13,21 @@ function resolveCorsOrigin(requestOrigin: string | null): string {
   return allowed.includes(requestOrigin) ? requestOrigin : "null";
 }
 
+// Adresse unique du site : www.ktzemploi.com redirige vers ktzemploi.com (sinon Google voit
+// deux copies du même site). ktz-emploi.vercel.app n'est pas redirigé (la connexion peut en
+// dépendre) : la balise canonical de chaque page suffit à indiquer la bonne adresse à Google.
+// Les routes /api/ ne sont jamais redirigées (connexion, webhooks).
+const CANONICAL_HOST = "ktzemploi.com";
+const DUPLICATE_HOSTS = new Set(["www.ktzemploi.com"]);
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  const host = (request.headers.get("host") ?? "").toLowerCase();
+  if (DUPLICATE_HOSTS.has(host) && !pathname.startsWith("/api/")) {
+    const target = new URL(request.nextUrl.pathname + request.nextUrl.search, `https://${CANONICAL_HOST}`);
+    return NextResponse.redirect(target, 308);
+  }
 
   // Mode coming soon — bloquer toutes les pages sauf l'accueil et les API
   // Désactivé en localhost pour continuer le développement

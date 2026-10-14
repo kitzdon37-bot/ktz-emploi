@@ -55,7 +55,7 @@ export default function Footer() {
             <h3 className="font-semibold text-white mb-4">Candidats</h3>
             <ul className="space-y-2 text-sm">
               <li><Link href="/emplois" className="hover:text-yellow-400 transition-colors">Offres d&apos;emploi</Link></li>
-              <li><Link href="/emplois?type=Stage" className="hover:text-yellow-400 transition-colors">Stages</Link></li>
+              <li><Link href="/emplois/contrat/stage" className="hover:text-yellow-400 transition-colors">Stages</Link></li>
               <li><Link href="/emplois?type=Alternance" className="hover:text-yellow-400 transition-colors">Alternance</Link></li>
               <li><Link href="/conseils" className="hover:text-yellow-400 transition-colors">Conseils carrière</Link></li>
               <li><Link href="/inscription" className="hover:text-yellow-400 transition-colors">Créer un compte</Link></li>
@@ -78,11 +78,11 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold text-white mb-4">Secteurs populaires</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/emplois?category=Humanitaire+%26+ONG" className="hover:text-yellow-400 transition-colors">Humanitaire & ONG</Link></li>
-              <li><Link href="/emplois?category=Informatique+%26+T%C3%A9l%C3%A9coms" className="hover:text-yellow-400 transition-colors">Informatique</Link></li>
-              <li><Link href="/emplois?category=Médecine+%26+Santé" className="hover:text-yellow-400 transition-colors">Santé</Link></li>
-              <li><Link href="/emplois?category=Banque+%26+Finance" className="hover:text-yellow-400 transition-colors">Banque & Finance</Link></li>
-              <li><Link href="/emplois?category=Éducation+%26+Formation" className="hover:text-yellow-400 transition-colors">Éducation</Link></li>
+              <li><Link href="/emplois/secteur/humanitaire-ong" className="hover:text-yellow-400 transition-colors">Emploi ONG & humanitaire</Link></li>
+              <li><Link href="/emplois/secteur/informatique-telecoms" className="hover:text-yellow-400 transition-colors">Emploi informatique</Link></li>
+              <li><Link href="/emplois/secteur/sante" className="hover:text-yellow-400 transition-colors">Emploi santé</Link></li>
+              <li><Link href="/emplois/secteur/banque-finance" className="hover:text-yellow-400 transition-colors">Emploi banque & finance</Link></li>
+              <li><Link href="/emplois/ville/bangui" className="hover:text-yellow-400 transition-colors">Emploi Bangui</Link></li>
             </ul>
           </div>
         </div>

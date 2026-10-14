@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 import { articles } from "@/lib/articles";
+import { LANDINGS, activeJobsWhere, type LandingKind } from "@/lib/seo-landing";
 
 const BASE_URL = "https://ktzemploi.com";
 
@@ -60,5 +61,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  return [...staticPages, ...jobPages, ...companyPages, ...blogPages];
+  // Pages ville / secteur / contrat : seulement celles qui ont des offres en cours
+  const landingPages: MetadataRoute.Sitemap = [];
+  for (const kind of Object.keys(LANDINGS) as LandingKind[]) {
+    const counts = await Promise.all(
+      LANDINGS[kind].map((l) => prisma.job.count({ where: activeJobsWhere(l.filter) }))
+    );
+    LANDINGS[kind].forEach((l, i) => {
+      if (counts[i] > 0) {
+        landingPages.push({
+          url: `${BASE_URL}/emplois/${kind}/${l.slug}`,
+          lastModified: new Date(),
+          changeFrequency: "daily",
+          priority: kind === "ville" && l.slug === "bangui" ? 0.9 : 0.7,
+        });
+      }
+    });
+  }
+
+  const legalPages: MetadataRoute.Sitemap = ["contact", "mentions-legales", "confidentialite", "cgu"].map((p) => ({
+    url: `${BASE_URL}/${p}`,
+    lastModified: new Date(),
+    changeFrequency: "yearly",
+    priority: 0.3,
+  }));
+
+  return [...staticPages, ...landingPages, ...jobPages, ...companyPages, ...blogPages, ...legalPages];
 }

@@ -6,6 +6,41 @@ import StatsCounter from "@/components/StatsCounter";
 import HeroSearch from "@/components/HeroSearch";
 import { JOB_CATEGORIES } from "@/lib/utils";
 import ComingSoon from "@/components/ComingSoon";
+import { LANDINGS, sectorSlugForCategory } from "@/lib/seo-landing";
+import { jsonLd } from "@/lib/seo";
+
+const HOME_FAQ = [
+  {
+    q: "Comment trouver un emploi en Centrafrique ?",
+    a: "Créez un compte gratuit sur KTZ Emploi, complétez votre profil et déposez votre CV. Consultez ensuite les offres d'emploi à Bangui et en province, filtrez par secteur ou type de contrat et postulez en ligne. Activez les alertes pour recevoir les nouvelles offres par email ou WhatsApp.",
+  },
+  {
+    q: "L'inscription sur KTZ Emploi est-elle gratuite ?",
+    a: "Oui. L'inscription, la création du CV et les candidatures sont entièrement gratuites pour les candidats. Pour les recruteurs, la publication d'offres est gratuite jusqu'à fin novembre 2026, puis des abonnements démarrent à 10 000 XAF par mois.",
+  },
+  {
+    q: "Quels types d'offres trouve-t-on sur KTZ Emploi ?",
+    a: "Des CDI, CDD, stages, missions de consultance et postes à temps partiel, dans tous les secteurs : humanitaire et ONG, santé, informatique et télécoms, banque, éducation, logistique, BTP, agriculture et bien d'autres.",
+  },
+  {
+    q: "Comment publier une offre d'emploi en Centrafrique ?",
+    a: "Créez un compte recruteur sur KTZ Emploi, puis cliquez sur « Publier une offre » dans votre tableau de bord. Les candidatures arrivent directement dans votre espace, triées automatiquement selon leur correspondance avec le poste.",
+  },
+  {
+    q: "Qui a créé KTZ Emploi ?",
+    a: "KTZ Emploi a été fondée par Donald KITEZE, ingénieur en microélectronique, télécommunications et réseaux et entrepreneur centrafricain, pour faciliter l'accès à l'emploi en République Centrafricaine.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: HOME_FAQ.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
+};
 
 import { pageMetadata } from "@/lib/seo";
 
@@ -90,7 +125,7 @@ export default async function HomePage() {
       ══════════════════════════════════════ */}
       <section className="relative min-h-[420px] sm:min-h-[560px]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/accueil.png" alt="" className="absolute inset-0 w-full h-full object-cover object-center" />
+        <img src="/accueil.png" alt="Recherche d'emploi en Centrafrique avec KTZ Emploi" className="absolute inset-0 w-full h-full object-cover object-center" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 to-black/20" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent" />
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-end h-full min-h-[420px] sm:min-h-[560px]">
@@ -98,16 +133,16 @@ export default async function HomePage() {
             <div className="inline-flex items-center gap-2 bg-white/90 backdrop-blur-sm border border-white text-[#1e3a5f] text-xs sm:text-sm font-bold px-3 py-1 sm:px-4 sm:py-1.5 rounded-full mb-4 sm:mb-6 shadow-md">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="https://upload.wikimedia.org/wikipedia/commons/6/6f/Flag_of_the_Central_African_Republic.svg" alt="Drapeau RCA" className="flag-wave h-4 w-6 sm:h-5 sm:w-7 object-cover rounded-sm shadow-sm" />
-              <span>1ère plateforme de recherche d&apos;emploi en Centrafrique</span>
+              <h1 className="text-xs sm:text-sm font-bold">Offres d&apos;emploi en Centrafrique · 1ère plateforme d&apos;emploi en RCA</h1>
             </div>
-            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-5 sm:mb-8 drop-shadow-lg">
+            <p className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-5 sm:mb-8 drop-shadow-lg">
               <span className="block animate-slide-up-slow">Pas besoin de connaître</span>
               <span className="block animate-slide-up-slow delay-250">quelqu&apos;un qui connaît quelqu&apos;un.</span>
               <span className="block animate-slide-up-slow delay-500">
                 <span className="text-orange-400">Ici, vous postulez vous-même</span>{" "}—
               </span>
               <span className="block animate-slide-up-slow delay-750">et ça change tout.</span>
-            </h1>
+            </p>
             <HeroSearch />
             <div className="flex flex-wrap gap-2 mt-4">
                 {[
@@ -243,7 +278,7 @@ export default async function HomePage() {
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {JOB_CATEGORIES.slice(0, 8).map((cat) => (
-              <Link key={cat} href={`/emplois?category=${encodeURIComponent(cat)}`} className="zoom-hover group flex items-center gap-3 p-4 rounded-2xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50 hover:shadow-md bg-white">
+              <Link key={cat} href={sectorSlugForCategory(cat) ? `/emplois/secteur/${sectorSlugForCategory(cat)}` : `/emplois?category=${encodeURIComponent(cat)}`} className="zoom-hover group flex items-center gap-3 p-4 rounded-2xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50 hover:shadow-md bg-white">
                 <span className="text-2xl transition-transform duration-300 group-hover:scale-125 inline-block">{CATEGORY_ICONS[cat] || "📋"}</span>
                 <span className="text-sm font-medium text-gray-700 group-hover:text-orange-600 leading-tight transition-colors">{cat}</span>
               </Link>
@@ -342,6 +377,63 @@ export default async function HomePage() {
                 </div>
               </Link>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Présentation + FAQ (texte de référence pour Google) */}
+      <section className="bg-white py-16 border-t border-gray-100">
+        <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(faqSchema)} />
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Trouver un emploi en Centrafrique avec KTZ Emploi</h2>
+            <div className="space-y-4 text-gray-600 leading-relaxed">
+              <p>
+                <strong className="text-gray-800">KTZ Emploi</strong> (ktzemploi.com) est la plateforme de recherche d&apos;emploi
+                dédiée à la <strong className="text-gray-800">République Centrafricaine</strong>. Elle réunit en un seul endroit
+                les offres d&apos;emploi publiées à Bangui et en province par les entreprises, les administrations,
+                les ONG et les organisations internationales.
+              </p>
+              <p>
+                Candidats : créez votre profil gratuitement, déposez votre CV et postulez en ligne aux offres en CDI, CDD,
+                stage ou consultance. Les alertes emploi vous préviennent par email ou WhatsApp dès qu&apos;une offre
+                correspond à votre métier.
+              </p>
+              <p>
+                Recruteurs : publiez vos offres, recevez les candidatures triées automatiquement par intelligence
+                artificielle et consultez la CVthèque des talents centrafricains.
+              </p>
+              <p>
+                KTZ Emploi a été fondée par <Link href="/a-propos" className="text-orange-600 hover:underline">Donald KITEZE</Link>,
+                ingénieur et entrepreneur centrafricain, pour rendre le marché de l&apos;emploi en RCA plus simple et plus transparent.
+              </p>
+            </div>
+            <div className="mt-6 flex flex-wrap gap-2">
+              {LANDINGS.ville.slice(0, 6).map((l) => (
+                <Link key={l.slug} href={`/emplois/ville/${l.slug}`} className="text-sm px-3 py-1.5 rounded-full border border-gray-200 text-gray-600 hover:border-orange-300 hover:text-orange-600">
+                  Emploi {l.label}
+                </Link>
+              ))}
+              {LANDINGS.contrat.slice(0, 3).map((l) => (
+                <Link key={l.slug} href={`/emplois/contrat/${l.slug}`} className="text-sm px-3 py-1.5 rounded-full border border-gray-200 text-gray-600 hover:border-orange-300 hover:text-orange-600">
+                  {l.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Questions fréquentes</h2>
+            <div className="space-y-3">
+              {HOME_FAQ.map((f) => (
+                <details key={f.q} className="group bg-gray-50 border border-gray-200 rounded-xl p-4">
+                  <summary className="font-medium text-gray-900 cursor-pointer list-none flex justify-between gap-3">
+                    {f.q}
+                    <span className="text-orange-500 group-open:rotate-45 transition-transform">+</span>
+                  </summary>
+                  <p className="text-sm text-gray-600 mt-3 leading-relaxed">{f.a}</p>
+                </details>
+              ))}
+            </div>
           </div>
         </div>
       </section>
