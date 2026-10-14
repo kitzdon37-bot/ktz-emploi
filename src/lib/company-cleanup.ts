@@ -84,8 +84,10 @@ export class CleanupError extends Error {
 
 const FILLABLE = ["logo", "website", "description", "sector", "size", "location", "phone", "email", "banner", "videoUrl", "photos", "foundedYear"] as const;
 
-type Sub = { plan: string; status: string } | null;
+type Sub = { plan: string; status: string; paymentRef?: string | null } | null;
 const isPaid = (s: Sub) => !!s && s.status === "ACTIVE" && s.plan !== "FREE";
+const PLAN_RANK: Record<string, number> = { FREE: 0, MICRO: 1, STARTER: 2, PRO: 3 };
+const rank = (s: Sub) => (isPaid(s) ? PLAN_RANK[s!.plan] ?? 1 : -1);
 
 /**
  * Fusionne des entreprises en double dans `keepId` : offres (et donc candidatures), modèles,
@@ -105,10 +107,17 @@ export async function mergeCompanies(keepId: string, removeIdsIn: string[], acto
   const removed = all.filter((c: C) => c.id !== keepId);
   if (!keep || removed.length !== removeIds.length) throw new CleanupError(404, "Entreprise introuvable");
 
-  // Abonnements : seul un abonnement payant actif compte ; deux abonnements payants = décision manuelle
-  const paidRemoved = removed.filter((c: C) => isPaid(c.subscription));
-  if (paidRemoved.length > 1 || (paidRemoved.length === 1 && isPaid(keep.subscription))) {
-    throw new CleanupError(409, "Plusieurs de ces entreprises ont un abonnement payant actif : gardez celle qui a l'abonnement, ou résiliez les autres d'abord.");
+  // Abonnements : l'entreprise gardée conserve le meilleur abonnement actif.
+  // Les abonnements en double sont abandonnés, sauf s'ils correspondent à un vrai paiement
+  // (référence de transaction) : dans ce cas, décision manuelle.
+  const paidRemoved = removed.filter((c: C) => isPaid(c.subscription)).sort((a: C, b: C) => rank(b.subscription) - rank(a.subscription));
+  const transfer = paidRemoved.length > 0 && rank(paidRemoved[0].subscription) > rank(keep.subscription) ? paidRemoved[0] : null;
+  const dropped = paidRemoved.filter((c: C) => c !== transfer);
+  if (dropped.some((c: C) => c.subscription?.paymentRef)) {
+    throw new CleanupError(409, "Un des doublons a un abonnement payé (référence de paiement) : gardez cette entreprise-là, ou traitez l'abonnement d'abord.");
+  }
+  if (keep.subscription?.paymentRef && transfer) {
+    throw new CleanupError(409, "L'entreprise gardée a un abonnement payé et un doublon a un abonnement supérieur : décision manuelle nécessaire.");
   }
 
   const fill: Record<string, unknown> = {};
@@ -135,9 +144,9 @@ export async function mergeCompanies(keepId: string, removeIdsIn: string[], acto
       keptReviewers.add(r.userId);
       await tx.companyReview.update({ where: { id: r.id }, data: { companyId: keepId } });
     }
-    if (paidRemoved.length === 1) {
-      if (keep.subscription) await tx.subscription.delete({ where: { companyId: keepId } }); // formule gratuite remplacée
-      await tx.subscription.update({ where: { companyId: paidRemoved[0].id }, data: { companyId: keepId } });
+    if (transfer) {
+      if (keep.subscription) await tx.subscription.delete({ where: { companyId: keepId } }); // remplacé par le meilleur
+      await tx.subscription.update({ where: { companyId: transfer.id }, data: { companyId: keepId } });
     }
     if (Object.keys(fill).length > 0) await tx.company.update({ where: { id: keepId }, data: fill });
     await tx.company.deleteMany({ where: { id: { in: removeIds } } });
