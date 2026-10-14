@@ -27,11 +27,14 @@ function renderText(text: string) {
         return <strong key={j}>{part.slice(2, -2)}</strong>;
       }
       // Liens internes du site (/emplois, /tarifs…) rendus cliquables
-      return part.split(/((?:^|(?<=[\s(]))\/[a-z][a-z0-9-]*(?:\/[a-z0-9-]+)*)/g).map((seg, k) =>
-        /^\/[a-z]/.test(seg)
+      // (sans « lookbehind » : non compris par les anciens navigateurs Android)
+      return part.split(/(\/[a-z][a-z0-9-]*(?:\/[a-z0-9-]+)*)/g).map((seg, k, arr) => {
+        const prev = k > 0 ? arr[k - 1] : "";
+        const isLink = /^\/[a-z]/.test(seg) && (prev === "" || /[\s(]$/.test(prev));
+        return isLink
           ? <a key={`${j}-${k}`} href={seg} className="text-orange-600 underline font-medium">{seg}</a>
-          : seg
-      );
+          : seg;
+      });
     });
 
     if (isBullet) {
