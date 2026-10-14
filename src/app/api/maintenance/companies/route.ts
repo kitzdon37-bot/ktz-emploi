@@ -56,7 +56,7 @@ export async function GET(req: NextRequest) {
       id: true, name: true, slug: true, verified: true, suspended: true, createdAt: true,
       logo: true, description: true, website: true,
       user: { select: { email: true, phone: true, role: true, createdAt: true } },
-      subscription: { select: { plan: true, status: true } },
+      subscription: { select: { plan: true, status: true, paymentRef: true, paymentMethod: true, startDate: true, endDate: true, createdAt: true } },
       _count: { select: { jobs: true, reviews: true, jobTemplates: true } },
       jobs: { select: { id: true, published: true, deadline: true, _count: { select: { applications: true } } } },
     },
