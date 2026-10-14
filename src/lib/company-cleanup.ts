@@ -73,3 +73,112 @@ export async function addSlugRedirects(oldSlugs: string[], target: string) {
     update: { value: JSON.stringify(map) },
   });
 }
+
+// ── Fusion / suppression (utilisées par l'outil admin) ───────────────────────
+
+export class CleanupError extends Error {
+  constructor(public status: number, message: string, public extra: Record<string, unknown> = {}) {
+    super(message);
+  }
+}
+
+const FILLABLE = ["logo", "website", "description", "sector", "size", "location", "phone", "email", "banner", "videoUrl", "photos", "foundedYear"] as const;
+
+type Sub = { plan: string; status: string } | null;
+const isPaid = (s: Sub) => !!s && s.status === "ACTIVE" && s.plan !== "FREE";
+
+/**
+ * Fusionne des entreprises en double dans `keepId` : offres (et donc candidatures), modèles,
+ * avis et abonnement payant sont déplacés, les champs vides complétés, les doublons supprimés,
+ * et leurs anciennes adresses redirigées vers la fiche conservée.
+ */
+export async function mergeCompanies(keepId: string, removeIdsIn: string[], actorEmail?: string) {
+  const removeIds = [...new Set(removeIdsIn)].filter((id) => id !== keepId);
+  if (!keepId || removeIds.length === 0) throw new CleanupError(400, "Choisissez l'entreprise à garder et au moins un doublon");
+
+  const all = await prisma.company.findMany({
+    where: { id: { in: [keepId, ...removeIds] } },
+    include: { subscription: true, user: { select: { email: true, phone: true } } },
+  });
+  type C = (typeof all)[number];
+  const keep = all.find((c: C) => c.id === keepId);
+  const removed = all.filter((c: C) => c.id !== keepId);
+  if (!keep || removed.length !== removeIds.length) throw new CleanupError(404, "Entreprise introuvable");
+
+  // Abonnements : seul un abonnement payant actif compte ; deux abonnements payants = décision manuelle
+  const paidRemoved = removed.filter((c: C) => isPaid(c.subscription));
+  if (paidRemoved.length > 1 || (paidRemoved.length === 1 && isPaid(keep.subscription))) {
+    throw new CleanupError(409, "Plusieurs de ces entreprises ont un abonnement payant actif : gardez celle qui a l'abonnement, ou résiliez les autres d'abord.");
+  }
+
+  const fill: Record<string, unknown> = {};
+  for (const f of FILLABLE) {
+    if (keep[f] == null || keep[f] === "") {
+      const donor = removed.find((c: C) => c[f] != null && c[f] !== "");
+      if (donor) fill[f] = donor[f];
+    }
+  }
+  if (!keep.verified && removed.some((c: C) => c.verified)) fill.verified = true;
+  if (!keep.superRecruiter && removed.some((c: C) => c.superRecruiter)) fill.superRecruiter = true;
+
+  const keptReviewers = new Set(
+    (await prisma.companyReview.findMany({ where: { companyId: keepId }, select: { userId: true } }))
+      .map((r: { userId: string }) => r.userId)
+  );
+
+  const movedJobs = await prisma.$transaction(async (tx) => {
+    const jobs = await tx.job.updateMany({ where: { companyId: { in: removeIds } }, data: { companyId: keepId } });
+    await tx.jobTemplate.updateMany({ where: { companyId: { in: removeIds } }, data: { companyId: keepId } });
+    const reviews = await tx.companyReview.findMany({ where: { companyId: { in: removeIds } }, orderBy: { createdAt: "desc" } });
+    for (const r of reviews) {
+      if (keptReviewers.has(r.userId)) continue; // un seul avis par personne et par entreprise
+      keptReviewers.add(r.userId);
+      await tx.companyReview.update({ where: { id: r.id }, data: { companyId: keepId } });
+    }
+    if (paidRemoved.length === 1) {
+      if (keep.subscription) await tx.subscription.delete({ where: { companyId: keepId } }); // formule gratuite remplacée
+      await tx.subscription.update({ where: { companyId: paidRemoved[0].id }, data: { companyId: keepId } });
+    }
+    if (Object.keys(fill).length > 0) await tx.company.update({ where: { id: keepId }, data: fill });
+    await tx.company.deleteMany({ where: { id: { in: removeIds } } });
+    return jobs.count;
+  });
+
+  await addSlugRedirects(removed.map((c: C) => c.slug), keep.slug);
+
+  const orphanOwners = removed
+    .filter((c: C) => c.userId !== keep.userId)
+    .map((c: C) => c.user.email ?? c.user.phone ?? c.userId);
+
+  const { logActivity } = await import("@/lib/activity");
+  await logActivity({
+    userEmail: actorEmail,
+    type: "COMPANY_UPDATED",
+    label: `Fusion d'entreprises : ${removed.map((c: C) => c.name).join(", ")} → ${keep.name}`,
+    metadata: { keepId, removeIds, movedJobs, by: actorEmail },
+  });
+
+  return { kept: keep.name, keptSlug: keep.slug, merged: removed.map((c: C) => c.name), movedJobs, orphanOwners };
+}
+
+/** Supprime une entreprise (et ses offres si confirmJobs). Refuse si abonnement payant actif. */
+export async function deleteCompany(companyId: string, confirmJobs: boolean, actorEmail?: string) {
+  const company = await prisma.company.findUnique({
+    where: { id: companyId },
+    include: { subscription: true, _count: { select: { jobs: true } } },
+  });
+  if (!company) throw new CleanupError(404, "Entreprise introuvable");
+  if (isPaid(company.subscription)) throw new CleanupError(409, "Cette entreprise a un abonnement payant actif : résiliez-le d'abord.");
+  if (company._count.jobs > 0 && !confirmJobs) {
+    throw new CleanupError(409, `Cette entreprise a ${company._count.jobs} offre(s) : elles seront supprimées avec leurs candidatures.`, { needsConfirm: true });
+  }
+  await prisma.company.delete({ where: { id: company.id } });
+  const { logActivity } = await import("@/lib/activity");
+  await logActivity({
+    userEmail: actorEmail,
+    type: "COMPANY_UPDATED",
+    label: `Entreprise supprimée : ${company.name}`,
+    metadata: { companyId: company.id, jobs: company._count.jobs, by: actorEmail },
+  });
+  return { deleted: company.name, jobs: company._count.jobs };
+}
