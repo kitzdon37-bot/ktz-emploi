@@ -5,6 +5,9 @@ import { LANDINGS, activeJobsWhere, type LandingKind } from "@/lib/seo-landing";
 
 const BASE_URL = "https://ktzemploi.com";
 
+// Recalculé toutes les heures (sinon figé à la date de mise en ligne)
+export const revalidate = 3600;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Pages statiques
   const staticPages: MetadataRoute.Sitemap = [
