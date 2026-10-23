@@ -4,9 +4,10 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  Briefcase, Clock, Users, Eye, Trash2, Loader2, Plus, AlertTriangle, X, CheckCircle, Sparkles,
+  Briefcase, Clock, Users, Eye, Trash2, Loader2, Plus, AlertTriangle, X, CheckCircle, Sparkles, ListChecks,
 } from "lucide-react";
 import { timeAgo } from "@/lib/utils";
+import ScreeningModal from "./ScreeningModal";
 
 interface Job {
   id: string;
@@ -27,6 +28,7 @@ export default function JobsManager({ jobs: initialJobs }: { jobs: Job[] }) {
   const [confirmId, setConfirmId] = useState<string | null>(null);
   const [togglingAi, setTogglingAi] = useState<string | null>(null);
   const [toast, setToast] = useState<{ type: "success" | "error"; msg: string } | null>(null);
+  const [screeningJob, setScreeningJob] = useState<Job | null>(null);
 
   function showToast(type: "success" | "error", msg: string) {
     setToast({ type, msg });
@@ -87,6 +89,19 @@ export default function JobsManager({ jobs: initialJobs }: { jobs: Job[] }) {
           {toast.type === "success" ? <CheckCircle className="h-4 w-4" /> : <AlertTriangle className="h-4 w-4" />}
           {toast.msg}
         </div>
+      )}
+
+      {screeningJob && (
+        <ScreeningModal
+          jobId={screeningJob.id}
+          jobTitle={screeningJob.title}
+          applicationsCount={screeningJob._count.applications}
+          onClose={() => setScreeningJob(null)}
+          onSaved={(count) => {
+            setScreeningJob(null);
+            showToast("success", count > 0 ? `${count} question${count > 1 ? "s" : ""} enregistrée${count > 1 ? "s" : ""}.` : "Questions retirées.");
+          }}
+        />
       )}
 
       {/* Header */}
@@ -182,6 +197,14 @@ export default function JobsManager({ jobs: initialJobs }: { jobs: Job[] }) {
                     <Eye className="h-3.5 w-3.5" />
                     Voir
                   </Link>
+
+                  <button
+                    onClick={() => setScreeningJob(job)}
+                    className="flex items-center gap-1.5 px-3 py-2 border border-orange-200 rounded-xl text-xs font-medium text-orange-600 hover:bg-orange-50 transition-colors"
+                  >
+                    <ListChecks className="h-3.5 w-3.5" />
+                    Questions
+                  </button>
 
                   {confirmId === job.id ? (
                     <div className="flex items-center gap-2">
