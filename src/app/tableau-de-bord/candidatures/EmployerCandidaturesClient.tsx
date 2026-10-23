@@ -6,12 +6,13 @@ import Link from "next/link";
 import {
   Briefcase, FileText, Archive, ArchiveRestore, Trash2,
   ChevronDown, Loader2, SortAsc, Filter, X, AlertTriangle,
-  Sparkles, Star, ChevronRight, CheckCircle2, XCircle, Clock,
+  Sparkles, Star, ChevronRight, CheckCircle2, XCircle, Clock, ListChecks,
 } from "lucide-react";
 import { timeAgo } from "@/lib/utils";
 import ApplicationActions from "./ApplicationActions";
 import NotesButton from "./NotesButton";
 import ExportCsvButton from "./ExportCsvButton";
+import { ScreeningAnswer, formatAnswerValue } from "@/lib/screening";
 
 const APPLICATION_STATUSES: Record<string, { label: string; color: string }> = {
   PENDING:   { label: "En attente",        color: "text-yellow-700 bg-yellow-50 border-yellow-200" },
@@ -37,7 +38,8 @@ interface AppData {
   createdAt: string;
   aiScore: number | null;
   aiSummary: string | null;
-  job: { id: string; title: string; slug: string; type: string; aiRankingEnabled: boolean };
+  screening: { answers: ScreeningAnswer[]; meetsRequirements: boolean; quizScore: number | null } | null;
+  job:{ id: string; title: string; slug: string; type: string; aiRankingEnabled: boolean };
   user: {
     name: string | null;
     email: string | null;
@@ -92,6 +94,56 @@ function ScoreBadge({ score, rankingEnabled }: { score: number | null; rankingEn
   );
 }
 
+function ScreeningBadges({ screening }: { screening: AppData["screening"] }) {
+  if (!screening) return null;
+  const hasCriteria = screening.answers.some((a) => a.rule === "eliminatory");
+  return (
+    <>
+      {hasCriteria && (
+        screening.meetsRequirements ? (
+          <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full border bg-green-50 text-green-700 border-green-200">
+            <CheckCircle2 className="h-3 w-3" />
+            Remplit les critères
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full border bg-red-50 text-red-600 border-red-200">
+            <XCircle className="h-3 w-3" />
+            Ne remplit pas les critères
+          </span>
+        )
+      )}
+      {screening.quizScore !== null && (
+        <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full border bg-purple-50 text-purple-700 border-purple-200">
+          <ListChecks className="h-3 w-3" />
+          Test : {screening.quizScore}%
+        </span>
+      )}
+    </>
+  );
+}
+
+function ScreeningAnswers({ answers }: { answers: ScreeningAnswer[] }) {
+  return (
+    <div className="mt-1.5 border border-gray-100 rounded-lg divide-y divide-gray-100 bg-gray-50">
+      {answers.map((a) => (
+        <div key={a.questionId} className="flex items-start gap-2 px-3 py-2 text-xs">
+          {a.ok === true && <CheckCircle2 className="h-3.5 w-3.5 text-green-600 flex-shrink-0 mt-0.5" />}
+          {a.ok === false && <XCircle className={`h-3.5 w-3.5 flex-shrink-0 mt-0.5 ${a.rule === "eliminatory" ? "text-red-500" : "text-amber-500"}`} />}
+          {a.ok === null && <span className="w-3.5 flex-shrink-0" />}
+          <div className="min-w-0">
+            <p className="text-gray-500">{a.label}</p>
+            {a.type === "file" && typeof a.value === "string" && a.value ? (
+              <a href={a.value} target="_blank" rel="noopener noreferrer" className="font-medium text-orange-500 hover:underline">Voir le fichier joint</a>
+            ) : (
+              <p className="font-medium text-gray-800 whitespace-pre-line break-words">{formatAnswerValue(a)}</p>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function EmployerCandidaturesClient({ initialApplications }: Props) {
   const router = useRouter();
   const [apps, setApps] = useState<AppData[]>(initialApplications);
@@ -100,6 +152,8 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
   const [filterStatus, setFilterStatus] = useState<string>("");
   const [filterJob, setFilterJob] = useState<string>("");
   const [matchFilter, setMatchFilter] = useState<MatchFilter>("all");
+  const [criteriaFilter, setCriteriaFilter] = useState<"" | "met" | "unmet">("");
+  const [expandedAnswers, setExpandedAnswers] = useState<string | null>(null);
   const [pendingArchive, setPendingArchive] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
@@ -132,8 +186,17 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
     let list = apps.filter((a) => a.archived === (tab === "archived"));
     if (filterStatus) list = list.filter((a) => a.status === filterStatus);
     if (filterJob) list = list.filter((a) => a.job.title === filterJob);
+    if (criteriaFilter) {
+      list = list.filter((a) => a.screening?.answers.some((x) => x.rule === "eliminatory")
+        && a.screening.meetsRequirements === (criteriaFilter === "met"));
+    }
     return list;
-  }, [apps, tab, filterStatus, filterJob]);
+  }, [apps, tab, filterStatus, filterJob, criteriaFilter]);
+
+  const hasCriteria = useMemo(
+    () => apps.some((a) => a.screening?.answers.some((x) => x.rule === "eliminatory")),
+    [apps],
+  );
 
   const matchCounts = useMemo(() => ({
     all:     baseList.length,
@@ -437,9 +500,25 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
           </div>
         )}
 
-        {(filterStatus || filterJob) && (
+        {hasCriteria && (
+          <div className="relative">
+            <ListChecks className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400 pointer-events-none" />
+            <select
+              value={criteriaFilter}
+              onChange={(e) => setCriteriaFilter(e.target.value as "" | "met" | "unmet")}
+              className="pl-7 pr-7 py-2 text-xs border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-orange-300 appearance-none"
+            >
+              <option value="">Critères : tous</option>
+              <option value="met">Remplissent les critères</option>
+              <option value="unmet">Ne remplissent pas les critères</option>
+            </select>
+            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 h-3 w-3 text-gray-400 pointer-events-none" />
+          </div>
+        )}
+
+        {(filterStatus || filterJob || criteriaFilter) && (
           <button
-            onClick={() => { setFilterStatus(""); setFilterJob(""); }}
+            onClick={() => { setFilterStatus(""); setFilterJob(""); setCriteriaFilter(""); }}
             className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 px-2 py-1.5 rounded-lg hover:bg-gray-100 transition-colors"
           >
             <X className="h-3.5 w-3.5" /> Effacer
@@ -482,6 +561,7 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
                         </span>
                       )}
                       <ScoreBadge score={app.aiScore} rankingEnabled={app.job.aiRankingEnabled} />
+                      <ScreeningBadges screening={app.screening} />
                     </div>
 
                     <p className="text-sm text-gray-500">{app.user.email}</p>
@@ -500,6 +580,21 @@ export default function EmployerCandidaturesClient({ initialApplications }: Prop
                       <p className="text-sm text-gray-600 mt-2 bg-gray-50 px-3 py-2 rounded-lg line-clamp-2">
                         {app.coverLetter}
                       </p>
+                    )}
+
+                    {/* Réponses aux questions du recruteur */}
+                    {app.screening && app.screening.answers.length > 0 && (
+                      <div className="mt-2">
+                        <button
+                          onClick={() => setExpandedAnswers(expandedAnswers === app.id ? null : app.id)}
+                          className="flex items-center gap-1.5 text-xs text-gray-600 hover:text-gray-900 font-medium"
+                        >
+                          <ListChecks className="h-3.5 w-3.5" />
+                          {expandedAnswers === app.id ? "Masquer les réponses" : `Voir les réponses (${app.screening.answers.length})`}
+                          <ChevronDown className={`h-3 w-3 transition-transform ${expandedAnswers === app.id ? "rotate-180" : ""}`} />
+                        </button>
+                        {expandedAnswers === app.id && <ScreeningAnswers answers={app.screening.answers} />}
+                      </div>
                     )}
 
                     {/* Résumé IA */}

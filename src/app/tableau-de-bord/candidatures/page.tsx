@@ -7,6 +7,7 @@ import { APPLICATION_STATUSES, formatDate } from "@/lib/utils";
 import { Briefcase } from "lucide-react";
 import StatusTimeline from "./StatusTimeline";
 import EmployerCandidaturesClient from "./EmployerCandidaturesClient";
+import { getApplicationsScreening } from "@/lib/screening-db";
 
 export default async function CandidaturesPage() {
   const session = await getServerSession(authOptions);
@@ -44,12 +45,15 @@ export default async function CandidaturesPage() {
       orderBy: { createdAt: "desc" },
     });
 
+    const screenings = await getApplicationsScreening(applications.map((a) => a.id));
+
     // Sérialise les dates pour le composant client
     const serialized = applications.map((app) => ({
       ...app,
       createdAt: app.createdAt.toISOString(),
       updatedAt: app.updatedAt.toISOString(),
       responseDeadline: app.responseDeadline?.toISOString() ?? null,
+      screening: screenings.get(app.id) ?? null,
     }));
 
     return <EmployerCandidaturesClient initialApplications={serialized} />;

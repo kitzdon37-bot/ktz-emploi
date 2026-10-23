@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { Loader2, CheckCircle, Lock, Zap, Star, ArrowRight, ImagePlus, X, Bell } from "lucide-react";
 import Link from "next/link";
 import { JOB_CATEGORIES, JOB_TYPES, EXPERIENCE_LEVELS, RCA_LOCATIONS } from "@/lib/utils";
+import type { ScreeningQuestion } from "@/lib/screening";
+import ScreeningQuestionsEditor from "@/components/ScreeningQuestionsEditor";
 
 interface Props {
   companyId: string;
@@ -99,6 +101,7 @@ export default function PostJobForm({ companyId, limitReached = false, activeJob
     coverImage: "",
   });
   const [notifyOnApproval, setNotifyOnApproval] = useState(true);
+  const [screeningQuestions, setScreeningQuestions] = useState<ScreeningQuestion[]>([]);
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
   const [uploadingCover, setUploadingCover] = useState(false);
   const coverInputRef = useRef<HTMLInputElement>(null);
@@ -135,6 +138,11 @@ export default function PostJobForm({ companyId, limitReached = false, activeJob
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    const untitled = screeningQuestions.findIndex((q) => !q.label.trim());
+    if (untitled !== -1) {
+      setError(`La question ${untitled + 1} n'a pas d'intitulé.`);
+      return;
+    }
     setLoading(true);
     try {
       const res = await fetch("/api/jobs", {
@@ -146,6 +154,7 @@ export default function PostJobForm({ companyId, limitReached = false, activeJob
           salaryMin: form.salaryMin ? parseInt(form.salaryMin) : null,
           salaryMax: form.salaryMax ? parseInt(form.salaryMax) : null,
           notifyOnApproval,
+          screeningQuestions,
         }),
       });
       const data = await res.json();
@@ -386,6 +395,9 @@ export default function PostJobForm({ companyId, limitReached = false, activeJob
           className="px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
         />
       </div>
+
+      {/* Questions de présélection */}
+      <ScreeningQuestionsEditor value={screeningQuestions} onChange={setScreeningQuestions} />
 
       {/* Notifications */}
       <div className="bg-white rounded-2xl border border-gray-200 p-5">

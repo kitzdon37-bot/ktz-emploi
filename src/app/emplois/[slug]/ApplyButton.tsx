@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Send, Loader2, CheckCircle, Paperclip, X } from "lucide-react";
 import { APPLICATION_STATUSES } from "@/lib/utils";
+import type { ScreeningQuestion } from "@/lib/screening";
+import ScreeningQuestionsForm, { AnswerMap, firstMissingAnswer } from "./ScreeningQuestionsForm";
 
 interface Props {
   jobId: string;
@@ -13,9 +15,10 @@ interface Props {
   isLoggedIn: boolean;
   userRole?: string;
   profileCvUrl?: string;
+  screeningQuestions?: ScreeningQuestion[];
 }
 
-export default function ApplyButton({ jobId, hasApplied, applicationStatus, isLoggedIn, userRole, profileCvUrl }: Props) {
+export default function ApplyButton({ jobId, hasApplied, applicationStatus, isLoggedIn, userRole, profileCvUrl, screeningQuestions = [] }: Props) {
   const router = useRouter();
   const [showForm, setShowForm] = useState(false);
   const [coverLetter, setCoverLetter] = useState("");
@@ -26,6 +29,7 @@ export default function ApplyButton({ jobId, hasApplied, applicationStatus, isLo
   const [success, setSuccess] = useState(hasApplied);
   const [status, setStatus] = useState(applicationStatus);
   const [error, setError] = useState("");
+  const [answers, setAnswers] = useState<AnswerMap>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isLoggedIn) {
@@ -76,6 +80,8 @@ export default function ApplyButton({ jobId, hasApplied, applicationStatus, isLo
 
   async function handleApply() {
     setError("");
+    const missing = firstMissingAnswer(screeningQuestions, answers);
+    if (missing) { setError(`Veuillez répondre à la question : « ${missing} »`); return; }
     setLoading(true);
     try {
       // 1. Upload du CV si fourni
@@ -95,7 +101,7 @@ export default function ApplyButton({ jobId, hasApplied, applicationStatus, isLo
       const res = await fetch("/api/applications", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jobId, coverLetter, cvUrl }),
+        body: JSON.stringify({ jobId, coverLetter, cvUrl, screeningAnswers: answers }),
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error || "Erreur lors de la candidature"); return; }
@@ -169,6 +175,9 @@ export default function ApplyButton({ jobId, hasApplied, applicationStatus, isLo
               </button>
             )}
           </div>
+
+          {/* Questions du recruteur */}
+          <ScreeningQuestionsForm questions={screeningQuestions} answers={answers} onChange={setAnswers} />
 
           {/* Lettre de motivation */}
           <div className="mb-4">

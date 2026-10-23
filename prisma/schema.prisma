@@ -191,6 +191,7 @@ model Job {
   applications     Application[]
   company          Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
   savedBy          SavedJob[]
+  screening        JobScreening?
 
   @@index([companyId])
   @@index([published])
@@ -224,6 +225,7 @@ model Application {
   user             User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
   statusHistory    ApplicationStatusHistory[]
   notes            RecruiterNote[]
+  screening        ApplicationScreening?
 
   @@unique([jobId, userId])
   @@index([userId])
@@ -461,4 +463,22 @@ model SurveyResponse {
   wantsContact    Boolean?
 
   @@index([createdAt])
+}
+
+// Questions de présélection d'une offre (tables créées à la volée par src/lib/screening-db.ts)
+model JobScreening {
+  jobId     String   @id
+  questions Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+}
+
+model ApplicationScreening {
+  applicationId     String      @id
+  answers           Json
+  meetsRequirements Boolean     @default(true)
+  quizScore         Int?
+  createdAt         DateTime    @default(now())
+  application       Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 }

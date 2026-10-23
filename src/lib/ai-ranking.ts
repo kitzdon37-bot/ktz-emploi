@@ -2,6 +2,8 @@
 // Utilisé par : création de candidature (analyse auto) et bouton « Analyser » du recruteur.
 import Anthropic from "@anthropic-ai/sdk";
 import { prisma } from "@/lib/prisma";
+import { formatAnswerValue } from "@/lib/screening";
+import { getApplicationsScreening } from "@/lib/screening-db";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const MODEL = "claude-haiku-4-5-20251001";
@@ -134,6 +136,13 @@ export async function scoreApplication(applicationId: string): Promise<{ id: str
   const job = app.job;
   const profile = app.user.profile;
   const { block: cvBlock, text: cvText, note: cvNote } = await loadCv(app.cvUrl ?? profile?.cv);
+  const screening = (await getApplicationsScreening([app.id])).get(app.id);
+  const screeningBlock = screening?.answers.length
+    ? `\nRÉPONSES AUX QUESTIONS DU RECRUTEUR :\n${screening.answers
+        .filter((a) => a.type !== "file")
+        .map((a) => `- ${a.label} → ${formatAnswerValue(a).slice(0, 500)}${a.rule === "eliminatory" ? ` (critère éliminatoire : ${a.ok ? "rempli" : "NON rempli"})` : ""}`)
+        .join("\n")}\n`
+    : "";
 
   const prompt = `Tu es un assistant RH expert. Analyse cette candidature et attribue un score de compatibilité avec le poste.
 
@@ -155,7 +164,7 @@ PROFIL SAISI SUR LE SITE :
 
 LETTRE DE MOTIVATION :
 ${app.coverLetter?.slice(0, 1500) ?? "Aucune lettre de motivation fournie"}
-
+${screeningBlock}
 Barème :
 - 80-100 : excellent profil, très bien adapté
 - 60-79 : bon profil, quelques lacunes mineures

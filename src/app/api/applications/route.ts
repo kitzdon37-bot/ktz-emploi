@@ -5,6 +5,8 @@ import { getMobileUser } from "@/lib/mobile-auth";
 import { prisma } from "@/lib/prisma";
 import { sendNewApplicationNotificationEmail } from "@/lib/email";
 import { scoreApplication } from "@/lib/ai-ranking";
+import { evaluateAnswers } from "@/lib/screening";
+import { getJobQuestions, saveApplicationAnswers } from "@/lib/screening-db";
 
 // Laisse le temps à l'analyse IA lancée en arrière-plan après la réponse
 export const maxDuration = 60;
@@ -16,11 +18,12 @@ async function getAuthUser(req: NextRequest) {
       id: (session.user as { id?: string }).id ?? null,
       role: (session.user as { role?: string }).role ?? null,
       suspended: (session.user as { suspended?: boolean }).suspended ?? false,
+      mobile: false,
     };
   }
   const mobileUser = getMobileUser(req);
   if (mobileUser) {
-    return { id: mobileUser.id, role: mobileUser.role, suspended: false };
+    return { id: mobileUser.id, role: mobileUser.role, suspended: false, mobile: true };
   }
   return null;
 }
@@ -43,7 +46,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Compte suspendu" }, { status: 403 });
   }
 
-  const { jobId, coverLetter, cvUrl } = await req.json();
+  const { jobId, coverLetter, cvUrl, screeningAnswers } = await req.json();
   if (!jobId) return NextResponse.json({ error: "Offre manquante" }, { status: 400 });
 
   const job = await prisma.job.findUnique({
@@ -58,6 +61,16 @@ export async function POST(req: NextRequest) {
     where: { jobId_userId: { jobId, userId: authUser.id } },
   });
   if (existing) return NextResponse.json({ error: "Vous avez déjà postulé" }, { status: 409 });
+
+  // Questions de présélection : l'application mobile ne les affiche pas encore,
+  // on n'y exige donc pas les réponses obligatoires
+  const questions = await getJobQuestions(jobId);
+  const screening = questions.length > 0
+    ? evaluateAnswers(questions, screeningAnswers, { enforceRequired: !authUser.mobile })
+    : null;
+  if (screening && "error" in screening) {
+    return NextResponse.json({ error: screening.error }, { status: 400 });
+  }
 
   const responseDeadline = new Date();
   responseDeadline.setDate(responseDeadline.getDate() + 10);
@@ -74,6 +87,14 @@ export async function POST(req: NextRequest) {
     }),
     prisma.user.findUnique({ where: { id: authUser.id }, select: { name: true } }),
   ]);
+
+  if (screening) {
+    try {
+      await saveApplicationAnswers(app.id, screening);
+    } catch (err) {
+      console.error("[POST /api/applications] réponses de présélection", err);
+    }
+  }
 
   const recruiterEmail = job.company.user.email;
   if (recruiterEmail) {

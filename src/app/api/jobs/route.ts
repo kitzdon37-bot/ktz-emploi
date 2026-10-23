@@ -5,6 +5,8 @@ import { prisma } from "@/lib/prisma";
 import { slugify } from "@/lib/utils";
 import { getPlanLimits } from "@/lib/plans";
 import { logActivity } from "@/lib/activity";
+import { sanitizeQuestions } from "@/lib/screening";
+import { saveJobQuestions } from "@/lib/screening-db";
 // Laisser 300s pour les envois WhatsApp en arrière-plan
 export const maxDuration = 300;
 
@@ -44,6 +46,7 @@ export async function POST(req: NextRequest) {
     const {
       title, type, category, location, remote, description,
       requirements, benefits, experienceLevel, salaryMin, salaryMax, deadline, coverImage,
+      screeningQuestions,
     } = await req.json();
 
     if (!title || !type || !category || !location || !description) {
@@ -76,6 +79,16 @@ export async function POST(req: NextRequest) {
       },
       include: { company: { select: { name: true } } },
     });
+
+    const questions = sanitizeQuestions(screeningQuestions);
+    if (questions.length > 0) {
+      try {
+        await saveJobQuestions(job.id, questions);
+      } catch (err) {
+        // L'offre est créée même si les questions n'ont pas pu être enregistrées
+        console.error("[POST /api/jobs] questions de présélection", err);
+      }
+    }
 
     const dbUser = await prisma.user.findUnique({ where: { id: userId }, select: { name: true, email: true } });
     await logActivity({

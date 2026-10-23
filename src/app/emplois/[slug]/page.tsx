@@ -14,6 +14,7 @@ import CompanyLogo from "@/components/CompanyLogo";
 import ShareButtons from "./ShareButtons";
 import CompanyPopup from "./CompanyPopup";
 import ContactRecruiter from "./ContactRecruiter";
+import { getJobQuestions } from "@/lib/screening-db";
 
 const BASE_URL = "https://ktzemploi.com";
 
@@ -78,6 +79,8 @@ export default async function JobDetailPage({ params }: Props) {
       profileCvUrl = profile?.cv || "";
     }
   }
+
+  const screeningQuestions = hasApplied ? [] : await getJobQuestions(job.id);
 
   // Get similar jobs
   const similar = await prisma.job.findMany({
@@ -266,6 +269,7 @@ export default async function JobDetailPage({ params }: Props) {
               isLoggedIn={!!session}
               userRole={(session?.user as { role?: string })?.role}
               profileCvUrl={profileCvUrl}
+              screeningQuestions={screeningQuestions}
             />
 
             {/* Share buttons */}
