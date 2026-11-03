@@ -168,19 +168,19 @@ export default async function HomePage() {
       {/* ══════════════════════════════════════
           1. HERO (photo avec zoom lent)
       ══════════════════════════════════════ */}
-      <section className="relative min-h-[460px] sm:min-h-[600px] overflow-hidden">
+      <section className="relative min-h-[400px] sm:min-h-[520px] overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/accueil.png" alt="Recherche d'emploi en Centrafrique avec KTZ Emploi" className="kenburns absolute inset-0 w-full h-full object-cover object-center" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 to-black/20" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent" />
-        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-end h-full min-h-[460px] sm:min-h-[600px]">
-          <div className="pb-10 pt-16 sm:pb-14 sm:pt-24">
+        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-end h-full min-h-[400px] sm:min-h-[520px]">
+          <div className="pb-8 pt-10 sm:pb-12 sm:pt-16">
             <div className="inline-flex items-center gap-2 bg-white/90 backdrop-blur-sm border border-white text-[#1e3a5f] text-xs sm:text-sm font-bold px-3 py-1 sm:px-4 sm:py-1.5 rounded-full mb-4 sm:mb-6 shadow-md animate-slide-up-slow">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="https://upload.wikimedia.org/wikipedia/commons/6/6f/Flag_of_the_Central_African_Republic.svg" alt="Drapeau RCA" className="flag-wave h-4 w-6 sm:h-5 sm:w-7 object-cover rounded-sm shadow-sm" />
               <h1 className="text-xs sm:text-sm font-bold tracking-normal">Offres d&apos;emploi en Centrafrique · 1ère plateforme d&apos;emploi en RCA</h1>
             </div>
-            <p className="font-display text-[1.9rem] sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.08] tracking-tight mb-6 sm:mb-8 drop-shadow-lg">
+            <p className="font-display text-[1.45rem] sm:text-4xl lg:text-[2.6rem] font-extrabold text-white leading-[1.12] tracking-tight mb-5 sm:mb-7 drop-shadow-lg">
               <span className="block animate-slide-up-slow">Pas besoin de connaître</span>
               <span className="block animate-slide-up-slow delay-250">quelqu&apos;un qui connaît quelqu&apos;un.</span>
               <span className="block animate-slide-up-slow delay-500">
