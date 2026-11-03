@@ -105,10 +105,31 @@ export default function ScrollReveal() {
     });
     mo.observe(main, { childList: true, subtree: true });
 
+    // Filet de sécurité : tout élément encore masqué qui est entré dans l'écran
+    // (ou déjà dépassé) s'affiche, même si la détection ci-dessus n'a pas réagi.
+    let fallbackFrame = 0;
+    const revealVisible = () => {
+      fallbackFrame = 0;
+      const limit = window.innerHeight * 0.95;
+      main.querySelectorAll<HTMLElement>(".sr:not(.sr-in), [data-photo]:not(.shown)").forEach((el) => {
+        if (el.getBoundingClientRect().top > limit) return;
+        io.unobserve(el);
+        if (el.hasAttribute("data-photo")) { el.classList.add("shown"); return; }
+        el.classList.add("sr-in");
+        setTimeout(() => el.classList.remove("sr", "sr-in"), 1800);
+      });
+    };
+    const onScrollFallback = () => { if (!fallbackFrame) fallbackFrame = requestAnimationFrame(revealVisible); };
+    window.addEventListener("scroll", onScrollFallback, { passive: true });
+    const firstCheck = setTimeout(revealVisible, 1200);
+
     return () => {
       io.disconnect();
       mo.disconnect();
       if (pending) cancelAnimationFrame(pending);
+      if (fallbackFrame) cancelAnimationFrame(fallbackFrame);
+      clearTimeout(firstCheck);
+      window.removeEventListener("scroll", onScrollFallback);
     };
   }, [pathname]);
 
