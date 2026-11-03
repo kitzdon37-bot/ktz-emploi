@@ -95,18 +95,24 @@ const TIPS = [
     tag: "CV & Candidature",
     title: "Comment rédiger un CV qui attire les recruteurs en RCA",
     desc: "Les clés pour structurer votre CV et vous démarquer parmi des centaines de candidats.",
+    img: "/images/conseils/cv.jpg",
+    alt: "Jeune femme rédigeant son CV sur son ordinateur",
   },
   {
     icon: Users,
     tag: "Entretien",
     title: "Les 5 erreurs à éviter lors d'un entretien d'embauche",
     desc: "Préparez-vous efficacement et faites bonne impression dès la première rencontre.",
+    img: "/images/conseils/entretien.jpg",
+    alt: "Poignée de main à la fin d'un entretien d'embauche",
   },
   {
     icon: TrendingUp,
     tag: "Salaires",
     title: "Grilles de salaires en République Centrafricaine 2025",
     desc: "Découvrez les rémunérations moyennes par secteur et par niveau d'expérience.",
+    img: "/images/conseils/salaires.jpg",
+    alt: "Billets de banque glissés dans un portefeuille",
   },
 ];
 
@@ -423,16 +429,24 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHead eyebrow="Ressources" title="Conseils carrière" subtitle="Nos experts vous accompagnent dans votre recherche d'emploi" href="/conseils" linkLabel="Tous les conseils" />
           <div className="grid md:grid-cols-3 gap-5">
-            {TIPS.map(({ icon: Icon, tag, title, desc }) => (
-              <Link key={title} href="/conseils" className="soft-card group rounded-3xl p-7 flex flex-col">
-                <div className="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center mb-5 transition-colors duration-300 group-hover:bg-orange-100">
-                  <Icon className="h-5 w-5 text-orange-500" />
+            {TIPS.map(({ icon: Icon, tag, title, desc, img, alt }) => (
+              <Link key={title} href="/conseils" className="soft-card group rounded-3xl p-3 pb-6 flex flex-col">
+                <div className="relative">
+                  <div data-photo className="aspect-[16/10] rounded-3xl bg-gray-100">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={img} alt={alt} loading="lazy" className="w-full h-full object-cover" />
+                  </div>
+                  <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 bg-white/95 backdrop-blur text-orange-600 text-[11px] font-bold uppercase tracking-[0.12em] px-3 py-1.5 rounded-full shadow-sm">
+                    <Icon className="h-3.5 w-3.5" />
+                    {tag}
+                  </span>
                 </div>
-                <span className="text-[11px] font-bold text-orange-500 uppercase tracking-[0.15em]">{tag}</span>
-                <h3 className="text-lg font-bold text-gray-900 mt-2 mb-2 leading-snug group-hover:text-orange-600 transition-colors">{title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed flex-1">{desc}</p>
-                <div className="flex items-center gap-1 text-orange-500 text-sm font-semibold mt-5">
-                  Lire la suite <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                <div className="px-4 pt-5 flex flex-col flex-1">
+                  <h3 className="text-lg font-bold text-gray-900 mb-2 leading-snug group-hover:text-orange-600 transition-colors">{title}</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed flex-1">{desc}</p>
+                  <div className="flex items-center gap-1 text-orange-500 text-sm font-semibold mt-5">
+                    Lire la suite <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                  </div>
                 </div>
               </Link>
             ))}
