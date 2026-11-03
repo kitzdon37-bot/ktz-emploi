@@ -150,8 +150,8 @@ export default function AProposPage() {
         </h2>
         <div className="space-y-5 text-gray-600 text-base leading-relaxed">
           <p>
-            Tout a commencé par une recherche d&apos;emploi. Comme des milliers de jeunes Centrafricains,
-            <strong className="text-gray-900"> Donald KITEZE</strong> s&apos;est mis à chercher des opportunités
+            Tout a commencé par une recherche d&apos;emploi. Comme des milliers de jeunes Centrafricains,{" "}
+            <strong className="text-gray-900">Donald KITEZE</strong>{" "}s&apos;est mis à chercher des opportunités
             professionnelles en République Centrafricaine — avec une question simple en tête :
             <em> où postuler ?</em>
           </p>
@@ -184,8 +184,8 @@ export default function AProposPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row gap-10 items-start">
 
-            {/* Photo de profil */}
-            <div className="flex-shrink-0 flex flex-col items-center gap-3">
+            {/* Photo de profil (centrée sur téléphone) */}
+            <div className="flex-shrink-0 flex flex-col items-center gap-3 self-center md:self-start">
               <div className="relative w-52 h-64 md:w-64 md:h-80 rounded-3xl overflow-hidden shadow-2xl ring-4 ring-orange-500/40">
                 <Image
                   src="/photo_profil.png"
