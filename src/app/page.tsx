@@ -4,6 +4,7 @@ import { Search, Briefcase, ArrowRight, ArrowUpRight, Star, Users, CheckCircle, 
 import JobCard from "@/components/JobCard";
 import StatsCounter from "@/components/StatsCounter";
 import HeroSearch from "@/components/HeroSearch";
+import CompanyCarousel from "@/components/CompanyCarousel";
 import { JOB_CATEGORIES } from "@/lib/utils";
 import ComingSoon from "@/components/ComingSoon";
 import { LANDINGS, sectorSlugForCategory } from "@/lib/seo-landing";
@@ -252,30 +253,7 @@ export default async function HomePage() {
       <section className="bg-white py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHead eyebrow="Ils nous font confiance" title="Ils recrutent en RCA" href="/entreprises" linkLabel="Toutes les entreprises" />
-          <div className="marquee -mx-4 sm:mx-0">
-            <div className="marquee-track py-3">
-              {[...topCompanies, ...topCompanies].map((co, i) => {
-                const dup = i >= topCompanies.length;
-                const initials = co.name.slice(0, 2).toUpperCase();
-                const colors = ["bg-orange-100 text-orange-600","bg-blue-100 text-blue-600","bg-green-100 text-green-600","bg-purple-100 text-purple-600","bg-rose-100 text-rose-600","bg-yellow-100 text-yellow-700","bg-teal-100 text-teal-600","bg-indigo-100 text-indigo-600"];
-                const color = colors[co.name.charCodeAt(0) % colors.length];
-                return (
-                  <Link key={`${co.slug}-${i}`} href={`/entreprises/${co.slug}`} aria-hidden={dup || undefined} tabIndex={dup ? -1 : undefined} className="soft-card w-44 shrink-0 rounded-2xl p-5 flex flex-col items-center gap-2.5 group">
-                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-bold text-base overflow-hidden transition-transform duration-300 group-hover:scale-105 ${co.logo ? "bg-gray-50 border border-gray-100" : color}`}>
-                      {co.logo ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={co.logo} alt={co.name} className="w-full h-full object-contain p-1" />
-                      ) : (
-                        initials
-                      )}
-                    </div>
-                    <span className="text-xs font-semibold text-gray-800 text-center leading-tight group-hover:text-orange-600 line-clamp-2 transition-colors">{co.name}</span>
-                    {co.sector && <span className="text-[10px] text-gray-400 text-center line-clamp-1">{co.sector}</span>}
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
+          <CompanyCarousel companies={topCompanies} />
         </div>
       </section>
 

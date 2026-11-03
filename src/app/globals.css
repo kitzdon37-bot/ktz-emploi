@@ -116,15 +116,11 @@
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
   mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
 }
-.marquee-track { display: flex; gap: 1rem; width: max-content; animation: marquee 45s linear infinite; }
-.marquee:hover .marquee-track, .marquee:focus-within .marquee-track { animation-play-state: paused; }
-@keyframes marquee { to { transform: translateX(calc(-50% - 0.5rem)); } }
 
 @media (prefers-reduced-motion: reduce) {
   .sr { opacity: 1 !important; transform: none !important; transition: none !important; }
   .scroll-progress { display: none; }
-  .kenburns, .marquee-track, .float-y, .float-y-slow { animation: none !important; }
-  .marquee { overflow-x: auto; }
+  .kenburns, .float-y, .float-y-slow { animation: none !important; }
   [data-photo], [data-photo] img { clip-path: none !important; transform: none !important; transition: none !important; }
 }
 
