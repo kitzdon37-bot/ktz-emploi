@@ -77,15 +77,16 @@ async function getHomeData() {
   return { featuredJobs, recentJobs, topCompanies, totalJobs, totalCompanies, totalUsers };
 }
 
-const CATEGORY_ICONS: Record<string, string> = {
-  "Humanitaire & ONG": "🤝",
-  "Informatique & Télécoms": "💻",
-  "Médecine & Santé": "🏥",
-  "Banque & Finance": "🏦",
-  "Éducation & Formation": "📚",
-  "Commerce & Vente": "🛒",
-  "BTP & Construction": "🏗️",
-  "Agriculture & Élevage": "🌾",
+// Une photo par secteur (Unsplash, hébergées dans /public/images/secteurs)
+const CATEGORY_PHOTOS: Record<string, { src: string; alt: string }> = {
+  "Agriculture & Élevage": { src: "/images/secteurs/agriculture.jpg", alt: "Agriculteur au travail dans son champ" },
+  "Banque & Finance": { src: "/images/secteurs/banque.jpg", alt: "Professionnel de la finance à son bureau" },
+  "BTP & Construction": { src: "/images/secteurs/btp.jpg", alt: "Ouvriers casqués sur le toit d'un chantier" },
+  "Commerce & Vente": { src: "/images/secteurs/commerce.jpg", alt: "Marché animé et coloré vu d'en haut" },
+  "Communication & Marketing": { src: "/images/secteurs/communication.jpg", alt: "Équipe qui travaille ensemble autour d'un ordinateur" },
+  "Comptabilité & Audit": { src: "/images/secteurs/comptabilite.jpg", alt: "Comptable concentré devant son ordinateur" },
+  "Éducation & Formation": { src: "/images/secteurs/education.jpg", alt: "Enseignant faisant cours à ses élèves" },
+  "Environnement & Mines": { src: "/images/secteurs/mines.jpg", alt: "Mine à ciel ouvert" },
 };
 
 const TIPS = [
@@ -310,14 +311,27 @@ export default async function HomePage() {
       <section className="bg-white py-16 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHead eyebrow="Secteurs" title="Explorer par secteur" subtitle="Trouvez des offres dans votre domaine d'expertise" href="/emplois" linkLabel="Toutes les offres" />
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-            {JOB_CATEGORIES.slice(0, 8).map((cat) => (
-              <Link key={cat} href={sectorSlugForCategory(cat) ? `/emplois/secteur/${sectorSlugForCategory(cat)}` : `/emplois?category=${encodeURIComponent(cat)}`} className="soft-card group flex items-center gap-3 p-4 rounded-2xl">
-                <span className="w-11 h-11 shrink-0 rounded-xl bg-orange-50 flex items-center justify-center text-xl transition-colors duration-300 group-hover:bg-orange-100">{CATEGORY_ICONS[cat] || "📋"}</span>
-                <span className="flex-1 text-sm font-semibold text-gray-800 group-hover:text-orange-600 leading-tight transition-colors">{cat}</span>
-                <ArrowUpRight className="hidden sm:block h-4 w-4 text-gray-300 transition-all duration-300 group-hover:text-orange-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </Link>
-            ))}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-5">
+            {JOB_CATEGORIES.slice(0, 8).map((cat) => {
+              const photo = CATEGORY_PHOTOS[cat];
+              return (
+                <Link key={cat} href={sectorSlugForCategory(cat) ? `/emplois/secteur/${sectorSlugForCategory(cat)}` : `/emplois?category=${encodeURIComponent(cat)}`} className="group relative block rounded-3xl shadow-sm hover:shadow-xl hover:shadow-orange-500/15 transition-shadow duration-300">
+                  <div data-photo className="aspect-[4/5] sm:aspect-[4/3] rounded-3xl bg-gray-200">
+                    {photo && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={photo.src} alt={photo.alt} loading="lazy" className="w-full h-full object-cover" />
+                    )}
+                  </div>
+                  <div className="pointer-events-none absolute inset-0 rounded-3xl bg-gradient-to-t from-black/80 via-black/25 to-transparent transition-colors duration-300 group-hover:from-orange-700/85" />
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 p-3 sm:p-4 flex items-end justify-between gap-2">
+                    <span className="font-display text-white font-bold text-sm sm:text-base leading-tight drop-shadow">{cat}</span>
+                    <span className="shrink-0 w-8 h-8 rounded-full bg-white/20 backdrop-blur flex items-center justify-center transition-all duration-300 group-hover:bg-white group-hover:text-orange-600 text-white">
+                      <ArrowUpRight className="h-4 w-4" />
+                    </span>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
