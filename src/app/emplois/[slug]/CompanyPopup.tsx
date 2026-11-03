@@ -24,7 +24,7 @@ export default function CompanyPopup({ company }: { company: CompanyInfo }) {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    const t = setTimeout(() => setShow(true), 900);
+    const t = setTimeout(() => setShow(true), 4900);
     return () => clearTimeout(t);
   }, []);
 

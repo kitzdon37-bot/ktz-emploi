@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { X, Mail, CheckCircle, Loader2, Briefcase } from "lucide-react";
 
 const STORAGE_KEY = "ktz_newsletter_popup_dismissed";
-const DELAY_MS = 6000; // 6 secondes après le chargement
+const DELAY_MS = 10000; // 10 secondes après le chargement
 
 export default function NewsletterPopup() {
   const [visible, setVisible] = useState(false);

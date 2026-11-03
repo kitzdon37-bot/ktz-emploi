@@ -10,7 +10,7 @@ import { Analytics } from "@vercel/analytics/next";
 import InactivityTimer from "@/components/InactivityTimer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import FeedbackPopup from "@/components/FeedbackPopup";
-import OctobreRoseBanner from "@/components/OctobreRoseBanner";
+import ScrollReveal from "@/components/ScrollReveal";
 import { SITE_URL, SITE_NAME, siteSchema, jsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -67,7 +67,7 @@ export default function RootLayout({
         {/* Données structurées : organisation, site, fondateur */}
         <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(siteSchema())} />
         <Providers>
-          <OctobreRoseBanner />
+          <ScrollReveal />
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />

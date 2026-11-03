@@ -9,7 +9,7 @@ export default function FeedbackPopup() {
   useEffect(() => {
     // N'afficher qu'une fois par session
     if (sessionStorage.getItem("feedbackPopupSeen")) return;
-    const timer = setTimeout(() => setVisible(true), 5000);
+    const timer = setTimeout(() => setVisible(true), 9000);
     return () => clearTimeout(timer);
   }, []);
 
