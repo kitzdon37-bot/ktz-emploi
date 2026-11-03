@@ -42,7 +42,8 @@ export default function JobCard({ job }: JobCardProps) {
   return (
     <Link
       href={`/emplois/${job.slug}`}
-      className={`group flex flex-col bg-white rounded-xl border zoom-hover overflow-hidden relative ${
+      data-tilt
+      className={`group flex flex-col bg-white rounded-xl border overflow-hidden relative ${
         job.featured ? "border-orange-200 ring-1 ring-orange-100 hover:border-orange-300" : "border-gray-200 hover:border-orange-200"
       }`}
     >

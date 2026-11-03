@@ -21,8 +21,40 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Comme sur KTZ Group : barre translucide une fois la page défilée,
+  // masquée quand on descend, de retour dès qu'on remonte
+  const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const menusOpen = useRef(false);
+  useEffect(() => {
+    menusOpen.current = menuOpen || userMenuOpen;
+  }, [menuOpen, userMenuOpen]);
+  const navHidden = hidden && !menuOpen && !userMenuOpen;
+  useEffect(() => {
+    let lastY = window.scrollY;
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        const y = window.scrollY;
+        setScrolled(y > 20);
+        setHidden(y > lastY && y > 500 && !menusOpen.current);
+        if (Math.abs(y - lastY) > 4) lastY = y;
+      });
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <nav
+      className={`border-b sticky top-0 z-50 transition-[transform,background-color,box-shadow,border-color] duration-500 ease-[cubic-bezier(.22,1,.36,1)] ${
+        scrolled ? "bg-white/85 backdrop-blur-md border-gray-200/70 shadow-md" : "bg-white border-gray-200 shadow-sm"
+      } ${navHidden ? "-translate-y-full" : "translate-y-0"}`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
 

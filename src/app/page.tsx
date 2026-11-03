@@ -4,6 +4,7 @@ import { Search, MapPin, Briefcase, Building2, ArrowRight, Star, Users, CheckCir
 import JobCard from "@/components/JobCard";
 import StatsCounter from "@/components/StatsCounter";
 import HeroSearch from "@/components/HeroSearch";
+import HeroFx from "@/components/HeroFx";
 import { JOB_CATEGORIES } from "@/lib/utils";
 import ComingSoon from "@/components/ComingSoon";
 import { LANDINGS, sectorSlugForCategory } from "@/lib/seo-landing";
@@ -123,11 +124,14 @@ export default async function HomePage() {
       {/* ══════════════════════════════════════
           1. HERO
       ══════════════════════════════════════ */}
-      <section className="relative min-h-[420px] sm:min-h-[560px]">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/accueil.png" alt="Recherche d'emploi en Centrafrique avec KTZ Emploi" className="absolute inset-0 w-full h-full object-cover object-center" />
+      <section className="relative min-h-[420px] sm:min-h-[560px] overflow-hidden">
+        <div className="hero-parallax absolute inset-0 will-change-transform">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/accueil.png" alt="Recherche d'emploi en Centrafrique avec KTZ Emploi" className="kenburns absolute inset-0 w-full h-full object-cover object-center" />
+        </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 to-black/20" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent" />
+        <HeroFx />
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-end h-full min-h-[420px] sm:min-h-[560px]">
           <div className="pb-8 pt-16 sm:pb-12 sm:pt-24">
             <div className="inline-flex items-center gap-2 bg-white/90 backdrop-blur-sm border border-white text-[#1e3a5f] text-xs sm:text-sm font-bold px-3 py-1 sm:px-4 sm:py-1.5 rounded-full mb-4 sm:mb-6 shadow-md">
@@ -208,13 +212,16 @@ export default async function HomePage() {
               Voir toutes les entreprises <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-            {topCompanies.map((co) => {
+          {/* Défilement infini des entreprises (pause au survol) */}
+          <div className="marquee -mx-4 sm:mx-0">
+            <div className="marquee-track py-3">
+            {[...topCompanies, ...topCompanies].map((co, i) => {
+              const dup = i >= topCompanies.length;
               const initials = co.name.slice(0, 2).toUpperCase();
               const colors = ["bg-orange-100 text-orange-600","bg-blue-100 text-blue-600","bg-green-100 text-green-600","bg-purple-100 text-purple-600","bg-rose-100 text-rose-600","bg-yellow-100 text-yellow-700","bg-teal-100 text-teal-600","bg-indigo-100 text-indigo-600"];
               const color = colors[co.name.charCodeAt(0) % colors.length];
               return (
-                <Link key={co.slug} href={`/entreprises/${co.slug}`} className="zoom-hover bg-white rounded-2xl border border-gray-200 hover:border-orange-200 hover:shadow-lg p-5 flex flex-col items-center gap-2.5 group">
+                <Link key={`${co.slug}-${i}`} href={`/entreprises/${co.slug}`} aria-hidden={dup || undefined} tabIndex={dup ? -1 : undefined} data-tilt className="w-40 shrink-0 bg-white rounded-2xl border border-gray-200 hover:border-orange-200 hover:shadow-lg p-5 flex flex-col items-center gap-2.5 group">
                   <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-bold text-base overflow-hidden transition-transform duration-300 group-hover:scale-110 ${co.logo ? "bg-gray-50 border border-gray-100" : color}`}>
                     {co.logo ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -228,6 +235,7 @@ export default async function HomePage() {
                 </Link>
               );
             })}
+            </div>
           </div>
         </div>
       </section>
@@ -236,7 +244,7 @@ export default async function HomePage() {
       <section className="bg-gray-50 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Comment ça marche ?</h2>
+            <h2 data-split className="text-2xl font-bold text-gray-900 mb-2">Comment ça marche ?</h2>
             <p className="text-gray-500">Trouvez votre emploi en 3 étapes simples</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
@@ -257,7 +265,7 @@ export default async function HomePage() {
             ))}
           </div>
           <div className="text-center mt-10">
-            <Link href="/inscription" className="btn-press inline-flex items-center gap-2 bg-orange-500 text-white px-8 py-3 rounded-xl font-semibold">
+            <Link href="/inscription" data-magnetic className="btn-press inline-flex items-center gap-2 bg-orange-500 text-white px-8 py-3 rounded-xl font-semibold">
               Commencer gratuitement <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
@@ -269,7 +277,7 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">Explorer par secteur</h2>
+              <h2 data-split className="text-2xl font-bold text-gray-900">Explorer par secteur</h2>
               <p className="text-gray-500 text-sm mt-1">Trouvez des offres dans votre domaine d&apos;expertise</p>
             </div>
             <Link href="/emplois" className="text-orange-500 hover:text-orange-600 text-sm font-medium flex items-center gap-1">
@@ -278,7 +286,7 @@ export default async function HomePage() {
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {JOB_CATEGORIES.slice(0, 8).map((cat) => (
-              <Link key={cat} href={sectorSlugForCategory(cat) ? `/emplois/secteur/${sectorSlugForCategory(cat)}` : `/emplois?category=${encodeURIComponent(cat)}`} className="zoom-hover group flex items-center gap-3 p-4 rounded-2xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50 hover:shadow-md bg-white">
+              <Link key={cat} href={sectorSlugForCategory(cat) ? `/emplois/secteur/${sectorSlugForCategory(cat)}` : `/emplois?category=${encodeURIComponent(cat)}`} data-tilt className="group flex items-center gap-3 p-4 rounded-2xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50 hover:shadow-md bg-white">
                 <span className="text-2xl transition-transform duration-300 group-hover:scale-125 inline-block">{CATEGORY_ICONS[cat] || "📋"}</span>
                 <span className="text-sm font-medium text-gray-700 group-hover:text-orange-600 leading-tight transition-colors">{cat}</span>
               </Link>
@@ -325,7 +333,7 @@ export default async function HomePage() {
             </div>
             <div>
               <span className="inline-block bg-orange-500/20 text-orange-400 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-5">Espace recruteurs</span>
-              <h2 className="text-3xl lg:text-4xl font-extrabold leading-tight mb-4">
+              <h2 data-split className="text-3xl lg:text-4xl font-extrabold leading-tight mb-4">
                 Vous recrutez ?<br />
                 <span className="text-orange-400">Trouvez vos talents en RCA.</span>
               </h2>
@@ -339,7 +347,7 @@ export default async function HomePage() {
                 ))}
               </ul>
               <div className="flex flex-col sm:flex-row gap-3">
-                <Link href="/inscription?role=employer" className="btn-press bg-orange-500 text-white px-8 py-3 rounded-xl font-bold text-center text-sm">
+                <Link href="/inscription?role=employer" data-magnetic className="btn-press bg-orange-500 text-white px-8 py-3 rounded-xl font-bold text-center text-sm">
                   Publier une offre gratuitement
                 </Link>
                 <Link href="/entreprises" className="zoom-hover border border-gray-600 hover:border-gray-400 text-gray-300 hover:text-white px-8 py-3 rounded-xl font-semibold text-center text-sm">
@@ -356,7 +364,7 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">Conseils carrière</h2>
+              <h2 data-split className="text-2xl font-bold text-gray-900">Conseils carrière</h2>
               <p className="text-gray-500 text-sm mt-1">Nos experts vous accompagnent dans votre recherche d&apos;emploi</p>
             </div>
             <Link href="/conseils" className="text-orange-500 hover:text-orange-600 text-sm font-medium flex items-center gap-1">
@@ -365,7 +373,7 @@ export default async function HomePage() {
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {TIPS.map(({ icon: Icon, tag, title, desc }) => (
-              <Link key={title} href="/conseils" className="zoom-hover group bg-white rounded-2xl border border-gray-200 hover:border-orange-200 hover:shadow-lg p-6">
+              <Link key={title} href="/conseils" data-tilt className="group bg-white rounded-2xl border border-gray-200 hover:border-orange-200 hover:shadow-lg p-6">
                 <div className="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-orange-100 transition-all duration-300 group-hover:scale-110">
                   <Icon className="h-5 w-5 text-orange-500 transition-transform duration-300 group-hover:scale-110" />
                 </div>
@@ -439,12 +447,14 @@ export default async function HomePage() {
       </section>
 
       {/* Bannière inscription */}
-      <section className="bg-orange-500 py-14">
-        <div className="max-w-3xl mx-auto px-4 text-center">
-          <h2 className="text-2xl lg:text-3xl font-extrabold text-white mb-3">Prêt à trouver votre prochain emploi ?</h2>
+      <section className="cta-live relative overflow-hidden py-14">
+        <span className="cta-blob cta-blob-1" aria-hidden="true" />
+        <span className="cta-blob cta-blob-2" aria-hidden="true" />
+        <div className="relative max-w-3xl mx-auto px-4 text-center">
+          <h2 data-split className="text-2xl lg:text-3xl font-extrabold text-white mb-3">Prêt à trouver votre prochain emploi ?</h2>
           <p className="text-orange-100 mb-8">Créez votre profil gratuitement et recevez des offres personnalisées directement dans votre boîte mail.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/inscription" className="btn-press bg-white text-orange-600 px-8 py-3 rounded-xl font-bold">Créer mon profil</Link>
+            <Link href="/inscription" data-magnetic className="btn-press bg-white text-orange-600 px-8 py-3 rounded-xl font-bold">Créer mon profil</Link>
             <Link href="/emplois" className="zoom-hover border-2 border-white text-white hover:bg-white/10 px-8 py-3 rounded-xl font-semibold">Parcourir les offres</Link>
           </div>
         </div>
