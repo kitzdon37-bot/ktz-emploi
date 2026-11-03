@@ -360,6 +360,37 @@ export default function AProposPage() {
         </div>
       </section>
 
+      {/* ── Mosaïque de photos : les talents centrafricains ───────────────── */}
+      <section className="bg-white pb-20 sm:pb-24">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <span className="eyebrow">Les talents de la RCA</span>
+            <h2 className="mt-3 text-3xl sm:text-4xl font-extrabold text-gray-900 leading-[1.1]">Des talents dans tous les secteurs</h2>
+            <p className="text-gray-500 mt-3 max-w-xl mx-auto">Des champs aux bureaux, des chantiers aux salles de classe : KTZ Emploi connecte chaque métier à ses opportunités.</p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 md:grid-rows-2 gap-3 sm:gap-4 md:h-[560px]">
+            {[
+              { src: "/images/secteurs/agriculture.jpg", label: "Agriculture", alt: "Agriculteur au travail dans son champ", cls: "col-span-2 md:row-span-2 aspect-[4/3] md:aspect-auto" },
+              { src: "/images/secteurs/btp.jpg", label: "BTP & Construction", alt: "Ouvriers casqués sur un toit", cls: "aspect-square md:aspect-auto" },
+              { src: "/images/secteurs/education.jpg", label: "Éducation", alt: "Enseignant faisant cours", cls: "aspect-square md:aspect-auto" },
+              { src: "/images/secteurs/commerce.jpg", label: "Commerce", alt: "Marché animé vu d'en haut", cls: "aspect-square md:aspect-auto" },
+              { src: "/images/secteurs/banque.jpg", label: "Banque & Finance", alt: "Professionnel de la finance à son bureau", cls: "aspect-square md:aspect-auto" },
+            ].map((t) => (
+              <figure key={t.label} className={`group relative overflow-hidden rounded-3xl ${t.cls}`}>
+                <div data-photo className="absolute inset-0 rounded-3xl">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={t.src} alt={t.alt} loading="lazy" className="w-full h-full object-cover" />
+                </div>
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                <figcaption className="pointer-events-none absolute bottom-3 left-4 right-4 font-display font-bold text-white text-sm sm:text-base drop-shadow">
+                  {t.label}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── Notre vision : photo en parallaxe sous un voile sombre ─────────── */}
       <section className="relative overflow-hidden text-white py-20 sm:py-28">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -369,7 +400,7 @@ export default function AProposPage() {
           <div className="max-w-3xl">
             <span className="eyebrow">Notre vision</span>
             <h2 className="mt-3 text-3xl sm:text-5xl font-extrabold mb-5 leading-[1.05]">
-              Devenir <span className="text-orange-400">LA référence</span> de l&apos;emploi en RCA
+              Devenir <span className="text-orange-400">LA référence</span>{" "}de l&apos;emploi en RCA
             </h2>
             <p className="text-gray-300 text-lg leading-relaxed mb-12">
               L&apos;ambition de KTZ Emploi est claire : être la plateforme incontournable,

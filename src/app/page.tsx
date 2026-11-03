@@ -441,7 +441,7 @@ export default async function HomePage() {
             <h2 className="mt-3 text-2xl sm:text-3xl font-extrabold text-gray-900 mb-5 leading-tight">Trouver un emploi en Centrafrique avec KTZ Emploi</h2>
             <div className="space-y-4 text-gray-600 leading-relaxed">
               <p>
-                <strong className="text-gray-800">KTZ Emploi</strong> (ktzemploi.com) est la plateforme de recherche d&apos;emploi
+                <strong className="text-gray-800">KTZ Emploi</strong>{" "}(ktzemploi.com) est la plateforme de recherche d&apos;emploi
                 dédiée à la <strong className="text-gray-800">République Centrafricaine</strong>. Elle réunit en un seul endroit
                 les offres d&apos;emploi publiées à Bangui et en province par les entreprises, les administrations,
                 les ONG et les organisations internationales.
