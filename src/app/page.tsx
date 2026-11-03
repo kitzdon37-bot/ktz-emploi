@@ -109,10 +109,11 @@ const TIPS = [
   },
 ];
 
+// Photos libres de droits (Unsplash), hébergées dans /public/images
 const STEPS = [
-  { step: "01", icon: Users, title: "Créez votre profil", desc: "Inscrivez-vous gratuitement et renseignez vos compétences, votre expérience et vos ambitions professionnelles." },
-  { step: "02", icon: Search, title: "Explorez les offres", desc: "Parcourez des centaines d'offres d'emploi à Bangui et dans toute la RCA, filtrées selon vos critères." },
-  { step: "03", icon: CheckCircle, title: "Postulez en un clic", desc: "Envoyez votre candidature directement aux recruteurs et suivez l'avancement depuis votre tableau de bord." },
+  { step: "01", icon: Users, title: "Créez votre profil", desc: "Inscrivez-vous gratuitement et renseignez vos compétences, votre expérience et vos ambitions professionnelles.", img: "/images/etape-profil.jpg", alt: "Jeune femme souriante, bras croisés, prête à démarrer sa recherche d'emploi" },
+  { step: "02", icon: Search, title: "Explorez les offres", desc: "Parcourez des centaines d'offres d'emploi à Bangui et dans toute la RCA, filtrées selon vos critères.", img: "/images/etape-offres.jpg", alt: "Jeune homme consultant des offres d'emploi sur son ordinateur" },
+  { step: "03", icon: CheckCircle, title: "Postulez en un clic", desc: "Envoyez votre candidature directement aux recruteurs et suivez l'avancement depuis votre tableau de bord.", img: "/images/etape-postuler.jpg", alt: "Jeune femme heureuse à son bureau après avoir postulé" },
 ];
 
 /** En-tête de section : petite étiquette, grand titre, lien « voir tout » optionnel */
@@ -123,6 +124,7 @@ function SectionHead({
   href,
   linkLabel,
   center = false,
+  light = false,
 }: {
   eyebrow: string;
   title: React.ReactNode;
@@ -130,13 +132,14 @@ function SectionHead({
   href?: string;
   linkLabel?: string;
   center?: boolean;
+  light?: boolean;
 }) {
   return (
     <div className={`mb-10 flex flex-col gap-5 ${center ? "items-center text-center" : "sm:flex-row sm:items-end sm:justify-between"}`}>
-      <div className={center ? "max-w-2xl" : "max-w-2xl"}>
+      <div className="max-w-2xl">
         <span className="eyebrow">{eyebrow}</span>
-        <h2 className="mt-3 text-3xl sm:text-4xl font-extrabold text-gray-900 leading-[1.1]">{title}</h2>
-        {subtitle && <p className="mt-3 text-gray-500 text-base">{subtitle}</p>}
+        <h2 className={`mt-3 text-3xl sm:text-4xl font-extrabold leading-[1.1] ${light ? "text-white" : "text-gray-900"}`}>{title}</h2>
+        {subtitle && <p className={`mt-3 text-base ${light ? "text-gray-400" : "text-gray-500"}`}>{subtitle}</p>}
       </div>
       {href && linkLabel && (
         <Link
@@ -163,49 +166,30 @@ export default async function HomePage() {
   return (
     <>
       {/* ══════════════════════════════════════
-          1. HERO
+          1. HERO (photo avec zoom lent)
       ══════════════════════════════════════ */}
-      <section className="relative overflow-hidden bg-[#0d0f14]">
-        {/* Photo de fond, zoom lent */}
-        <div className="absolute inset-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/accueil.png" alt="Recherche d'emploi en Centrafrique avec KTZ Emploi" className="kenburns absolute inset-0 w-full h-full object-cover object-center opacity-60" />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0d0f14] via-[#0d0f14]/85 to-[#0d0f14]/30" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0d0f14] via-transparent to-transparent" />
-        <div className="glow-orb w-[420px] h-[420px] bg-orange-500/30 -top-32 -left-24" aria-hidden="true" />
-        <div className="glow-orb w-[320px] h-[320px] bg-amber-400/15 bottom-0 right-[10%]" aria-hidden="true" />
-
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-14 sm:pt-24 sm:pb-20">
-          <div className="max-w-3xl">
-            <div className="glass inline-flex items-center gap-2.5 rounded-full pl-3 pr-4 py-1.5 mb-6 animate-slide-up-slow">
-              <span className="live-dot" aria-hidden="true" />
-              <h1 className="text-xs sm:text-sm font-semibold text-white/90 tracking-normal">
-                Offres d&apos;emploi en Centrafrique · 1ère plateforme d&apos;emploi en RCA
-              </h1>
+      <section className="relative min-h-[460px] sm:min-h-[600px] overflow-hidden">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/accueil.png" alt="Recherche d'emploi en Centrafrique avec KTZ Emploi" className="kenburns absolute inset-0 w-full h-full object-cover object-center" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 to-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent" />
+        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-end h-full min-h-[460px] sm:min-h-[600px]">
+          <div className="pb-10 pt-16 sm:pb-14 sm:pt-24">
+            <div className="inline-flex items-center gap-2 bg-white/90 backdrop-blur-sm border border-white text-[#1e3a5f] text-xs sm:text-sm font-bold px-3 py-1 sm:px-4 sm:py-1.5 rounded-full mb-4 sm:mb-6 shadow-md animate-slide-up-slow">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="https://upload.wikimedia.org/wikipedia/commons/6/6f/Flag_of_the_Central_African_Republic.svg" alt="Drapeau RCA" className="flag-wave h-3.5 w-5 object-cover rounded-[2px]" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/6/6f/Flag_of_the_Central_African_Republic.svg" alt="Drapeau RCA" className="flag-wave h-4 w-6 sm:h-5 sm:w-7 object-cover rounded-sm shadow-sm" />
+              <h1 className="text-xs sm:text-sm font-bold tracking-normal">Offres d&apos;emploi en Centrafrique · 1ère plateforme d&apos;emploi en RCA</h1>
             </div>
-
-            <p className="font-display text-[2.1rem] leading-[1.05] sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight mb-6">
+            <p className="font-display text-[1.9rem] sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.08] tracking-tight mb-6 sm:mb-8 drop-shadow-lg">
               <span className="block animate-slide-up-slow">Pas besoin de connaître</span>
               <span className="block animate-slide-up-slow delay-250">quelqu&apos;un qui connaît quelqu&apos;un.</span>
-              <span className="block animate-slide-up-slow delay-500 text-gradient">Ici, vous postulez vous-même.</span>
+              <span className="block animate-slide-up-slow delay-500">
+                <span className="text-orange-400">Ici, vous postulez vous-même</span>{" "}—
+              </span>
+              <span className="block animate-slide-up-slow delay-750">et ça change tout.</span>
             </p>
-            <p className="text-base sm:text-lg text-gray-300 max-w-xl mb-8 animate-slide-up-slow delay-750">
-              {totalJobs > 0 ? (
-                <><strong className="text-white">{totalJobs.toLocaleString("fr-FR")} offres actives</strong> à Bangui et partout en RCA. Et ça change tout.</>
-              ) : (
-                <>Des offres à Bangui et partout en RCA, publiées chaque jour. Et ça change tout.</>
-              )}
-            </p>
-
-            <div className="glass rounded-[1.25rem] p-1.5 sm:p-2 max-w-3xl">
-              <HeroSearch />
-            </div>
-
-            <div className="flex flex-wrap items-center gap-2 mt-5">
-              <span className="text-xs text-gray-400 mr-1">Populaire :</span>
+            <HeroSearch />
+            <div className="flex flex-wrap gap-2 mt-4">
               {[
                 { label: "CDI", type: "CDI" },
                 { label: "Stage", type: "Stage" },
@@ -213,27 +197,49 @@ export default async function HomePage() {
                 { label: "IT & Tech", q: "Informatique" },
                 { label: "Santé", q: "Santé" },
               ].map((chip) => (
-                <Link key={chip.label} href={`/emplois?${chip.type ? `type=${chip.type}` : `q=${chip.q}`}`} className="glass text-white/90 hover:text-white hover:bg-white/15 text-sm px-3.5 py-1.5 rounded-full transition-colors">
+                <Link key={chip.label} href={`/emplois?${chip.type ? `type=${chip.type}` : `q=${chip.q}`}`} className="zoom-hover bg-white/20 backdrop-blur-sm hover:bg-white/35 border border-white/30 text-white text-sm px-4 py-1.5 rounded-full">
                   {chip.label}
                 </Link>
               ))}
-            </div>
-
-            <div className="mt-10">
-              <StatsCounter variant="glass" totalJobs={totalJobs} totalCompanies={totalCompanies} totalUsers={200} />
             </div>
           </div>
         </div>
       </section>
 
       {/* Bande drapeau RCA */}
-      <div className="flex h-1">
+      <div className="flex h-1.5">
         <div className="flex-1 bg-blue-600" />
-        <div className="flex-1 bg-white" />
+        <div className="flex-1 bg-white border-t border-gray-200" />
         <div className="flex-1 bg-green-500" />
         <div className="flex-1 bg-yellow-400" />
         <div className="flex-1 bg-red-600" />
       </div>
+
+      {/* Stats */}
+      <section className="bg-white border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <StatsCounter totalJobs={totalJobs} totalCompanies={totalCompanies} totalUsers={200} />
+        </div>
+      </section>
+
+      {/* Offres à la une */}
+      {featuredJobs.length > 0 && (
+        <section className="bg-slate-50 py-16 sm:py-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <SectionHead
+              eyebrow="Sélection"
+              title={<span className="inline-flex items-center gap-3">Offres à la une <Star className="h-7 w-7 text-yellow-400 fill-yellow-400" /></span>}
+              href="/emplois?featured=true"
+              linkLabel="Voir tout"
+            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+              {featuredJobs.map((job) => (
+                <JobCard key={job.id} job={job} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Entreprises : défilement infini */}
       <section className="bg-white py-14">
@@ -266,44 +272,31 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Offres à la une */}
-      {featuredJobs.length > 0 && (
-        <section className="bg-slate-50 py-16 sm:py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <SectionHead
-              eyebrow="Sélection"
-              title={<span className="inline-flex items-center gap-3">Offres à la une <Star className="h-7 w-7 text-yellow-400 fill-yellow-400" /></span>}
-              href="/emplois?featured=true"
-              linkLabel="Voir tout"
-            />
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-              {featuredJobs.map((job) => (
-                <JobCard key={job.id} job={job} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Comment ça marche */}
-      <section className="bg-white py-16 sm:py-24">
+      {/* Comment ça marche : 3 étapes illustrées par de vraies photos */}
+      <section className="bg-slate-50 py-16 sm:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHead eyebrow="Pour les candidats" title="Comment ça marche ?" subtitle="Trouvez votre emploi en 3 étapes simples" center />
-          <div className="relative">
-            {/* Ligne qui relie les étapes, dessinée au défilement */}
-            <div data-draw aria-hidden="true" className="hidden md:block absolute top-[3.25rem] left-[16%] right-[16%] h-[2px] bg-gradient-to-r from-orange-200 via-orange-400 to-orange-200" />
-            <div className="grid md:grid-cols-3 gap-5 md:gap-8 relative">
-              {STEPS.map(({ step, icon: Icon, title, desc }) => (
-                <div key={step} className="soft-card rounded-3xl p-7 text-center group">
-                  <div className="relative mx-auto mb-6 w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-400 text-white flex items-center justify-center shadow-lg shadow-orange-500/25 transition-transform duration-300 group-hover:scale-105">
-                    <Icon className="h-6 w-6" />
+          <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+            {STEPS.map(({ step, icon: Icon, title, desc, img, alt }) => (
+              <div key={step} className="soft-card group rounded-3xl p-3 pb-7">
+                <div className="relative">
+                  <div data-photo className="aspect-[4/3] rounded-3xl">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={img} alt={alt} loading="lazy" className="w-full h-full object-cover" />
                   </div>
-                  <div className="font-display text-xs font-bold tracking-[0.2em] text-orange-500 mb-2">ÉTAPE {step}</div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{title}</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed max-w-xs mx-auto">{desc}</p>
+                  <span className="absolute top-3 left-3 bg-white/95 backdrop-blur text-gray-900 font-display font-extrabold text-sm px-3 py-1 rounded-full shadow-sm">
+                    {step}
+                  </span>
+                  <div className="absolute -bottom-6 left-6 w-12 h-12 rounded-2xl bg-orange-500 text-white flex items-center justify-center shadow-lg shadow-orange-500/30 ring-4 ring-white transition-transform duration-300 group-hover:-translate-y-1">
+                    <Icon className="h-5 w-5" />
+                  </div>
                 </div>
-              ))}
-            </div>
+                <div className="px-4 pt-10">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-orange-600 transition-colors">{title}</h3>
+                  <p className="text-gray-500 text-sm leading-relaxed">{desc}</p>
+                </div>
+              </div>
+            ))}
           </div>
           <div className="text-center mt-12">
             <Link href="/inscription" className="btn-shine group inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-8 py-3.5 rounded-full font-semibold shadow-lg shadow-orange-500/30 transition-colors">
@@ -314,7 +307,7 @@ export default async function HomePage() {
       </section>
 
       {/* Explorer par secteur */}
-      <section className="bg-slate-50 py-16 sm:py-20">
+      <section className="bg-white py-16 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHead eyebrow="Secteurs" title="Explorer par secteur" subtitle="Trouvez des offres dans votre domaine d'expertise" href="/emplois" linkLabel="Toutes les offres" />
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
@@ -330,7 +323,7 @@ export default async function HomePage() {
       </section>
 
       {/* Dernières offres */}
-      <section className="bg-white py-16 sm:py-20">
+      <section className="bg-slate-50 py-16 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHead eyebrow="Nouveautés" title="Dernières offres publiées" href="/emplois" linkLabel="Voir toutes les offres" />
           {recentJobs.length > 0 ? (
@@ -340,7 +333,7 @@ export default async function HomePage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-16 bg-slate-50 rounded-3xl border border-gray-100">
+            <div className="text-center py-16 bg-white rounded-3xl border border-gray-100">
               <Briefcase className="h-12 w-12 mx-auto mb-4 text-gray-300" />
               <p className="text-lg font-semibold text-gray-700">Aucune offre pour le moment</p>
               <p className="text-sm text-gray-400 mt-1">Soyez le premier à publier une offre !</p>
@@ -352,27 +345,48 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Espace recruteurs */}
-      <section className="relative bg-[#0d0f14] text-white py-16 sm:py-24 overflow-hidden">
-        <div className="glow-orb w-[460px] h-[460px] bg-orange-500/20 -bottom-40 -left-32" aria-hidden="true" />
-        <div className="glow-orb w-[300px] h-[300px] bg-amber-400/10 top-0 right-0" aria-hidden="true" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div className="hidden lg:flex justify-center">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/recruter-illustration.svg" alt="Recruter en Centrafrique" className="w-full max-w-md opacity-90" />
+      {/* Espace recruteurs : composition de vraies photos */}
+      <section className="bg-gray-900 text-white py-16 sm:py-24 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-14 lg:gap-16 items-center">
+            {/* Photos */}
+            <div className="relative max-w-lg mx-auto w-full pb-10 sm:pb-12 pr-8 sm:pr-14">
+              <div data-photo className="aspect-[4/5] rounded-3xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/images/recruteur-entretien.jpg" alt="Une recruteuse mène un entretien d'embauche avec une candidate" loading="lazy" className="w-full h-full object-cover object-[70%_center]" />
+              </div>
+              <div data-photo className="absolute bottom-0 right-0 w-[52%] aspect-[4/3] rounded-3xl border-[6px] border-gray-900 bg-gray-900">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/images/recruteur-reunion.jpg" alt="Une équipe de recrutement échange autour d'une table" loading="lazy" className="w-full h-full object-cover" />
+              </div>
+              {/* Cartes flottantes */}
+              <div className="float-y absolute top-6 -left-3 sm:-left-8 bg-white text-gray-900 rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3">
+                <span className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center"><CheckCircle className="h-5 w-5 text-green-600" /></span>
+                <div>
+                  <p className="text-xs font-bold leading-tight">Nouvelle candidature</p>
+                  <p className="text-[11px] text-gray-500 leading-tight">Comptable · Bangui</p>
+                </div>
+              </div>
+              <div className="float-y-slow absolute top-[42%] -right-2 sm:right-2 bg-white text-gray-900 rounded-2xl shadow-xl px-4 py-3">
+                <p className="font-display text-2xl font-extrabold text-orange-500 leading-none">94%</p>
+                <p className="text-[11px] text-gray-500 mt-1 leading-tight">de correspondance<br />avec le poste</p>
+              </div>
             </div>
+
+            {/* Texte */}
             <div>
               <span className="eyebrow">Espace recruteurs</span>
               <h2 className="mt-4 text-3xl sm:text-5xl font-extrabold leading-[1.05] mb-5">
                 Vous recrutez ?<br />
-                <span className="text-gradient">Trouvez vos talents en RCA.</span>
+                <span className="text-orange-400">Trouvez vos talents en RCA.</span>
               </h2>
               <p className="text-gray-400 text-base sm:text-lg mb-8 max-w-md">Publiez vos offres et accédez à des milliers de candidats qualifiés. Simple, rapide et gratuit pour commencer.</p>
-              <ul className="grid sm:grid-cols-2 gap-3 mb-9">
+              <ul className="space-y-3 mb-9">
                 {["Publication d'offres en moins de 5 minutes", "Accès à plus de 1 200 profils de candidats", "Suivi des candidatures en temps réel", "Mise en avant de vos offres en page d'accueil"].map((item) => (
-                  <li key={item} className="glass flex items-start gap-3 rounded-2xl px-4 py-3 text-gray-200 text-sm">
-                    <CheckCircle className="h-4 w-4 mt-0.5 text-orange-400 flex-shrink-0" />
+                  <li key={item} className="flex items-center gap-3 text-gray-300 text-sm">
+                    <span className="w-6 h-6 rounded-full bg-orange-500/15 flex items-center justify-center flex-shrink-0">
+                      <CheckCircle className="h-4 w-4 text-orange-400" />
+                    </span>
                     {item}
                   </li>
                 ))}
@@ -471,20 +485,17 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Bannière inscription */}
-      <section className="bg-white py-14 sm:py-20 px-4">
-        <div className="relative max-w-6xl mx-auto overflow-hidden rounded-[2rem] bg-[#0d0f14] px-6 py-14 sm:py-20 text-center">
-          <div className="glow-orb w-[380px] h-[380px] bg-orange-500/35 -top-40 left-1/2 -translate-x-1/2" aria-hidden="true" />
-          <div className="relative">
-            <span className="eyebrow">Gratuit pour les candidats</span>
-            <h2 className="mt-4 text-3xl sm:text-5xl font-extrabold text-white leading-[1.05] mb-4">
-              Prêt à trouver votre <span className="text-gradient">prochain emploi ?</span>
-            </h2>
-            <p className="text-gray-400 mb-9 max-w-xl mx-auto">Créez votre profil gratuitement et recevez des offres personnalisées directement dans votre boîte mail.</p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link href="/inscription" className="btn-shine bg-orange-500 hover:bg-orange-600 text-white px-8 py-3.5 rounded-full font-bold shadow-lg shadow-orange-500/30 transition-colors">Créer mon profil</Link>
-              <Link href="/emplois" className="border border-white/20 hover:border-white/50 hover:bg-white/5 text-white px-8 py-3.5 rounded-full font-semibold transition-colors">Parcourir les offres</Link>
-            </div>
+      {/* Bannière inscription : photo d'équipe en parallaxe sous un voile orange */}
+      <section className="relative overflow-hidden py-20 sm:py-28">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img data-parallax src="/images/equipe-talents.jpg" alt="" aria-hidden="true" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-r from-orange-600/95 via-orange-500/90 to-orange-500/70" />
+        <div className="relative max-w-3xl mx-auto px-4 text-center">
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-white leading-[1.05] mb-4">Prêt à trouver votre prochain emploi ?</h2>
+          <p className="text-orange-50 text-base sm:text-lg mb-9 max-w-xl mx-auto">Créez votre profil gratuitement et recevez des offres personnalisées directement dans votre boîte mail.</p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link href="/inscription" className="btn-shine bg-white text-orange-600 hover:bg-orange-50 px-8 py-3.5 rounded-full font-bold shadow-lg shadow-black/10 transition-colors">Créer mon profil</Link>
+            <Link href="/emplois" className="border-2 border-white/80 text-white hover:bg-white/10 px-8 py-3.5 rounded-full font-semibold transition-colors">Parcourir les offres</Link>
           </div>
         </div>
       </section>

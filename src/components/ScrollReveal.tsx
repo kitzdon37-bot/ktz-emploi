@@ -7,7 +7,8 @@ import { usePathname } from "next/navigation";
  * Animations globales, sobres :
  *  - les titres et les cartes des sections apparaissent en douceur au défilement,
  *    en cascade dans chaque grille ;
- *  - les éléments marqués data-draw (lignes décoratives) se dessinent à l'apparition ;
+ *  - les photos marquées data-photo se dévoilent (rideau + léger dézoom) à l'apparition ;
+ *  - les photos marquées data-parallax défilent un peu moins vite que la page ;
  *  - une fine barre orange indique la progression du défilement.
  * Rien n'est caché sans JavaScript, et tout est désactivé si l'utilisateur
  * a demandé à réduire les animations.
@@ -22,14 +23,22 @@ export default function ScrollReveal() {
   const pathname = usePathname();
   const barRef = useRef<HTMLDivElement>(null);
 
-  // Barre de progression du défilement
+  // Barre de progression du défilement + parallaxe des photos
   useEffect(() => {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let frame = 0;
     const update = () => {
       frame = 0;
       const max = document.documentElement.scrollHeight - window.innerHeight;
       const ratio = max > 0 ? window.scrollY / max : 0;
       if (barRef.current) barRef.current.style.transform = `scaleX(${ratio})`;
+      if (reduce) return;
+      document.querySelectorAll<HTMLElement>("[data-parallax]").forEach((el) => {
+        const box = el.parentElement?.getBoundingClientRect();
+        if (!box || box.bottom < 0 || box.top > window.innerHeight) return;
+        const t = (box.top + box.height / 2 - window.innerHeight / 2) / window.innerHeight;
+        el.style.transform = `translate3d(0, ${(-t * 12).toFixed(2)}%, 0) scale(1.15)`;
+      });
     };
     const onScroll = () => { if (!frame) frame = requestAnimationFrame(update); };
     update();
@@ -40,16 +49,17 @@ export default function ScrollReveal() {
       window.removeEventListener("resize", onScroll);
       if (frame) cancelAnimationFrame(frame);
     };
-  }, []);
+  }, [pathname]);
 
   // Apparition au défilement (relancée à chaque changement de page)
   useEffect(() => {
     const main = document.querySelector("main");
     if (!main) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      main.querySelectorAll("[data-draw]").forEach((el) => el.classList.add("drawn"));
+      main.querySelectorAll("[data-photo]").forEach((el) => el.classList.add("shown"));
       return;
     }
+    document.documentElement.classList.add("sr-ready");
 
     const io = new IntersectionObserver(
       (entries) => {
@@ -57,7 +67,7 @@ export default function ScrollReveal() {
           if (!e.isIntersecting) continue;
           const el = e.target as HTMLElement;
           io.unobserve(el);
-          if (el.hasAttribute("data-draw")) { el.classList.add("drawn"); continue; }
+          if (el.hasAttribute("data-photo")) { el.classList.add("shown"); continue; }
           el.classList.add("sr-in");
           // Une fois apparu, l'élément retrouve ses propres effets (survol des cartes…)
           setTimeout(() => el.classList.remove("sr", "sr-in"), 1800);
@@ -68,7 +78,7 @@ export default function ScrollReveal() {
 
     const firstSection = () => main.querySelector("section");
     const scan = () => {
-      main.querySelectorAll<HTMLElement>("[data-draw]:not([data-sr])").forEach((el) => {
+      main.querySelectorAll<HTMLElement>("[data-photo]:not([data-sr])").forEach((el) => {
         el.dataset.sr = "1";
         io.observe(el);
       });

@@ -47,30 +47,24 @@
   background: linear-gradient(90deg, #f97316, #fbbf24);
 }
 
-/* Texte en dégradé orange */
-.text-gradient {
-  background: linear-gradient(100deg, #fb923c 0%, #f97316 35%, #fbbf24 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-}
+/* Photos : dévoilement en rideau à l'apparition, puis léger zoom au survol */
+/* (masquées seulement une fois le JavaScript prêt : sans JS, les photos restent visibles) */
+[data-photo] { overflow: hidden; }
+[data-photo] img { transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+.sr-ready [data-photo] { clip-path: inset(0 0 100% 0 round 1.5rem); transition: clip-path 1.2s cubic-bezier(0.77, 0, 0.18, 1); }
+.sr-ready [data-photo] img { transform: scale(1.18); transition: transform 1.6s cubic-bezier(0.22, 1, 0.36, 1); }
+.sr-ready [data-photo].shown { clip-path: inset(0 0 0 0 round 1.5rem); }
+.sr-ready [data-photo].shown img { transform: scale(1); }
+.group:hover [data-photo] img, [data-photo]:hover img,
+.sr-ready .group:hover [data-photo].shown img, .sr-ready [data-photo].shown:hover img { transform: scale(1.06); transition-duration: 0.9s; }
 
-/* Pastille « en direct » */
-.live-dot { position: relative; width: 8px; height: 8px; border-radius: 9999px; background: #22c55e; flex-shrink: 0; }
-.live-dot::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: #22c55e; animation: livePulse 2s ease-out infinite; }
-@keyframes livePulse { to { transform: scale(3); opacity: 0; } }
+/* Photo de fond en parallaxe (déplacée par ScrollReveal) */
+[data-parallax] { transform: scale(1.15); will-change: transform; }
 
-/* Effet verre (sur fond sombre) */
-.glass {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  -webkit-backdrop-filter: blur(14px) saturate(1.3);
-  backdrop-filter: blur(14px) saturate(1.3);
-}
-
-/* Halo lumineux décoratif */
-.glow-orb { position: absolute; border-radius: 9999px; filter: blur(70px); pointer-events: none; }
+/* Petite carte flottante posée sur une photo */
+@keyframes floatY { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.float-y { animation: floatY 5s ease-in-out infinite; }
+.float-y-slow { animation: floatY 7s ease-in-out infinite 1s; }
 
 /* Carte d'offre : ombre douce et légère élévation au survol */
 .job-card {
@@ -95,10 +89,6 @@
   border-color: #fed7aa;
   box-shadow: 0 18px 40px -18px rgba(234, 88, 12, 0.3);
 }
-
-/* Ligne qui se dessine (étapes « Comment ça marche ») */
-[data-draw] { transform: scaleX(0); transform-origin: left; transition: transform 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.2s; }
-[data-draw].drawn { transform: scaleX(1); }
 
 /* Bouton principal avec reflet au survol */
 .btn-shine { position: relative; overflow: hidden; isolation: isolate; }
@@ -130,9 +120,9 @@
 @media (prefers-reduced-motion: reduce) {
   .sr { opacity: 1 !important; transform: none !important; transition: none !important; }
   .scroll-progress { display: none; }
-  .kenburns, .marquee-track, .live-dot::after { animation: none !important; }
+  .kenburns, .marquee-track, .float-y, .float-y-slow { animation: none !important; }
   .marquee { overflow-x: auto; }
-  [data-draw] { transform: none; transition: none; }
+  [data-photo], [data-photo] img { clip-path: none !important; transform: none !important; transition: none !important; }
 }
 
 /* ── Drapeau flottant ─────────────────────────────────────────────────────── */
