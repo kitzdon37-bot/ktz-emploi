@@ -1,20 +1,12 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowLeft, Clock, Calendar, User, BookOpen } from "lucide-react";
-import { articles, getArticleBySlug } from "@/lib/articles";
+import { articles, getArticleBySlug, ARTICLE_COVERS } from "@/lib/articles";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 import { pageMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
-
-const ILLUSTRATION_MAP: Record<string, string> = {
-  "CV & Candidature":   "/illustrations/cv-candidature.svg",
-  "Entretien":          "/illustrations/entretien.svg",
-  "Marché de l'emploi": "/illustrations/marche-emploi.svg",
-  "Carrière":           "/illustrations/carriere.svg",
-};
 
 export async function generateStaticParams() {
   return articles.map((article) => ({ slug: article.slug }));
@@ -40,13 +32,21 @@ export default async function ArticlePage({ params }: Props) {
   }
 
   const related = articles.filter((a) => a.id !== article.id && a.category === article.category).slice(0, 2);
-  const illustration = ILLUSTRATION_MAP[article.category] ?? "/illustrations/cv-candidature.svg";
+  const cover = ARTICLE_COVERS[article.slug];
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero banner */}
-      <div className={`bg-gradient-to-br ${article.coverColor} py-16`}>
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Hero banner : photo de l'article en fond (zoom lent) sous un voile sombre */}
+      <div className={`relative overflow-hidden py-16 sm:py-24 bg-gradient-to-br ${article.coverColor}`}>
+        {cover && (
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={cover.src} alt={cover.alt} className="kenburns absolute inset-0 w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/60 to-black/35" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent" />
+          </>
+        )}
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-8">
             {/* Text content */}
             <div className="flex-1 max-w-2xl">
@@ -80,17 +80,6 @@ export default async function ArticlePage({ params }: Props) {
                   {article.readTime} de lecture
                 </span>
               </div>
-            </div>
-
-            {/* Illustration */}
-            <div className="hidden lg:flex items-end justify-center w-56 flex-shrink-0 -mb-6">
-              <Image
-                src={illustration}
-                alt=""
-                width={215}
-                height={155}
-                className="object-contain drop-shadow-lg"
-              />
             </div>
           </div>
         </div>

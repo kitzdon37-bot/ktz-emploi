@@ -12,6 +12,19 @@ export type Article = {
   content: string;
 };
 
+/** Photo d'illustration de chaque article (Unsplash, hébergées dans /public/images/conseils) */
+export const ARTICLE_COVERS: Record<string, { src: string; alt: string }> = {
+  "comment-rediger-un-cv": { src: "/images/conseils/cv.jpg", alt: "Jeune femme rédigeant son CV sur son ordinateur" },
+  "reussir-son-entretien": { src: "/images/conseils/entretien.jpg", alt: "Poignée de main à la fin d'un entretien d'embauche" },
+  "secteurs-qui-recrutent-rca": { src: "/images/conseils/secteurs-qui-recrutent.jpg", alt: "Équipe de jeunes professionnels qui se félicitent" },
+  "rediger-lettre-de-motivation": { src: "/images/conseils/lettre-motivation.jpg", alt: "Femme concentrée rédigeant une lettre sur son ordinateur" },
+  "negocier-son-salaire": { src: "/images/conseils/salaires.jpg", alt: "Billets de banque glissés dans un portefeuille" },
+  "se-reconvertir-professionnellement": { src: "/images/conseils/reconversion.jpg", alt: "Deux jeunes apprenant un nouveau métier devant un écran" },
+};
+
+/** Photo de l'article phare de la page Conseils */
+export const GUIDE_COVER = { src: "/images/conseils/guide-bangui.jpg", alt: "Jeune femme souriante en recherche d'emploi avec son ordinateur" };
+
 export const articles: Article[] = [
   {
     id: 1,

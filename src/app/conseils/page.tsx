@@ -1,7 +1,6 @@
 import Link from "next/link";
-import Image from "next/image";
-import { BookOpen, ArrowRight } from "lucide-react";
-import { articles } from "@/lib/articles";
+import { BookOpen, ArrowRight, Clock } from "lucide-react";
+import { articles, ARTICLE_COVERS, GUIDE_COVER } from "@/lib/articles";
 
 import { pageMetadata } from "@/lib/seo";
 
@@ -10,20 +9,6 @@ export const metadata = pageMetadata({
   title: "Conseils carrière : CV, lettre de motivation, entretien",
   description: "Conseils pratiques pour trouver un emploi en Centrafrique : rédiger son CV et sa lettre de motivation, réussir son entretien, négocier son salaire.",
 });
-
-const CARD_BG_MAP: Record<string, string> = {
-  "CV & Candidature": "bg-blue-50",
-  "Entretien":        "bg-orange-50",
-  "Marché de l'emploi": "bg-purple-50",
-  "Carrière":         "bg-yellow-50",
-};
-
-const ILLUSTRATION_MAP: Record<string, string> = {
-  "CV & Candidature":   "/illustrations/cv-candidature.svg",
-  "Entretien":          "/illustrations/entretien.svg",
-  "Marché de l'emploi": "/illustrations/marche-emploi.svg",
-  "Carrière":           "/illustrations/carriere.svg",
-};
 
 const BADGE_MAP: Record<string, string> = {
   "CV & Candidature":   "bg-blue-100 text-blue-700",
@@ -63,77 +48,76 @@ export default function ConseilsPage() {
         ))}
       </div>
 
-      {/* Featured article */}
-      <div className="bg-gradient-to-br from-orange-500 to-orange-400 rounded-2xl p-8 mb-8 text-white relative overflow-hidden">
-        <div className="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
-        <div className="relative flex items-center gap-6">
-          <div className="flex-1">
-            <span className="bg-white/20 text-white text-xs font-medium px-3 py-1 rounded-full mb-4 inline-block">
-              Article phare
-            </span>
-            <h2 className="text-2xl font-bold mb-3">Guide complet pour trouver un emploi à Bangui</h2>
-            <p className="text-yellow-50 mb-5 max-w-xl">
-              De la préparation de votre CV à la négociation de votre salaire, tout ce que vous devez savoir pour réussir votre recherche d&apos;emploi dans la capitale centrafricaine.
-            </p>
-            <Link
-              href={`/conseils/${articles[0].slug}`}
-              className="inline-flex items-center gap-2 bg-white text-orange-600 font-semibold px-5 py-2.5 rounded-xl hover:bg-orange-50 transition-colors"
-            >
-              Lire l&apos;article <ArrowRight className="h-4 w-4" />
-            </Link>
+      {/* Featured article : grande photo + texte */}
+      <section className="mb-10">
+        <Link
+          href={`/conseils/${articles[0].slug}`}
+          className="group relative block overflow-hidden rounded-3xl bg-gray-900 text-white"
+        >
+          <div className="grid md:grid-cols-2">
+            <div className="relative order-2 md:order-1 p-7 sm:p-10 flex flex-col justify-center">
+              <span className="eyebrow">Article phare</span>
+              <h2 className="mt-4 text-2xl sm:text-3xl font-extrabold leading-tight mb-4">Guide complet pour trouver un emploi à Bangui</h2>
+              <p className="text-gray-300 mb-7 max-w-xl">
+                De la préparation de votre CV à la négociation de votre salaire, tout ce que vous devez savoir pour réussir votre recherche d&apos;emploi dans la capitale centrafricaine.
+              </p>
+              <span className="btn-shine self-start inline-flex items-center gap-2 bg-orange-500 group-hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded-full shadow-lg shadow-orange-500/30 transition-colors">
+                Lire l&apos;article <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </span>
+            </div>
+            <div className="relative order-1 md:order-2 min-h-[220px] md:min-h-[340px]">
+              <div data-photo className="absolute inset-0">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={GUIDE_COVER.src} alt={GUIDE_COVER.alt} className="w-full h-full object-cover" />
+              </div>
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-gray-900 via-gray-900/20 to-transparent" />
+            </div>
           </div>
-          <div className="hidden md:flex items-center justify-center w-56 flex-shrink-0">
-            <Image
-              src="/illustrations/conseils-hero.svg"
-              alt=""
-              width={220}
-              height={165}
-              className="object-contain drop-shadow-md"
-            />
-          </div>
-        </div>
-      </div>
+        </Link>
+      </section>
 
       {/* Articles grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {articles.map((article) => {
-          const cardBg = CARD_BG_MAP[article.category] ?? "bg-gray-50";
-          const badge  = BADGE_MAP[article.category]  ?? "bg-gray-100 text-gray-600";
-          const illus  = ILLUSTRATION_MAP[article.category] ?? "/illustrations/cv-candidature.svg";
-          return (
-            <Link
-              key={article.id}
-              href={`/conseils/${article.slug}`}
-              className="block bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-md hover:border-orange-100 transition-all group"
-            >
-              {/* Illustration header */}
-              <div className={`relative h-44 flex items-center justify-center overflow-hidden ${cardBg}`}>
-                <Image
-                  src={illus}
-                  alt=""
-                  width={210}
-                  height={140}
-                  className="object-contain transition-transform duration-300 group-hover:scale-105"
-                />
-              </div>
-              {/* Card body */}
-              <div className="p-6">
-                <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${badge}`}>
-                  {article.category}
-                </span>
-                <h3 className="font-bold text-gray-900 mt-3 mb-2 leading-snug">{article.title}</h3>
-                <p className="text-sm text-gray-600 line-clamp-3 mb-4">{article.excerpt}</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-400">⏱ {article.readTime} de lecture</span>
-                  <span className="text-orange-500 hover:text-orange-600 text-sm font-medium flex items-center gap-1">
-                    Lire <ArrowRight className="h-3.5 w-3.5" />
+      <section>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {articles.map((article) => {
+            const badge = BADGE_MAP[article.category] ?? "bg-gray-100 text-gray-600";
+            const cover = ARTICLE_COVERS[article.slug];
+            return (
+              <Link
+                key={article.id}
+                href={`/conseils/${article.slug}`}
+                className="soft-card group flex flex-col rounded-3xl p-3 pb-6"
+              >
+                {/* Photo */}
+                <div className="relative">
+                  <div data-photo className="aspect-[16/10] rounded-3xl bg-gray-100">
+                    {cover && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={cover.src} alt={cover.alt} loading="lazy" className="w-full h-full object-cover" />
+                    )}
+                  </div>
+                  <span className={`absolute top-3 left-3 text-[11px] font-bold px-3 py-1.5 rounded-full shadow-sm ${badge}`}>
+                    {article.category}
                   </span>
                 </div>
-              </div>
-            </Link>
-          );
-        })}
-      </div>
+                {/* Texte */}
+                <div className="px-4 pt-5 flex flex-col flex-1">
+                  <h3 className="text-lg font-bold text-gray-900 mb-2 leading-snug group-hover:text-orange-600 transition-colors">{article.title}</h3>
+                  <p className="text-sm text-gray-500 line-clamp-3 mb-5 flex-1">{article.excerpt}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-1 text-xs text-gray-400">
+                      <Clock className="h-3.5 w-3.5" /> {article.readTime} de lecture
+                    </span>
+                    <span className="text-orange-500 text-sm font-semibold flex items-center gap-1">
+                      Lire <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
 
       {/* Newsletter CTA */}
       <div className="bg-gray-900 text-white rounded-2xl p-8 mt-12 text-center">
