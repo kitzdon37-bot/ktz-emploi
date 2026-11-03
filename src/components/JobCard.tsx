@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MapPin, Clock, Banknote, Star } from "lucide-react";
+import { MapPin, Clock, Banknote, Star, ArrowUpRight } from "lucide-react";
 import { formatSalary, timeAgo } from "@/lib/utils";
 
 interface JobCardProps {
@@ -42,11 +42,12 @@ export default function JobCard({ job }: JobCardProps) {
   return (
     <Link
       href={`/emplois/${job.slug}`}
-      data-tilt
-      className={`group flex flex-col bg-white rounded-xl border overflow-hidden relative ${
-        job.featured ? "border-orange-200 ring-1 ring-orange-100 hover:border-orange-300" : "border-gray-200 hover:border-orange-200"
+      className={`job-card group flex flex-col bg-white rounded-2xl border overflow-hidden relative ${
+        job.featured ? "border-orange-200 ring-1 ring-orange-100" : "border-gray-200/80"
       }`}
     >
+      {/* Liseré orange qui se dessine au survol */}
+      <span aria-hidden="true" className="absolute inset-x-0 top-0 h-[3px] z-20 bg-gradient-to-r from-orange-500 via-amber-400 to-orange-500 origin-left scale-x-0 transition-transform duration-500 ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-x-100" />
       {job.featured && (
         <div className="absolute top-3 right-3 z-10 flex items-center gap-1 bg-yellow-50 text-yellow-700 text-xs font-medium px-2 py-0.5 rounded-full border border-yellow-200 animate-bounce-in">
           <span className="star-twinkle"><Star className="h-3 w-3 fill-yellow-500 text-yellow-500" /></span>
@@ -76,7 +77,7 @@ export default function JobCard({ job }: JobCardProps) {
           )}
         </div>
       ) : (
-        <div className="h-28 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center border-b border-gray-100 flex-shrink-0 overflow-hidden">
+        <div className="h-28 bg-gradient-to-br from-slate-50 via-white to-orange-50/60 flex items-center justify-center border-b border-gray-100 flex-shrink-0 overflow-hidden">
           {job.company.logo ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -91,7 +92,7 @@ export default function JobCard({ job }: JobCardProps) {
       )}
 
       {/* Contenu */}
-      <div className="p-3 flex flex-col flex-1">
+      <div className="p-4 flex flex-col flex-1">
         <div className="flex items-center gap-1.5 mb-1 flex-wrap">
           <span className="text-xs text-gray-500 font-medium truncate">{job.company.name}</span>
           {job.company.verified && (
@@ -104,7 +105,7 @@ export default function JobCard({ job }: JobCardProps) {
           )}
         </div>
 
-        <h3 className="font-semibold text-gray-900 text-sm leading-snug mb-2 line-clamp-2 flex-1 transition-colors duration-200 group-hover:text-orange-600">
+        <h3 className="font-display font-bold text-gray-900 text-[15px] leading-snug tracking-tight mb-2.5 line-clamp-2 flex-1 transition-colors duration-200 group-hover:text-orange-600">
           {job.title}
         </h3>
 
@@ -124,11 +125,14 @@ export default function JobCard({ job }: JobCardProps) {
           )}
         </div>
 
-        <div className="flex items-center justify-between mt-2">
-          <span className="text-xs text-gray-400 bg-gray-50 px-2 py-0.5 rounded-full">{job.category}</span>
+        <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
           <span className="flex items-center gap-1 text-xs text-gray-400">
             <Clock className="h-3 w-3" />
             {timeAgo(job.createdAt)}
+          </span>
+          <span className="flex items-center gap-1 text-xs font-semibold text-orange-500">
+            Voir l&apos;offre
+            <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </span>
         </div>
       </div>

@@ -1,10 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { Search, MapPin, Briefcase, Building2, ArrowRight, Star, Users, CheckCircle, FileText, TrendingUp } from "lucide-react";
+import { Search, Briefcase, ArrowRight, ArrowUpRight, Star, Users, CheckCircle, FileText, TrendingUp } from "lucide-react";
 import JobCard from "@/components/JobCard";
 import StatsCounter from "@/components/StatsCounter";
 import HeroSearch from "@/components/HeroSearch";
-import HeroFx from "@/components/HeroFx";
 import { JOB_CATEGORIES } from "@/lib/utils";
 import ComingSoon from "@/components/ComingSoon";
 import { LANDINGS, sectorSlugForCategory } from "@/lib/seo-landing";
@@ -110,6 +109,48 @@ const TIPS = [
   },
 ];
 
+const STEPS = [
+  { step: "01", icon: Users, title: "Créez votre profil", desc: "Inscrivez-vous gratuitement et renseignez vos compétences, votre expérience et vos ambitions professionnelles." },
+  { step: "02", icon: Search, title: "Explorez les offres", desc: "Parcourez des centaines d'offres d'emploi à Bangui et dans toute la RCA, filtrées selon vos critères." },
+  { step: "03", icon: CheckCircle, title: "Postulez en un clic", desc: "Envoyez votre candidature directement aux recruteurs et suivez l'avancement depuis votre tableau de bord." },
+];
+
+/** En-tête de section : petite étiquette, grand titre, lien « voir tout » optionnel */
+function SectionHead({
+  eyebrow,
+  title,
+  subtitle,
+  href,
+  linkLabel,
+  center = false,
+}: {
+  eyebrow: string;
+  title: React.ReactNode;
+  subtitle?: string;
+  href?: string;
+  linkLabel?: string;
+  center?: boolean;
+}) {
+  return (
+    <div className={`mb-10 flex flex-col gap-5 ${center ? "items-center text-center" : "sm:flex-row sm:items-end sm:justify-between"}`}>
+      <div className={center ? "max-w-2xl" : "max-w-2xl"}>
+        <span className="eyebrow">{eyebrow}</span>
+        <h2 className="mt-3 text-3xl sm:text-4xl font-extrabold text-gray-900 leading-[1.1]">{title}</h2>
+        {subtitle && <p className="mt-3 text-gray-500 text-base">{subtitle}</p>}
+      </div>
+      {href && linkLabel && (
+        <Link
+          href={href}
+          className="group shrink-0 inline-flex items-center gap-1.5 self-start sm:self-auto rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:border-orange-300 hover:text-orange-600 transition-colors"
+        >
+          {linkLabel}
+          <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+        </Link>
+      )}
+    </div>
+  );
+}
+
 export default async function HomePage() {
   // Coming soon (production + preview locale via SHOW_COMING_SOON=true)
   if (process.env.SHOW_COMING_SOON === "true") {
@@ -117,84 +158,125 @@ export default async function HomePage() {
   }
 
   // En développement (localhost) → vrai site
-  const { featuredJobs, recentJobs, topCompanies, totalJobs, totalCompanies, totalUsers } = await getHomeData();
+  const { featuredJobs, recentJobs, topCompanies, totalJobs, totalCompanies } = await getHomeData();
 
   return (
     <>
       {/* ══════════════════════════════════════
           1. HERO
       ══════════════════════════════════════ */}
-      <section className="relative min-h-[420px] sm:min-h-[560px] overflow-hidden">
-        <div className="hero-parallax absolute inset-0 will-change-transform">
+      <section className="relative overflow-hidden bg-[#0d0f14]">
+        {/* Photo de fond, zoom lent */}
+        <div className="absolute inset-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/accueil.png" alt="Recherche d'emploi en Centrafrique avec KTZ Emploi" className="kenburns absolute inset-0 w-full h-full object-cover object-center" />
+          <img src="/accueil.png" alt="Recherche d'emploi en Centrafrique avec KTZ Emploi" className="kenburns absolute inset-0 w-full h-full object-cover object-center opacity-60" />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 to-black/20" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent" />
-        <HeroFx />
-        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-end h-full min-h-[420px] sm:min-h-[560px]">
-          <div className="pb-8 pt-16 sm:pb-12 sm:pt-24">
-            <div className="inline-flex items-center gap-2 bg-white/90 backdrop-blur-sm border border-white text-[#1e3a5f] text-xs sm:text-sm font-bold px-3 py-1 sm:px-4 sm:py-1.5 rounded-full mb-4 sm:mb-6 shadow-md">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0d0f14] via-[#0d0f14]/85 to-[#0d0f14]/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0d0f14] via-transparent to-transparent" />
+        <div className="glow-orb w-[420px] h-[420px] bg-orange-500/30 -top-32 -left-24" aria-hidden="true" />
+        <div className="glow-orb w-[320px] h-[320px] bg-amber-400/15 bottom-0 right-[10%]" aria-hidden="true" />
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-14 sm:pt-24 sm:pb-20">
+          <div className="max-w-3xl">
+            <div className="glass inline-flex items-center gap-2.5 rounded-full pl-3 pr-4 py-1.5 mb-6 animate-slide-up-slow">
+              <span className="live-dot" aria-hidden="true" />
+              <h1 className="text-xs sm:text-sm font-semibold text-white/90 tracking-normal">
+                Offres d&apos;emploi en Centrafrique · 1ère plateforme d&apos;emploi en RCA
+              </h1>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="https://upload.wikimedia.org/wikipedia/commons/6/6f/Flag_of_the_Central_African_Republic.svg" alt="Drapeau RCA" className="flag-wave h-4 w-6 sm:h-5 sm:w-7 object-cover rounded-sm shadow-sm" />
-              <h1 className="text-xs sm:text-sm font-bold">Offres d&apos;emploi en Centrafrique · 1ère plateforme d&apos;emploi en RCA</h1>
+              <img src="https://upload.wikimedia.org/wikipedia/commons/6/6f/Flag_of_the_Central_African_Republic.svg" alt="Drapeau RCA" className="flag-wave h-3.5 w-5 object-cover rounded-[2px]" />
             </div>
-            <p className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-5 sm:mb-8 drop-shadow-lg">
+
+            <p className="font-display text-[2.1rem] leading-[1.05] sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight mb-6">
               <span className="block animate-slide-up-slow">Pas besoin de connaître</span>
               <span className="block animate-slide-up-slow delay-250">quelqu&apos;un qui connaît quelqu&apos;un.</span>
-              <span className="block animate-slide-up-slow delay-500">
-                <span className="text-orange-400">Ici, vous postulez vous-même</span>{" "}—
-              </span>
-              <span className="block animate-slide-up-slow delay-750">et ça change tout.</span>
+              <span className="block animate-slide-up-slow delay-500 text-gradient">Ici, vous postulez vous-même.</span>
             </p>
-            <HeroSearch />
-            <div className="flex flex-wrap gap-2 mt-4">
-                {[
-                  { label: "CDI", type: "CDI" },
-                  { label: "Stage", type: "Stage" },
-                  { label: "Humanitaire", q: "Humanitaire" },
-                  { label: "IT & Tech", q: "Informatique" },
-                  { label: "Santé", q: "Santé" },
-                ].map((chip) => (
-                  <Link key={chip.label} href={`/emplois?${chip.type ? `type=${chip.type}` : `q=${chip.q}`}`} className="zoom-hover bg-white/20 backdrop-blur-sm hover:bg-white/35 border border-white/30 text-white text-sm px-4 py-1.5 rounded-full">
-                    {chip.label}
-                  </Link>
-                ))}
+            <p className="text-base sm:text-lg text-gray-300 max-w-xl mb-8 animate-slide-up-slow delay-750">
+              {totalJobs > 0 ? (
+                <><strong className="text-white">{totalJobs.toLocaleString("fr-FR")} offres actives</strong> à Bangui et partout en RCA. Et ça change tout.</>
+              ) : (
+                <>Des offres à Bangui et partout en RCA, publiées chaque jour. Et ça change tout.</>
+              )}
+            </p>
+
+            <div className="glass rounded-[1.25rem] p-1.5 sm:p-2 max-w-3xl">
+              <HeroSearch />
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2 mt-5">
+              <span className="text-xs text-gray-400 mr-1">Populaire :</span>
+              {[
+                { label: "CDI", type: "CDI" },
+                { label: "Stage", type: "Stage" },
+                { label: "Humanitaire", q: "Humanitaire" },
+                { label: "IT & Tech", q: "Informatique" },
+                { label: "Santé", q: "Santé" },
+              ].map((chip) => (
+                <Link key={chip.label} href={`/emplois?${chip.type ? `type=${chip.type}` : `q=${chip.q}`}`} className="glass text-white/90 hover:text-white hover:bg-white/15 text-sm px-3.5 py-1.5 rounded-full transition-colors">
+                  {chip.label}
+                </Link>
+              ))}
+            </div>
+
+            <div className="mt-10">
+              <StatsCounter variant="glass" totalJobs={totalJobs} totalCompanies={totalCompanies} totalUsers={200} />
             </div>
           </div>
         </div>
       </section>
 
       {/* Bande drapeau RCA */}
-      <div className="flex h-1.5">
+      <div className="flex h-1">
         <div className="flex-1 bg-blue-600" />
-        <div className="flex-1 bg-white border-t border-gray-200" />
+        <div className="flex-1 bg-white" />
         <div className="flex-1 bg-green-500" />
         <div className="flex-1 bg-yellow-400" />
         <div className="flex-1 bg-red-600" />
       </div>
 
-      {/* Stats */}
-      <section className="bg-white border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <StatsCounter totalJobs={totalJobs} totalCompanies={totalCompanies} totalUsers={200} />
+      {/* Entreprises : défilement infini */}
+      <section className="bg-white py-14">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionHead eyebrow="Ils nous font confiance" title="Ils recrutent en RCA" href="/entreprises" linkLabel="Toutes les entreprises" />
+          <div className="marquee -mx-4 sm:mx-0">
+            <div className="marquee-track py-3">
+              {[...topCompanies, ...topCompanies].map((co, i) => {
+                const dup = i >= topCompanies.length;
+                const initials = co.name.slice(0, 2).toUpperCase();
+                const colors = ["bg-orange-100 text-orange-600","bg-blue-100 text-blue-600","bg-green-100 text-green-600","bg-purple-100 text-purple-600","bg-rose-100 text-rose-600","bg-yellow-100 text-yellow-700","bg-teal-100 text-teal-600","bg-indigo-100 text-indigo-600"];
+                const color = colors[co.name.charCodeAt(0) % colors.length];
+                return (
+                  <Link key={`${co.slug}-${i}`} href={`/entreprises/${co.slug}`} aria-hidden={dup || undefined} tabIndex={dup ? -1 : undefined} className="soft-card w-44 shrink-0 rounded-2xl p-5 flex flex-col items-center gap-2.5 group">
+                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-bold text-base overflow-hidden transition-transform duration-300 group-hover:scale-105 ${co.logo ? "bg-gray-50 border border-gray-100" : color}`}>
+                      {co.logo ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={co.logo} alt={co.name} className="w-full h-full object-contain p-1" />
+                      ) : (
+                        initials
+                      )}
+                    </div>
+                    <span className="text-xs font-semibold text-gray-800 text-center leading-tight group-hover:text-orange-600 line-clamp-2 transition-colors">{co.name}</span>
+                    {co.sector && <span className="text-[10px] text-gray-400 text-center line-clamp-1">{co.sector}</span>}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Offres à la une */}
       {featuredJobs.length > 0 && (
-        <section className="bg-gray-50 py-14">
+        <section className="bg-slate-50 py-16 sm:py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center gap-2">
-                <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
-                <h2 className="text-2xl font-bold text-gray-900">Offres à la une</h2>
-              </div>
-              <Link href="/emplois?featured=true" className="text-orange-500 hover:text-orange-600 text-sm font-medium flex items-center gap-1">
-                Voir tout <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3">
+            <SectionHead
+              eyebrow="Sélection"
+              title={<span className="inline-flex items-center gap-3">Offres à la une <Star className="h-7 w-7 text-yellow-400 fill-yellow-400" /></span>}
+              href="/emplois?featured=true"
+              linkLabel="Voir tout"
+            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
               {featuredJobs.map((job) => (
                 <JobCard key={job.id} job={job} />
               ))}
@@ -203,92 +285,44 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Entreprises */}
-      <section className="bg-white py-12">
+      {/* Comment ça marche */}
+      <section className="bg-white py-16 sm:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-xl font-bold text-gray-900">Ils recrutent en RCA</h2>
-            <Link href="/entreprises" className="text-orange-500 hover:text-orange-600 text-sm font-medium flex items-center gap-1">
-              Voir toutes les entreprises <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-          {/* Défilement infini des entreprises (pause au survol) */}
-          <div className="marquee -mx-4 sm:mx-0">
-            <div className="marquee-track py-3">
-            {[...topCompanies, ...topCompanies].map((co, i) => {
-              const dup = i >= topCompanies.length;
-              const initials = co.name.slice(0, 2).toUpperCase();
-              const colors = ["bg-orange-100 text-orange-600","bg-blue-100 text-blue-600","bg-green-100 text-green-600","bg-purple-100 text-purple-600","bg-rose-100 text-rose-600","bg-yellow-100 text-yellow-700","bg-teal-100 text-teal-600","bg-indigo-100 text-indigo-600"];
-              const color = colors[co.name.charCodeAt(0) % colors.length];
-              return (
-                <Link key={`${co.slug}-${i}`} href={`/entreprises/${co.slug}`} aria-hidden={dup || undefined} tabIndex={dup ? -1 : undefined} data-tilt className="w-40 shrink-0 bg-white rounded-2xl border border-gray-200 hover:border-orange-200 hover:shadow-lg p-5 flex flex-col items-center gap-2.5 group">
-                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-bold text-base overflow-hidden transition-transform duration-300 group-hover:scale-110 ${co.logo ? "bg-gray-50 border border-gray-100" : color}`}>
-                    {co.logo ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={co.logo} alt={co.name} className="w-full h-full object-contain p-1" />
-                    ) : (
-                      initials
-                    )}
+          <SectionHead eyebrow="Pour les candidats" title="Comment ça marche ?" subtitle="Trouvez votre emploi en 3 étapes simples" center />
+          <div className="relative">
+            {/* Ligne qui relie les étapes, dessinée au défilement */}
+            <div data-draw aria-hidden="true" className="hidden md:block absolute top-[3.25rem] left-[16%] right-[16%] h-[2px] bg-gradient-to-r from-orange-200 via-orange-400 to-orange-200" />
+            <div className="grid md:grid-cols-3 gap-5 md:gap-8 relative">
+              {STEPS.map(({ step, icon: Icon, title, desc }) => (
+                <div key={step} className="soft-card rounded-3xl p-7 text-center group">
+                  <div className="relative mx-auto mb-6 w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-400 text-white flex items-center justify-center shadow-lg shadow-orange-500/25 transition-transform duration-300 group-hover:scale-105">
+                    <Icon className="h-6 w-6" />
                   </div>
-                  <span className="text-xs font-semibold text-gray-800 text-center leading-tight group-hover:text-orange-600 line-clamp-2 transition-colors">{co.name}</span>
-                  {co.sector && <span className="text-[10px] text-gray-400 text-center line-clamp-1">{co.sector}</span>}
-                </Link>
-              );
-            })}
+                  <div className="font-display text-xs font-bold tracking-[0.2em] text-orange-500 mb-2">ÉTAPE {step}</div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{title}</h3>
+                  <p className="text-gray-500 text-sm leading-relaxed max-w-xs mx-auto">{desc}</p>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Comment ça marche */}
-      <section className="bg-gray-50 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 data-split className="text-2xl font-bold text-gray-900 mb-2">Comment ça marche ?</h2>
-            <p className="text-gray-500">Trouvez votre emploi en 3 étapes simples</p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              { step: "01", icon: Users, title: "Créez votre profil", desc: "Inscrivez-vous gratuitement et renseignez vos compétences, votre expérience et vos ambitions professionnelles.", color: "bg-orange-50 text-orange-500" },
-              { step: "02", icon: Search, title: "Explorez les offres", desc: "Parcourez des centaines d'offres d'emploi à Bangui et dans toute la RCA, filtrées selon vos critères.", color: "bg-blue-50 text-blue-500" },
-              { step: "03", icon: CheckCircle, title: "Postulez en un clic", desc: "Envoyez votre candidature directement aux recruteurs et suivez l'avancement depuis votre tableau de bord.", color: "bg-green-50 text-green-500" },
-            ].map(({ step, icon: Icon, title, desc, color }) => (
-              <div key={step} className="relative text-center group cursor-default">
-                <div className="hidden md:block absolute top-10 left-[60%] w-full h-px border-t-2 border-dashed border-gray-200" />
-                <div className={`w-20 h-20 rounded-2xl ${color} flex items-center justify-center mx-auto mb-5 relative z-10 transition-transform duration-300 group-hover:scale-110 group-hover:shadow-lg`}>
-                  <Icon className="h-9 w-9 transition-transform duration-300 group-hover:scale-110" />
-                </div>
-                <div className="text-xs font-bold text-gray-300 mb-2 tracking-widest">ÉTAPE {step}</div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2 transition-colors group-hover:text-orange-600">{title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed max-w-xs mx-auto">{desc}</p>
-              </div>
-            ))}
-          </div>
-          <div className="text-center mt-10">
-            <Link href="/inscription" data-magnetic className="btn-press inline-flex items-center gap-2 bg-orange-500 text-white px-8 py-3 rounded-xl font-semibold">
-              Commencer gratuitement <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          <div className="text-center mt-12">
+            <Link href="/inscription" className="btn-shine group inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-8 py-3.5 rounded-full font-semibold shadow-lg shadow-orange-500/30 transition-colors">
+              Commencer gratuitement <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
           </div>
         </div>
       </section>
 
       {/* Explorer par secteur */}
-      <section className="bg-white py-16">
+      <section className="bg-slate-50 py-16 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 data-split className="text-2xl font-bold text-gray-900">Explorer par secteur</h2>
-              <p className="text-gray-500 text-sm mt-1">Trouvez des offres dans votre domaine d&apos;expertise</p>
-            </div>
-            <Link href="/emplois" className="text-orange-500 hover:text-orange-600 text-sm font-medium flex items-center gap-1">
-              Toutes les offres <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <SectionHead eyebrow="Secteurs" title="Explorer par secteur" subtitle="Trouvez des offres dans votre domaine d'expertise" href="/emplois" linkLabel="Toutes les offres" />
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
             {JOB_CATEGORIES.slice(0, 8).map((cat) => (
-              <Link key={cat} href={sectorSlugForCategory(cat) ? `/emplois/secteur/${sectorSlugForCategory(cat)}` : `/emplois?category=${encodeURIComponent(cat)}`} data-tilt className="group flex items-center gap-3 p-4 rounded-2xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50 hover:shadow-md bg-white">
-                <span className="text-2xl transition-transform duration-300 group-hover:scale-125 inline-block">{CATEGORY_ICONS[cat] || "📋"}</span>
-                <span className="text-sm font-medium text-gray-700 group-hover:text-orange-600 leading-tight transition-colors">{cat}</span>
+              <Link key={cat} href={sectorSlugForCategory(cat) ? `/emplois/secteur/${sectorSlugForCategory(cat)}` : `/emplois?category=${encodeURIComponent(cat)}`} className="soft-card group flex items-center gap-3 p-4 rounded-2xl">
+                <span className="w-11 h-11 shrink-0 rounded-xl bg-orange-50 flex items-center justify-center text-xl transition-colors duration-300 group-hover:bg-orange-100">{CATEGORY_ICONS[cat] || "📋"}</span>
+                <span className="flex-1 text-sm font-semibold text-gray-800 group-hover:text-orange-600 leading-tight transition-colors">{cat}</span>
+                <ArrowUpRight className="hidden sm:block h-4 w-4 text-gray-300 transition-all duration-300 group-hover:text-orange-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </Link>
             ))}
           </div>
@@ -296,26 +330,21 @@ export default async function HomePage() {
       </section>
 
       {/* Dernières offres */}
-      <section className="bg-gray-50 py-14">
+      <section className="bg-white py-16 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold text-gray-900">Dernières offres publiées</h2>
-            <Link href="/emplois" className="text-orange-500 hover:text-orange-600 text-sm font-medium flex items-center gap-1">
-              Voir toutes les offres <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
+          <SectionHead eyebrow="Nouveautés" title="Dernières offres publiées" href="/emplois" linkLabel="Voir toutes les offres" />
           {recentJobs.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
               {recentJobs.map((job) => (
                 <JobCard key={job.id} job={job} />
               ))}
             </div>
           ) : (
-            <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
+            <div className="text-center py-16 bg-slate-50 rounded-3xl border border-gray-100">
               <Briefcase className="h-12 w-12 mx-auto mb-4 text-gray-300" />
               <p className="text-lg font-semibold text-gray-700">Aucune offre pour le moment</p>
               <p className="text-sm text-gray-400 mt-1">Soyez le premier à publier une offre !</p>
-              <Link href="/inscription?role=employer" className="mt-5 inline-block bg-orange-500 text-white px-6 py-2.5 rounded-lg text-sm font-semibold hover:bg-orange-600 transition-colors">
+              <Link href="/inscription?role=employer" className="mt-5 inline-block bg-orange-500 text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-orange-600 transition-colors">
                 Recruter maintenant
               </Link>
             </div>
@@ -324,33 +353,35 @@ export default async function HomePage() {
       </section>
 
       {/* Espace recruteurs */}
-      <section className="bg-gray-900 text-white py-16 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative bg-[#0d0f14] text-white py-16 sm:py-24 overflow-hidden">
+        <div className="glow-orb w-[460px] h-[460px] bg-orange-500/20 -bottom-40 -left-32" aria-hidden="true" />
+        <div className="glow-orb w-[300px] h-[300px] bg-amber-400/10 top-0 right-0" aria-hidden="true" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="hidden lg:flex justify-center">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/recruter-illustration.svg" alt="Recruter en Centrafrique" className="w-full max-w-md opacity-90" />
             </div>
             <div>
-              <span className="inline-block bg-orange-500/20 text-orange-400 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-5">Espace recruteurs</span>
-              <h2 data-split className="text-3xl lg:text-4xl font-extrabold leading-tight mb-4">
+              <span className="eyebrow">Espace recruteurs</span>
+              <h2 className="mt-4 text-3xl sm:text-5xl font-extrabold leading-[1.05] mb-5">
                 Vous recrutez ?<br />
-                <span className="text-orange-400">Trouvez vos talents en RCA.</span>
+                <span className="text-gradient">Trouvez vos talents en RCA.</span>
               </h2>
-              <p className="text-gray-400 text-base mb-8 max-w-md">Publiez vos offres et accédez à des milliers de candidats qualifiés. Simple, rapide et gratuit pour commencer.</p>
-              <ul className="space-y-3 mb-8">
+              <p className="text-gray-400 text-base sm:text-lg mb-8 max-w-md">Publiez vos offres et accédez à des milliers de candidats qualifiés. Simple, rapide et gratuit pour commencer.</p>
+              <ul className="grid sm:grid-cols-2 gap-3 mb-9">
                 {["Publication d'offres en moins de 5 minutes", "Accès à plus de 1 200 profils de candidats", "Suivi des candidatures en temps réel", "Mise en avant de vos offres en page d'accueil"].map((item) => (
-                  <li key={item} className="flex items-center gap-3 text-gray-300 text-sm">
-                    <CheckCircle className="h-4 w-4 text-orange-400 flex-shrink-0" />
+                  <li key={item} className="glass flex items-start gap-3 rounded-2xl px-4 py-3 text-gray-200 text-sm">
+                    <CheckCircle className="h-4 w-4 mt-0.5 text-orange-400 flex-shrink-0" />
                     {item}
                   </li>
                 ))}
               </ul>
               <div className="flex flex-col sm:flex-row gap-3">
-                <Link href="/inscription?role=employer" data-magnetic className="btn-press bg-orange-500 text-white px-8 py-3 rounded-xl font-bold text-center text-sm">
+                <Link href="/inscription?role=employer" className="btn-shine bg-orange-500 hover:bg-orange-600 text-white px-8 py-3.5 rounded-full font-bold text-center text-sm shadow-lg shadow-orange-500/30 transition-colors">
                   Publier une offre gratuitement
                 </Link>
-                <Link href="/entreprises" className="zoom-hover border border-gray-600 hover:border-gray-400 text-gray-300 hover:text-white px-8 py-3 rounded-xl font-semibold text-center text-sm">
+                <Link href="/entreprises" className="border border-white/20 hover:border-white/50 hover:bg-white/5 text-gray-200 hover:text-white px-8 py-3.5 rounded-full font-semibold text-center text-sm transition-colors">
                   Voir les entreprises
                 </Link>
               </div>
@@ -360,28 +391,20 @@ export default async function HomePage() {
       </section>
 
       {/* Conseils carrière */}
-      <section className="bg-white py-16">
+      <section className="bg-white py-16 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 data-split className="text-2xl font-bold text-gray-900">Conseils carrière</h2>
-              <p className="text-gray-500 text-sm mt-1">Nos experts vous accompagnent dans votre recherche d&apos;emploi</p>
-            </div>
-            <Link href="/conseils" className="text-orange-500 hover:text-orange-600 text-sm font-medium flex items-center gap-1">
-              Tous les conseils <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
+          <SectionHead eyebrow="Ressources" title="Conseils carrière" subtitle="Nos experts vous accompagnent dans votre recherche d'emploi" href="/conseils" linkLabel="Tous les conseils" />
+          <div className="grid md:grid-cols-3 gap-5">
             {TIPS.map(({ icon: Icon, tag, title, desc }) => (
-              <Link key={title} href="/conseils" data-tilt className="group bg-white rounded-2xl border border-gray-200 hover:border-orange-200 hover:shadow-lg p-6">
-                <div className="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-orange-100 transition-all duration-300 group-hover:scale-110">
-                  <Icon className="h-5 w-5 text-orange-500 transition-transform duration-300 group-hover:scale-110" />
+              <Link key={title} href="/conseils" className="soft-card group rounded-3xl p-7 flex flex-col">
+                <div className="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center mb-5 transition-colors duration-300 group-hover:bg-orange-100">
+                  <Icon className="h-5 w-5 text-orange-500" />
                 </div>
-                <span className="text-xs font-semibold text-orange-500 uppercase tracking-wide">{tag}</span>
-                <h3 className="text-base font-bold text-gray-900 mt-2 mb-2 leading-snug group-hover:text-orange-600 transition-colors">{title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{desc}</p>
-                <div className="flex items-center gap-1 text-orange-500 text-sm font-medium mt-4">
-                  Lire la suite <ArrowRight className="h-4 w-4" />
+                <span className="text-[11px] font-bold text-orange-500 uppercase tracking-[0.15em]">{tag}</span>
+                <h3 className="text-lg font-bold text-gray-900 mt-2 mb-2 leading-snug group-hover:text-orange-600 transition-colors">{title}</h3>
+                <p className="text-sm text-gray-500 leading-relaxed flex-1">{desc}</p>
+                <div className="flex items-center gap-1 text-orange-500 text-sm font-semibold mt-5">
+                  Lire la suite <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </div>
               </Link>
             ))}
@@ -390,11 +413,12 @@ export default async function HomePage() {
       </section>
 
       {/* Présentation + FAQ (texte de référence pour Google) */}
-      <section className="bg-white py-16 border-t border-gray-100">
+      <section className="bg-slate-50 py-16 sm:py-20">
         <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(faqSchema)} />
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Trouver un emploi en Centrafrique avec KTZ Emploi</h2>
+            <span className="eyebrow">À propos</span>
+            <h2 className="mt-3 text-2xl sm:text-3xl font-extrabold text-gray-900 mb-5 leading-tight">Trouver un emploi en Centrafrique avec KTZ Emploi</h2>
             <div className="space-y-4 text-gray-600 leading-relaxed">
               <p>
                 <strong className="text-gray-800">KTZ Emploi</strong> (ktzemploi.com) est la plateforme de recherche d&apos;emploi
@@ -418,25 +442,26 @@ export default async function HomePage() {
             </div>
             <div className="mt-6 flex flex-wrap gap-2">
               {LANDINGS.ville.slice(0, 6).map((l) => (
-                <Link key={l.slug} href={`/emplois/ville/${l.slug}`} className="text-sm px-3 py-1.5 rounded-full border border-gray-200 text-gray-600 hover:border-orange-300 hover:text-orange-600">
+                <Link key={l.slug} href={`/emplois/ville/${l.slug}`} className="text-sm px-3.5 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 hover:border-orange-300 hover:text-orange-600 transition-colors">
                   Emploi {l.label}
                 </Link>
               ))}
               {LANDINGS.contrat.slice(0, 3).map((l) => (
-                <Link key={l.slug} href={`/emplois/contrat/${l.slug}`} className="text-sm px-3 py-1.5 rounded-full border border-gray-200 text-gray-600 hover:border-orange-300 hover:text-orange-600">
+                <Link key={l.slug} href={`/emplois/contrat/${l.slug}`} className="text-sm px-3.5 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 hover:border-orange-300 hover:text-orange-600 transition-colors">
                   {l.label}
                 </Link>
               ))}
             </div>
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Questions fréquentes</h2>
+            <span className="eyebrow">FAQ</span>
+            <h2 className="mt-3 text-2xl sm:text-3xl font-extrabold text-gray-900 mb-5 leading-tight">Questions fréquentes</h2>
             <div className="space-y-3">
               {HOME_FAQ.map((f) => (
-                <details key={f.q} className="group bg-gray-50 border border-gray-200 rounded-xl p-4">
-                  <summary className="font-medium text-gray-900 cursor-pointer list-none flex justify-between gap-3">
+                <details key={f.q} className="group bg-white border border-gray-200 rounded-2xl p-5 open:border-orange-200 open:shadow-sm transition-colors">
+                  <summary className="font-semibold text-gray-900 cursor-pointer list-none flex justify-between items-center gap-3">
                     {f.q}
-                    <span className="text-orange-500 group-open:rotate-45 transition-transform">+</span>
+                    <span className="shrink-0 w-7 h-7 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center group-open:rotate-45 transition-transform">+</span>
                   </summary>
                   <p className="text-sm text-gray-600 mt-3 leading-relaxed">{f.a}</p>
                 </details>
@@ -447,15 +472,19 @@ export default async function HomePage() {
       </section>
 
       {/* Bannière inscription */}
-      <section className="cta-live relative overflow-hidden py-14">
-        <span className="cta-blob cta-blob-1" aria-hidden="true" />
-        <span className="cta-blob cta-blob-2" aria-hidden="true" />
-        <div className="relative max-w-3xl mx-auto px-4 text-center">
-          <h2 data-split className="text-2xl lg:text-3xl font-extrabold text-white mb-3">Prêt à trouver votre prochain emploi ?</h2>
-          <p className="text-orange-100 mb-8">Créez votre profil gratuitement et recevez des offres personnalisées directement dans votre boîte mail.</p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/inscription" data-magnetic className="btn-press bg-white text-orange-600 px-8 py-3 rounded-xl font-bold">Créer mon profil</Link>
-            <Link href="/emplois" className="zoom-hover border-2 border-white text-white hover:bg-white/10 px-8 py-3 rounded-xl font-semibold">Parcourir les offres</Link>
+      <section className="bg-white py-14 sm:py-20 px-4">
+        <div className="relative max-w-6xl mx-auto overflow-hidden rounded-[2rem] bg-[#0d0f14] px-6 py-14 sm:py-20 text-center">
+          <div className="glow-orb w-[380px] h-[380px] bg-orange-500/35 -top-40 left-1/2 -translate-x-1/2" aria-hidden="true" />
+          <div className="relative">
+            <span className="eyebrow">Gratuit pour les candidats</span>
+            <h2 className="mt-4 text-3xl sm:text-5xl font-extrabold text-white leading-[1.05] mb-4">
+              Prêt à trouver votre <span className="text-gradient">prochain emploi ?</span>
+            </h2>
+            <p className="text-gray-400 mb-9 max-w-xl mx-auto">Créez votre profil gratuitement et recevez des offres personnalisées directement dans votre boîte mail.</p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Link href="/inscription" className="btn-shine bg-orange-500 hover:bg-orange-600 text-white px-8 py-3.5 rounded-full font-bold shadow-lg shadow-orange-500/30 transition-colors">Créer mon profil</Link>
+              <Link href="/emplois" className="border border-white/20 hover:border-white/50 hover:bg-white/5 text-white px-8 py-3.5 rounded-full font-semibold transition-colors">Parcourir les offres</Link>
+            </div>
           </div>
         </div>
       </section>

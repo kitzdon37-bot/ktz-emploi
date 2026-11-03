@@ -32,9 +32,11 @@ interface Props {
   totalJobs: number;
   totalCompanies: number;
   totalUsers: number;
+  /** "glass" : petites cartes translucides posées sur la photo du haut de page */
+  variant?: "default" | "glass";
 }
 
-export default function StatsCounter({ totalJobs, totalCompanies, totalUsers }: Props) {
+export default function StatsCounter({ totalJobs, totalCompanies, totalUsers, variant = "default" }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -54,6 +56,26 @@ export default function StatsCounter({ totalJobs, totalCompanies, totalUsers }: 
   const users     = useCountUp(totalUsers > 0 ? totalUsers : 1200, 2000, visible);
 
   const fmt = (n: number) => n.toLocaleString("fr-FR");
+
+  if (variant === "glass") {
+    const items = [
+      { value: jobs, label: "Offres d'emploi" },
+      { value: companies, label: "Entreprises partenaires" },
+      { value: users, label: "Candidats inscrits" },
+    ];
+    return (
+      <div ref={ref} className="grid grid-cols-3 gap-2 sm:gap-3 max-w-xl">
+        {items.map((it) => (
+          <div key={it.label} className="glass rounded-2xl px-3 py-3 sm:px-5 sm:py-4">
+            <div className="font-display text-xl sm:text-3xl font-extrabold text-white tracking-tight">
+              {fmt(it.value)}<span className="text-orange-400">+</span>
+            </div>
+            <div className="text-[11px] sm:text-xs text-gray-300 mt-1 leading-tight">{it.label}</div>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div ref={ref} className="grid grid-cols-3 divide-x divide-gray-100">

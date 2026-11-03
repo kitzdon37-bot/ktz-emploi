@@ -4,47 +4,19 @@ import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 
 /**
- * Animations globales, dans l'esprit du site KTZ Group :
+ * Animations globales, sobres :
  *  - les titres et les cartes des sections apparaissent en douceur au défilement,
  *    en cascade dans chaque grille ;
+ *  - les éléments marqués data-draw (lignes décoratives) se dessinent à l'apparition ;
  *  - une fine barre orange indique la progression du défilement.
  * Rien n'est caché sans JavaScript, et tout est désactivé si l'utilisateur
  * a demandé à réduire les animations.
  */
 const TARGETS = [
-  "main section h2:not([data-split])",
+  "main section h2",
   "main section h2 + p",
   "main section .grid > *",
 ].join(",");
-
-/** Découpe un titre en mots animés (uniquement les titres statiques marqués data-split). */
-function splitWords(el: HTMLElement) {
-  let i = 0;
-  const walk = (node: Node) => {
-    Array.from(node.childNodes).forEach((n) => {
-      if (n.nodeType === Node.TEXT_NODE) {
-        const frag = document.createDocumentFragment();
-        (n.textContent ?? "").split(/(\s+)/).forEach((part) => {
-          if (!part) return;
-          if (/^\s+$/.test(part)) { frag.append(" "); return; }
-          const w = document.createElement("span");
-          const wi = document.createElement("span");
-          w.className = "w";
-          wi.className = "wi";
-          wi.textContent = part;
-          wi.style.transitionDelay = `${(i++ * 0.06).toFixed(2)}s`;
-          w.append(wi);
-          frag.append(w);
-        });
-        n.replaceWith(frag);
-      } else if (n.nodeType === Node.ELEMENT_NODE && (n as Element).tagName !== "BR") {
-        walk(n);
-      }
-    });
-  };
-  walk(el);
-  el.classList.add("split");
-}
 
 export default function ScrollReveal() {
   const pathname = usePathname();
@@ -70,78 +42,40 @@ export default function ScrollReveal() {
     };
   }, []);
 
-  // Cartes inclinées en 3D avec halo, et boutons « magnétiques » (souris uniquement)
-  useEffect(() => {
-    if (!window.matchMedia("(pointer: fine)").matches) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let card: HTMLElement | null = null;
-    let btn: HTMLElement | null = null;
-
-    const reset = (el: HTMLElement | null) => { if (el) el.style.transform = ""; };
-
-    const onMove = (e: PointerEvent) => {
-      const t = e.target as Element | null;
-      const c = t?.closest<HTMLElement>("[data-tilt]") ?? null;
-      if (c !== card) { if (card) card.classList.remove("tilting"); reset(card); card = c; }
-      if (c) {
-        const r = c.getBoundingClientRect();
-        const x = (e.clientX - r.left) / r.width;
-        const y = (e.clientY - r.top) / r.height;
-        c.style.setProperty("--mx", `${x * 100}%`);
-        c.style.setProperty("--my", `${y * 100}%`);
-        c.classList.add("tilting");
-        c.style.transform = `perspective(900px) rotateX(${((0.5 - y) * 7).toFixed(2)}deg) rotateY(${((x - 0.5) * 7).toFixed(2)}deg) translateY(-4px)`;
-      }
-      const b = t?.closest<HTMLElement>("[data-magnetic]") ?? null;
-      if (b !== btn) { reset(btn); btn = b; }
-      if (b) {
-        const r = b.getBoundingClientRect();
-        b.style.transform = `translate(${((e.clientX - r.left - r.width / 2) * 0.25).toFixed(1)}px, ${((e.clientY - r.top - r.height / 2) * 0.35).toFixed(1)}px)`;
-      }
-    };
-    const onOut = (e: PointerEvent) => {
-      if (!e.relatedTarget) { if (card) card.classList.remove("tilting"); reset(card); reset(btn); card = btn = null; }
-    };
-
-    document.addEventListener("pointermove", onMove, { passive: true });
-    document.addEventListener("pointerout", onOut);
-    return () => {
-      document.removeEventListener("pointermove", onMove);
-      document.removeEventListener("pointerout", onOut);
-    };
-  }, []);
-
   // Apparition au défilement (relancée à chaque changement de page)
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const main = document.querySelector("main");
     if (!main) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      main.querySelectorAll("[data-draw]").forEach((el) => el.classList.add("drawn"));
+      return;
+    }
 
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries) {
-          if (e.isIntersecting) {
-            const el = e.target as HTMLElement;
-            io.unobserve(el);
-            if (el.classList.contains("split")) { el.classList.add("split-in"); continue; }
-            el.classList.add("sr-in");
-            // Une fois apparu, l'élément retrouve ses propres effets (survol des cartes…)
-            setTimeout(() => el.classList.remove("sr", "sr-in"), 1800);
-          }
+          if (!e.isIntersecting) continue;
+          const el = e.target as HTMLElement;
+          io.unobserve(el);
+          if (el.hasAttribute("data-draw")) { el.classList.add("drawn"); continue; }
+          el.classList.add("sr-in");
+          // Une fois apparu, l'élément retrouve ses propres effets (survol des cartes…)
+          setTimeout(() => el.classList.remove("sr", "sr-in"), 1800);
         }
       },
       { rootMargin: "0px 0px -8% 0px", threshold: 0.08 }
     );
 
+    const firstSection = () => main.querySelector("section");
     const scan = () => {
-      main.querySelectorAll<HTMLElement>("[data-split]:not(.split)").forEach((el) => {
-        splitWords(el);
+      main.querySelectorAll<HTMLElement>("[data-draw]:not([data-sr])").forEach((el) => {
+        el.dataset.sr = "1";
         io.observe(el);
       });
       main.querySelectorAll<HTMLElement>(TARGETS).forEach((el) => {
         if (el.dataset.sr) return;
         // La première section (bannière d'accueil) reste immédiatement visible
-        if (el.closest("main section") === main.querySelector("section")) return;
+        if (el.closest("main section") === firstSection()) return;
         el.dataset.sr = "1";
         const parent = el.parentElement;
         if (parent?.classList.contains("grid")) {

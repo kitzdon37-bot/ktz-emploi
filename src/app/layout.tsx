@@ -1,4 +1,5 @@
 ﻿import type { Metadata } from "next";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import Navbar from "@/components/Navbar";
@@ -12,6 +13,14 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 import FeedbackPopup from "@/components/FeedbackPopup";
 import ScrollReveal from "@/components/ScrollReveal";
 import { SITE_URL, SITE_NAME, siteSchema, jsonLd } from "@/lib/seo";
+
+// Police des titres : moderne et serrée, chargée par Next (aucune requête vers Google côté visiteur)
+const display = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["600", "700", "800"],
+  display: "swap",
+  variable: "--font-jakarta",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -62,7 +71,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr">
+    <html lang="fr" className={display.variable}>
       <body className="min-h-screen flex flex-col bg-gray-50">
         {/* Données structurées : organisation, site, fondateur */}
         <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(siteSchema())} />
