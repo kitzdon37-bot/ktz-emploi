@@ -49,12 +49,15 @@
 
 /* Photos : dévoilement en rideau à l'apparition, puis léger zoom au survol */
 /* (masquées seulement une fois le JavaScript prêt : sans JS, les photos restent visibles) */
+/* (le cadre reste toujours « visible » pour le navigateur : c'est l'image à l'intérieur qui se dévoile) */
 [data-photo] { overflow: hidden; }
 [data-photo] img { transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
-.sr-ready [data-photo] { clip-path: inset(0 0 100% 0 round 1.5rem); transition: clip-path 1.2s cubic-bezier(0.77, 0, 0.18, 1); }
-.sr-ready [data-photo] img { transform: scale(1.18); transition: transform 1.6s cubic-bezier(0.22, 1, 0.36, 1); }
-.sr-ready [data-photo].shown { clip-path: inset(0 0 0 0 round 1.5rem); }
-.sr-ready [data-photo].shown img { transform: scale(1); }
+.sr-ready [data-photo] img {
+  clip-path: inset(0 0 100% 0);
+  transform: scale(1.18);
+  transition: clip-path 1.2s cubic-bezier(0.77, 0, 0.18, 1), transform 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.sr-ready [data-photo].shown img { clip-path: inset(0 0 0 0); transform: scale(1); }
 .group:hover [data-photo] img, [data-photo]:hover img,
 .sr-ready .group:hover [data-photo].shown img, .sr-ready [data-photo].shown:hover img { transform: scale(1.06); transition-duration: 0.9s; }
 
