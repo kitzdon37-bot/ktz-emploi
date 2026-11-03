@@ -52,7 +52,7 @@ export default async function ArticlePage({ params }: Props) {
             <div className="flex-1 max-w-2xl">
               <Link
                 href="/conseils"
-                className="inline-flex items-center gap-2 text-white/80 hover:text-white text-sm mb-6 transition-colors"
+                className="flex w-fit items-center gap-2 text-white/80 hover:text-white text-sm mb-6 transition-colors"
               >
                 <ArrowLeft className="h-4 w-4" />
                 Retour aux conseils
